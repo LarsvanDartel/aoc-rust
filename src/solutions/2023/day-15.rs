@@ -40,11 +40,14 @@ impl Operation {
 
 impl Problem<u32, u32> for Day15 {
     fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(tag(","), take_till(|c| c == ',').map(|s: &str| s.to_string()))
-            .map(|v| Self {
-                initialization_sequence: v,
-            })
-            .parse(input)
+        separated_list1(
+            tag(","),
+            take_till(|c| c == ',').map(|s: &str| s.to_string()),
+        )
+        .map(|v| Self {
+            initialization_sequence: v,
+        })
+        .parse(input)
     }
 
     fn part1(self) -> Result<u32> {
