@@ -1,0 +1,37 @@
+use aoc_rust::*;
+
+struct Day{{day}} {}
+
+impl Problem<(), ()> for Day{{day}} {
+    fn parse(input: &str) -> ParseResult<Self> {
+        todo!()
+    }
+
+    fn part1(&self) -> Result<()> {
+        Ok(())
+    }
+
+    fn part2(&self) -> Result<()> {
+        Ok(())
+    }
+}
+
+aoc_main!(Day{{day}});
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE: &str = r#"
+    "#;
+
+    #[test]
+    fn test_part1() {
+        assert_task!(Day{{day}}, 1, EXAMPLE, ())
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_task!(Day{{day}}, 2, EXAMPLE, ())
+    }
+}
