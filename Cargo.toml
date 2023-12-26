@@ -62,6 +62,10 @@ path = 'src\solutions\2023\day-14.rs'
 name = "2023-15"
 path = 'src\solutions\2023\day-15.rs'
 
+[[bin]]
+name = "2023-16"
+path = 'src\solutions\2023\day-16.rs'
+
 [dependencies]
 chrono = "0.4.31"
 nom = "7.1.3"
