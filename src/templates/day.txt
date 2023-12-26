@@ -7,11 +7,11 @@ impl Problem<(), ()> for Day{{day}} {
         todo!()
     }
 
-    fn part1(&self) -> Result<()> {
+    fn part1(self) -> Result<()> {
         Ok(())
     }
 
-    fn part2(&self) -> Result<()> {
+    fn part2(self) -> Result<()> {
         Ok(())
     }
 }
