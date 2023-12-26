@@ -39,10 +39,10 @@ impl Day16 {
             let mirror = &mut self.grid[y as usize][x as usize];
 
             let next = mirror.next(dir);
-    
+
             for dir in next {
                 match dir {
-                    Direction::North => queue.push((x, y - 1, dir)), 
+                    Direction::North => queue.push((x, y - 1, dir)),
                     Direction::East => queue.push((x + 1, y, dir)),
                     Direction::South => queue.push((x, y + 1, dir)),
                     Direction::West => queue.push((x - 1, y, dir)),
