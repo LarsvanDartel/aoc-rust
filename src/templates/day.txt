@@ -27,11 +27,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_task!(Day{{day}}, 1, EXAMPLE, ())
+        assert_task!(Day{{day}}, 1, EXAMPLE, ());
     }
 
     #[test]
     fn test_part2() {
-        assert_task!(Day{{day}}, 2, EXAMPLE, ())
+        assert_task!(Day{{day}}, 2, EXAMPLE, ());
     }
 }
