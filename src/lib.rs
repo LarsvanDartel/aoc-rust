@@ -86,8 +86,8 @@ macro_rules! assert_task {
         let task = aoc_main!(@finalize task).unwrap().1;
 
         match $task {
-            1 => assert_eq!(task.part1().unwrap(), $expected),
-            2 => assert_eq!(task.part2().unwrap(), $expected),
+            1 => assert_eq!(format!("{:?}", task.part1().unwrap()), format!("{:?}", $expected)),
+            2 => assert_eq!(format!("{:?}", task.part2().unwrap()), format!("{:?}", $expected)),
             _ => panic!("Invalid task number"),
         }
     }};
