@@ -45,13 +45,15 @@ impl CalibrationValue {
         let mut line = self.line.clone();
         for (i, s) in [
             "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
-        ].iter().enumerate() {
+        ]
+        .iter()
+        .enumerate()
+        {
             line = line.replace(s, &format!("{}{}{}", s, i + 1, s));
         }
 
         Self { line }.value()
     }
-    
 }
 
 impl Problem<u32, u32> for Day01 {
@@ -80,7 +82,7 @@ mod tests {
 pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet";
-    
+
     const EXAMPLE_2: &str = "two1nine
 eightwothree
 abcone2threexyz
