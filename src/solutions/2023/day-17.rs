@@ -1,4 +1,4 @@
-use std::collections::{BinaryHeap, HashSet, HashMap};
+use std::collections::{BinaryHeap, HashMap, HashSet};
 
 use aoc_rust::*;
 
@@ -211,7 +211,7 @@ impl Problem<u32, u32> for Day17 {
     fn part1(self) -> Result<u32> {
         Ok(self.find_path(1, 3).unwrap())
     }
-    
+
     fn part2(self) -> Result<u32> {
         Ok(self.find_path(4, 10).unwrap())
     }
