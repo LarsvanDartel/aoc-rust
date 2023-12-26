@@ -1,3 +1,3 @@
 [alias]
-scaffold = "run --quiet --release --bin util scaffold"
-solve = "run --quiet --release --bin util solve"
+scaffold = "run --release --bin util scaffold"
+solve = "run --release --bin util solve"
