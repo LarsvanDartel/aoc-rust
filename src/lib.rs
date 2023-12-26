@@ -46,9 +46,6 @@ macro_rules! aoc_main {
             let task1 = <$problem>::parse_1(&input);
             let task1 = aoc_main!(@finalize task1)?.1;
 
-            let task2 = <$problem>::parse_2(&input);
-            let task2 = aoc_main!(@finalize task2)?.1;
-
             println!("🎄 Running part 1...");
 
             let start = std::time::Instant::now();
@@ -58,8 +55,11 @@ macro_rules! aoc_main {
             println!("🎄 Task 1: {:?}", result1);
             println!("🎄 Task 1 took: {:?}", duration);
             println!();
-            println!("🎄 Running part 2...");
 
+            let task2 = <$problem>::parse_2(&input);
+            let task2 = aoc_main!(@finalize task2)?.1;
+
+            println!("🎄 Running part 2...");
             let start = std::time::Instant::now();
             let result2 = task2.part2()?;
             let duration = start.elapsed();
