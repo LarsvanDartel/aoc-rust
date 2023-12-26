@@ -17,7 +17,7 @@ pub fn solve(date: AocDate, _submit: Option<u8>) -> Result<()> {
                 .expect("Failed to spawn child process")
                 .wait()
                 .expect("Failed to wait on child process");
-    })?;
+        })?;
 
     child.join().expect("Failed to join child thread");
 
