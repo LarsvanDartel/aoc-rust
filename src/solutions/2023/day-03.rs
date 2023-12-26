@@ -144,9 +144,9 @@ impl Day03 {
 impl Problem<u32, u32> for Day03 {
     fn parse(input: &str) -> ParseResult<Self> {
         let grid = input
-        .lines()
-        .map(|line| line.chars().collect())
-        .collect::<Vec<_>>();
+            .lines()
+            .map(|line| line.chars().collect())
+            .collect::<Vec<_>>();
 
         Ok(("", Self { grid }))
     }
