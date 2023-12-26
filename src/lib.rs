@@ -81,8 +81,12 @@ macro_rules! aoc_main {
 #[macro_export]
 macro_rules! assert_task {
     ($problem:ty, $task:expr, $input:expr, $expected:expr) => {{
-        let input = $input;
-        let task = <$problem>::parse(&input);
+        let task = match $task {
+            1 => <$problem>::parse_1($input),
+            2 => <$problem>::parse_2($input),
+            _ => panic!("Invalid task number"),
+        };
+
         let task = aoc_main!(@finalize task).unwrap().1;
 
         match $task {
