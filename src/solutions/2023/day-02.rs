@@ -102,7 +102,7 @@ impl Problem<u32, u32> for Day02 {
             .parse(input)
     }
 
-    fn part1(&self) -> Result<u32> {
+    fn part1(self) -> Result<u32> {
         Ok(self
             .games
             .iter()
@@ -117,7 +117,7 @@ impl Problem<u32, u32> for Day02 {
             .sum())
     }
 
-    fn part2(&self) -> Result<u32> {
+    fn part2(self) -> Result<u32> {
         Ok(self
             .games
             .iter()

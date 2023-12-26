@@ -33,8 +33,8 @@ where
     fn parse_2(input: &str) -> ParseResult<Self> {
         Self::parse(input)
     }
-    fn part1(&self) -> Result<T1>;
-    fn part2(&self) -> Result<T2>;
+    fn part1(self) -> Result<T1>;
+    fn part2(self) -> Result<T2>;
 }
 
 #[macro_export]

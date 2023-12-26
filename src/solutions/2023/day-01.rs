@@ -63,11 +63,11 @@ impl Problem<u32, u32> for Day01 {
             .parse(input)
     }
 
-    fn part1(&self) -> Result<u32> {
+    fn part1(self) -> Result<u32> {
         Ok(self.values.iter().map(|v| v.value()).sum())
     }
 
-    fn part2(&self) -> Result<u32> {
+    fn part2(self) -> Result<u32> {
         Ok(self.values.iter().map(|v| v.value_with_letters()).sum())
     }
 }

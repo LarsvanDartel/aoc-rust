@@ -151,11 +151,11 @@ impl Problem<u32, u32> for Day03 {
         Ok(("", Self { grid }))
     }
 
-    fn part1(&self) -> Result<u32> {
+    fn part1(self) -> Result<u32> {
         Ok(self.numbers().iter().sum())
     }
 
-    fn part2(&self) -> Result<u32> {
+    fn part2(self) -> Result<u32> {
         Ok(self.gear_ratios().iter().sum())
     }
 }
