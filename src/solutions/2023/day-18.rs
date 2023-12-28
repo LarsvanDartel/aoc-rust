@@ -124,7 +124,7 @@ impl Day18 {
         // A = i + b/2 - 1 => i = A - b/2 + 1
         // we add the perimeter length to the area because the perimeter is not included in the area
         // so we get i = A + b/2 + 1
-        (area.abs() as usize / 2) + (perimeter_len / 2) + 1
+        (area.unsigned_abs() / 2) + (perimeter_len / 2) + 1
     }
 }
 

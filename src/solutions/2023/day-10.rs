@@ -146,9 +146,9 @@ impl From<(isize, isize)> for Dir {
     }
 }
 
-impl Into<(isize, isize)> for Dir {
-    fn into(self) -> (isize, isize) {
-        match self {
+impl From<Dir> for (isize, isize) {
+    fn from(dir: Dir) -> Self {
+        match dir {
             Dir::North => (0, -1),
             Dir::East => (1, 0),
             Dir::South => (0, 1),
@@ -286,7 +286,7 @@ impl Problem<usize, usize> for Day10 {
 
         grid = grid
             .iter()
-            .map(|row| {
+            .flat_map(|row| {
                 [
                     row.iter()
                         .flat_map(|pipe| pipe.increase_resolution()[0])
@@ -299,7 +299,6 @@ impl Problem<usize, usize> for Day10 {
                         .collect(),
                 ]
             })
-            .flatten()
             .map(|row: Vec<Pipe>| {
                 let mut row = row;
                 row.insert(0, Pipe::Source);

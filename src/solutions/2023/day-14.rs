@@ -52,7 +52,7 @@ impl Day14 {
         let mut moved = false;
         for a in 0..self.grid.len() {
             for b in 0..self.grid[a].len() {
-                let (mut x, mut y) = match dir.clone() {
+                let (mut x, mut y) = match dir {
                     Direction::North => (b as isize, a as isize),
                     Direction::East => ((self.grid[a].len() - b - 1) as isize, a as isize),
                     Direction::South => (b as isize, (self.grid.len() - a - 1) as isize),
@@ -60,7 +60,7 @@ impl Day14 {
                 };
 
                 loop {
-                    let (nx, ny) = (x, y) + dir.clone();
+                    let (nx, ny) = (x, y) + dir;
                     if nx < 0
                         || ny < 0
                         || nx >= self.grid[0].len() as isize

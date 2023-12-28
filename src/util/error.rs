@@ -4,7 +4,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub(crate) enum Error {
-    AocClientError(AocClientError),
+    AocClient(AocClientError),
     Io(std::io::Error),
     TomlDeserialize(toml::de::Error),
     TomlSerialize(toml::ser::Error),
@@ -15,7 +15,7 @@ pub(crate) enum Error {
 
 impl From<AocClientError> for Error {
     fn from(e: AocClientError) -> Self {
-        Self::AocClientError(e)
+        Self::AocClient(e)
     }
 }
 

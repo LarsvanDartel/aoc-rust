@@ -93,19 +93,19 @@ impl Problem<usize, usize> for Day22 {
         bricks.sort_by_key(|brick| brick.z0);
 
         let mut tallest = [[0; 10]; 10];
-        for i in 0..bricks.len() {
-            bricks[i] = drop_brick(&bricks[i], &mut tallest);
+        for b in &mut bricks {
+            *b = drop_brick(b, &mut tallest);
         }
 
         let mut cnt = 0;
         for i in 0..bricks.len() {
             tallest = [[0; 10]; 10];
             let mut dropped = false;
-            for j in 0..bricks.len() {
+            for (j, b) in bricks.iter().enumerate() {
                 if i == j {
                     continue;
                 }
-                if bricks[j].z0 != drop_brick(&bricks[j], &mut tallest).z0 {
+                if b.z0 != drop_brick(b, &mut tallest).z0 {
                     dropped = true;
                     break;
                 }
@@ -123,18 +123,18 @@ impl Problem<usize, usize> for Day22 {
         bricks.sort_by_key(|brick| brick.z0);
 
         let mut tallest = [[0; 10]; 10];
-        for i in 0..bricks.len() {
-            bricks[i] = drop_brick(&bricks[i], &mut tallest);
+        for b in &mut bricks {
+            *b = drop_brick(b, &mut tallest);
         }
 
         let mut cnt = 0;
         for i in 0..bricks.len() {
             tallest = [[0; 10]; 10];
-            for j in 0..bricks.len() {
+            for (j, b) in bricks.iter().enumerate() {
                 if i == j {
                     continue;
                 }
-                if bricks[j].z0 != drop_brick(&bricks[j], &mut tallest).z0 {
+                if b.z0 != drop_brick(b, &mut tallest).z0 {
                     cnt += 1;
                 }
             }

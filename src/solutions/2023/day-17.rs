@@ -93,14 +93,12 @@ impl Day17 {
         let mut queue = BinaryHeap::new();
         let mut visited = HashSet::new();
         let mut distances = HashMap::new();
-        let mut prev = HashMap::new();
 
         queue.push(std::cmp::Reverse((0, ((0, 0), Direction::None))));
 
         while let Some(std::cmp::Reverse((dist, node))) = queue.pop() {
             let (pos, dir) = node;
             if pos == (self.grid[0].len() - 1, self.grid.len() - 1) {
-                //self.print_path(node, &prev);
                 return Some(dist);
             }
 
@@ -146,55 +144,12 @@ impl Day17 {
                         }
                     }
                     distances.insert(new_node, new_dist);
-                    prev.insert(new_node, node);
                     queue.push(std::cmp::Reverse((new_dist, new_node)));
                 }
             }
         }
 
         None
-    }
-
-    #[allow(dead_code)]
-    fn print_path(
-        &self,
-        node: ((usize, usize), Direction),
-        prev: &HashMap<((usize, usize), Direction), ((usize, usize), Direction)>,
-    ) {
-        let mut node = node;
-        let mut path = vec![];
-        while let Some(&prev_node) = prev.get(&node) {
-            while node.0 != prev_node.0 {
-                path.push(node);
-                node.0 += node.1.opposite();
-            }
-            node = prev_node;
-        }
-        path.push(node);
-        path.reverse();
-
-        for y in 0..self.grid.len() {
-            for x in 0..self.grid[y].len() {
-                if let Some((_, dir)) = path.iter().find(|(pos, _)| *pos == (x, y)) {
-                    print!(
-                        "{}",
-                        match dir {
-                            Direction::North => '↑',
-                            Direction::East => '→',
-                            Direction::South => '↓',
-                            Direction::West => '←',
-                            Direction::None => ' ',
-                        }
-                    );
-                } else {
-                    print!("{}", self.grid[y][x]);
-                }
-            }
-            println!();
-        }
-
-        println!();
-        println!();
     }
 }
 

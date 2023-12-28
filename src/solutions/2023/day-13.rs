@@ -35,14 +35,12 @@ impl Grid {
     fn mirror_line(&self, smudge: bool) -> Option<usize> {
         if let Some(i) = Self::find_mirror_line(&self.rows, smudge) {
             Some(100 * i)
-        } else if let Some(i) = Self::find_mirror_line(&self.cols, smudge) {
-            Some(i)
         } else {
-            None
+            Self::find_mirror_line(&self.cols, smudge)
         }
     }
 
-    fn find_mirror_line(vec: &Vec<usize>, smudge: bool) -> Option<usize> {
+    fn find_mirror_line(vec: &[usize], smudge: bool) -> Option<usize> {
         for i in 1..vec.len() {
             let mut smudge = smudge;
             let mut a = i as isize - 1;
@@ -71,8 +69,8 @@ impl Grid {
 
 impl Problem<usize, usize> for Day13 {
     fn parse(input: &str) -> ParseResult<Self> {
-        let grid = separated_list1(line_ending, many1(one_of(".#").map(|c| c == '#')))
-            .map(|grid| Grid::new(grid));
+        let grid =
+            separated_list1(line_ending, many1(one_of(".#").map(|c| c == '#'))).map(Grid::new);
 
         separated_list1(line_ending.and(line_ending), grid)
             .map(|grids| Self { grids })

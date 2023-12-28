@@ -74,10 +74,10 @@ impl Record {
                     if cur == 0 {
                         continue;
                     }
-                    if s[i] == Spring::Operational || s[i] == Spring::Unknown {
-                        if l == 0 || l == self.counts[j - 1] {
-                            dp[i + 1][j][0] += cur
-                        }
+                    if (s[i] == Spring::Operational || s[i] == Spring::Unknown)
+                        && (l == 0 || l == self.counts[j - 1])
+                    {
+                        dp[i + 1][j][0] += cur
                     }
                     if s[i] == Spring::Damaged || s[i] == Spring::Unknown {
                         if l == 0 {

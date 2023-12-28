@@ -73,7 +73,7 @@ impl Problem<usize, usize> for Day08 {
         Ok(self
             .network
             .iter()
-            .filter(|(name, _)| name.ends_with("A"))
+            .filter(|(name, _)| name.ends_with('A'))
             .map(|(name, _)| {
                 let mut root = name.clone();
                 let mut i = 0;
@@ -85,7 +85,7 @@ impl Problem<usize, usize> for Day08 {
                         root = right.to_string();
                     }
                     i += 1;
-                    if root.ends_with("Z") {
+                    if root.ends_with('Z') {
                         break;
                     }
                 }

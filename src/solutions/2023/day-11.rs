@@ -50,8 +50,8 @@ impl Day11 {
         let empty_rows_between = self.empty_rows[y2] - self.empty_rows[y1];
         let empty_cols_between = self.empty_cols[x2] - self.empty_cols[x1];
 
-        (x1 as i32 - x2 as i32).abs() as usize
-            + (y1 as i32 - y2 as i32).abs() as usize
+        (x1 as i32 - x2 as i32).unsigned_abs() as usize
+            + (y1 as i32 - y2 as i32).unsigned_abs() as usize
             + (expansion - 1) * (empty_rows_between + empty_cols_between)
     }
 

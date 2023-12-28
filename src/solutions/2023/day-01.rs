@@ -28,7 +28,7 @@ impl CalibrationValue {
         let mut last = None;
 
         for c in self.line.chars() {
-            if c.is_digit(10) {
+            if c.is_ascii_digit() {
                 if first.is_none() {
                     first = Some(c);
                 }

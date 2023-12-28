@@ -54,7 +54,7 @@ impl Day16 {
     fn cnt(&self) -> usize {
         self.ingoing
             .iter()
-            .map(|row| row.iter().filter(|m| m.len() > 0).count())
+            .map(|row| row.iter().filter(|m| !m.is_empty()).count())
             .sum()
     }
 }
@@ -140,7 +140,7 @@ impl std::fmt::Debug for Mirror {
 impl Problem<usize, usize> for Day16 {
     fn parse(input: &str) -> ParseResult<Self> {
         separated_list1(line_ending, many1(Mirror::parse))
-            .map(|grid| Self::new(grid))
+            .map(Self::new)
             .parse(input)
     }
 

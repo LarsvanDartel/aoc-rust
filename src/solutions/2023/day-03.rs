@@ -8,7 +8,7 @@ struct Day03 {
 
 impl Day03 {
     fn is_symbol(symbol: char) -> bool {
-        !symbol.is_digit(10) && symbol != '.'
+        !symbol.is_ascii_digit() && symbol != '.'
     }
 
     fn numbers(&self) -> Vec<u32> {
@@ -17,7 +17,7 @@ impl Day03 {
         let mut included = false;
         for row in 0..self.grid.len() {
             for col in 0..self.grid[row].len() {
-                if self.grid[row][col].is_digit(10) {
+                if self.grid[row][col].is_ascii_digit() {
                     if let Some(number) = current_number {
                         current_number =
                             Some(number * 10 + self.grid[row][col].to_digit(10).unwrap());
@@ -46,14 +46,12 @@ impl Day03 {
                             }
                         }
                     }
-                } else {
-                    if let Some(number) = current_number {
-                        if included {
-                            numbers.push(number);
-                        }
-                        current_number = None;
-                        included = false;
+                } else if let Some(number) = current_number {
+                    if included {
+                        numbers.push(number);
                     }
+                    current_number = None;
+                    included = false;
                 }
             }
             if let Some(number) = current_number {
@@ -82,7 +80,7 @@ impl Day03 {
         let mut current_gears = HashSet::new();
         for row in 0..self.grid.len() {
             for col in 0..self.grid[row].len() {
-                if self.grid[row][col].is_digit(10) {
+                if self.grid[row][col].is_ascii_digit() {
                     if let Some(number) = current_number {
                         current_number =
                             Some(number * 10 + self.grid[row][col].to_digit(10).unwrap());
@@ -110,18 +108,16 @@ impl Day03 {
                             }
                         }
                     }
-                } else {
-                    if let Some(number) = current_number {
-                        for gear in &current_gears {
-                            if let Some(gear_number) = gear_options.get(gear) {
-                                gear_ratios.push(number * gear_number);
-                            } else {
-                                gear_options.insert(*gear, number);
-                            }
+                } else if let Some(number) = current_number {
+                    for gear in &current_gears {
+                        if let Some(gear_number) = gear_options.get(gear) {
+                            gear_ratios.push(number * gear_number);
+                        } else {
+                            gear_options.insert(*gear, number);
                         }
-                        current_number = None;
-                        current_gears.clear();
                     }
+                    current_number = None;
+                    current_gears.clear();
                 }
             }
             if let Some(number) = current_number {

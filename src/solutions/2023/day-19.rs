@@ -129,8 +129,8 @@ impl RangePart {
                         's' => (RangePart { s: r1, ..*self }, RangePart { s: r2, ..*self }),
                         _ => unreachable!(),
                     };
-                    return r1.apply_workflow(workflows, &workflow)
-                        + r2.apply_workflow(workflows, &workflow);
+                    return r1.apply_workflow(workflows, workflow)
+                        + r2.apply_workflow(workflows, workflow);
                 }
             }
         }
@@ -248,7 +248,7 @@ impl Rule {
                     if *value > a.end {
                         return Ok(Some((**result).clone()));
                     }
-                    return Err((*attribute, a.split(*value, true)));
+                    Err((*attribute, a.split(*value, true)))
                 } else {
                     if *value >= a.end {
                         return Ok(None);
@@ -256,7 +256,7 @@ impl Rule {
                     if *value < a.start {
                         return Ok(Some((**result).clone()));
                     }
-                    return Err((*attribute, a.split(*value, false)));
+                    Err((*attribute, a.split(*value, false)))
                 }
             }
             Rule::Workflow(_) => Ok(Some(self.clone())),

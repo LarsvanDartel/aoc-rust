@@ -185,9 +185,9 @@ impl Problem<usize, usize> for Day20 {
             while let Some((to, from, value)) = queue.pop_front() {
                 if let Some((first, second)) = watch.get_mut(&to) {
                     if !value {
-                        if *first == None {
+                        if first.is_none() {
                             *first = Some(t);
-                        } else if *second == None {
+                        } else if second.is_none() {
                             *second = Some(t);
                             if watch
                                 .values()
