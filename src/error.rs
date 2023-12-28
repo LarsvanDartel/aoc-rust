@@ -5,6 +5,7 @@ pub enum Error {
     Io(::std::io::Error),
     Parse(::nom::error::Error<String>),
 
+    Message(String),
     Unknown(String),
 }
 
