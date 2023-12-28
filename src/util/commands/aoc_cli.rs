@@ -3,7 +3,7 @@ use std::{
     process::{Command, Output},
 };
 
-use crate::{Result, AocDate, CARGO_ROOT};
+use crate::{AocDate, Result, CARGO_ROOT};
 
 #[derive(Debug)]
 pub enum AocClientError {
