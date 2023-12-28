@@ -14,7 +14,7 @@ pub fn scaffold(date: AocDate) -> Result<()> {
 }
 
 fn create_template(date: &AocDate) -> Result<()> {
-    let path = date.bin_path();
+    let path = date.bin_path()?;
 
     if path.exists() {
         println!(
@@ -59,7 +59,7 @@ fn add_cargo_bin(date: &AocDate) -> Result<()> {
     let mut cargo_toml: Value = toml::from_str(&cargo_toml)?;
     let bin_name = date.bin_name();
     let bin_path = date
-        .bin_path()
+        .bin_path()?
         .strip_prefix(CARGO_ROOT)?
         .display()
         .to_string();

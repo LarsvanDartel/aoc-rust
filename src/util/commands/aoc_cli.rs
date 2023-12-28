@@ -3,9 +3,8 @@ use std::{
     process::{Command, Output},
 };
 
-use crate::{AocDate, CARGO_ROOT};
+use crate::{Result, AocDate, CARGO_ROOT};
 
-type Result<T> = std::result::Result<T, AocClientError>;
 #[derive(Debug)]
 pub enum AocClientError {
     CommandNotFound,
@@ -34,7 +33,7 @@ pub fn check_aoc_cli() -> Result<()> {
 }
 
 pub fn download(date: &AocDate) -> Result<()> {
-    let path = date.input_path();
+    let path = date.input_path()?;
     if path.exists() {
         println!(
             "🎄 Input for {} day {} already exists at {}",
@@ -65,7 +64,7 @@ pub fn download(date: &AocDate) -> Result<()> {
         .map_err(|_| AocClientError::CommandNotFound)?;
 
     if !output.status.success() {
-        return Err(AocClientError::BadExitStatus(output));
+        Err(AocClientError::BadExitStatus(output))?;
     }
 
     println!(

@@ -57,33 +57,34 @@ impl AocDate {
 
         Self { year, day }
     }
-    fn input_path(&self) -> PathBuf {
+    fn input_path(&self) -> Result<PathBuf> {
         let mut path = PathBuf::from(CARGO_ROOT);
         path.push("input");
-        self.push_path(&mut path);
+        self.push_path(&mut path)?;
         path.set_extension("txt");
-        path
+        Ok(path)
     }
 
     fn bin_name(&self) -> String {
         format!("{:0>4}-{:0>2}", self.year, self.day)
     }
 
-    fn bin_path(&self) -> PathBuf {
+    fn bin_path(&self) -> Result<PathBuf> {
         let mut path = PathBuf::from(CARGO_ROOT);
         path.push("src");
         path.push("solutions");
-        self.push_path(&mut path);
+        self.push_path(&mut path)?;
         path.set_extension("rs");
-        path
+        Ok(path)
     }
 
-    fn push_path(&self, path: &mut PathBuf) {
+    fn push_path(&self, path: &mut PathBuf) -> Result<()> {
         path.push(self.year.to_string());
         if !path.exists() {
-            std::fs::create_dir(path.clone()).unwrap();
+            std::fs::create_dir_all(path.clone())?;
         }
         path.push(format!("day-{:0>2}", self.day));
+        Ok(())
     }
 
     fn check_date(&self) -> Result<()> {
