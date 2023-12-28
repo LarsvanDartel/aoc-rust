@@ -276,7 +276,11 @@ impl<T> From<Vec3<T>> for (T, T, T) {
 
 impl<T: std::fmt::Debug> std::fmt::Debug for Vec3<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple("Vec3").field(&self.x).field(&self.y).field(&self.z).finish()
+        f.debug_tuple("Vec3")
+            .field(&self.x)
+            .field(&self.y)
+            .field(&self.z)
+            .finish()
     }
 }
 

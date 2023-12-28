@@ -45,7 +45,7 @@ impl HailStone {
         let Vec2 { x: x2, y: y2 } = other.pos.xy();
         let Vec2 { x: u1, y: v1 } = self.vel.xy();
         let Vec2 { x: u2, y: v2 } = other.vel.xy();
-        
+
         // [ u1, -u2 ] [ a ] = [ x2 - x1 ]
         // [ v1, -v2 ] [ b ] = [ y2 - y1 ]
         // Ax = b
@@ -97,17 +97,41 @@ impl Problem<usize, i64> for Day24 {
     }
 
     fn part2(self) -> Result<i64> {
-        let HailStone { pos: p1, vel: v1 } = self.hailstones[0].clone();
-        let HailStone { pos: p2, vel: v2 } = self.hailstones[1].clone();
-        let HailStone { pos: p3, vel: v3 } = self.hailstones[2].clone();
+        let HailStone { pos: p1, vel: v1 } = self.hailstones[0];
+        let HailStone { pos: p2, vel: v2 } = self.hailstones[1];
+        let HailStone { pos: p3, vel: v3 } = self.hailstones[2];
 
-        let Vec3 { x: x1, y: y1, z: z1 } = p1;
-        let Vec3 { x: x2, y: y2, z: z2 } = p2;
-        let Vec3 { x: x3, y: y3, z: z3 } = p3;
+        let Vec3 {
+            x: x1,
+            y: y1,
+            z: z1,
+        } = p1;
+        let Vec3 {
+            x: x2,
+            y: y2,
+            z: z2,
+        } = p2;
+        let Vec3 {
+            x: x3,
+            y: y3,
+            z: z3,
+        } = p3;
 
-        let Vec3 { x: u1, y: v1, z: w1 } = v1;
-        let Vec3 { x: u2, y: v2, z: w2 } = v2;
-        let Vec3 { x: u3, y: v3, z: w3 } = v3;
+        let Vec3 {
+            x: u1,
+            y: v1,
+            z: w1,
+        } = v1;
+        let Vec3 {
+            x: u2,
+            y: v2,
+            z: w2,
+        } = v2;
+        let Vec3 {
+            x: u3,
+            y: v3,
+            z: w3,
+        } = v3;
 
         let a: Array2<i64> = array![
             [0, -w1 + w3, v1 - v3, 0, z1 - z3, -y1 + y3],
