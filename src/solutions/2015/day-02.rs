@@ -2,7 +2,7 @@ use aoc_rust::*;
 
 use nom::{
     bytes::complete::tag,
-    character::complete::{u32 as number, line_ending},
+    character::complete::{line_ending, u32 as number},
     multi::separated_list1,
     Parser,
 };
@@ -40,7 +40,7 @@ impl Problem<u32, u32> for Day02 {
             .presents
             .iter()
             .map(|p| {
-                let mut sides = vec![p.l * p.w, p.w * p.h, p.h * p.l];
+                let mut sides = [p.l * p.w, p.w * p.h, p.h * p.l];
                 sides.sort();
                 3 * sides[0] + 2 * sides[1] + 2 * sides[2]
             })
@@ -52,7 +52,7 @@ impl Problem<u32, u32> for Day02 {
             .presents
             .iter()
             .map(|p| {
-                let mut sides = vec![p.l, p.w, p.h];
+                let mut sides = [p.l, p.w, p.h];
                 sides.sort();
                 2 * sides[0] + 2 * sides[1] + sides[0] * sides[1] * sides[2]
             })
@@ -71,7 +71,7 @@ mod tests {
         assert_task!(Day02, 1, "2x3x4", 58);
         assert_task!(Day02, 1, "1x1x10", 43);
     }
-    
+
     #[test]
     fn test_part2() {
         assert_task!(Day02, 2, "2x3x4", 34);
