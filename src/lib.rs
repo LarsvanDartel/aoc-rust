@@ -60,6 +60,7 @@ macro_rules! aoc_main {
             let task2 = aoc_main!(@finalize task2)?.1;
 
             println!("🎄 Running part 2...");
+
             let start = std::time::Instant::now();
             let result2 = task2.part2()?;
             let duration = start.elapsed();
