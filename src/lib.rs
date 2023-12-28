@@ -1,3 +1,4 @@
+pub mod common;
 mod error;
 
 use clap::Parser;
