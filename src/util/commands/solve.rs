@@ -9,6 +9,7 @@ pub fn solve(date: AocDate, _submit: Option<u8>) -> Result<()> {
         .spawn(move || {
             Command::new("cargo")
                 .arg("run")
+                .arg("--release")
                 .arg("--bin")
                 .arg(&date.bin_name())
                 .arg("--")
