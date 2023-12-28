@@ -47,8 +47,6 @@ pub fn download(date: &AocDate) -> Result<()> {
     let mut session_path = PathBuf::from(CARGO_ROOT);
     session_path.push(".session");
 
-    println!("{}", session_path.display());
-
     let output = Command::new("aoc")
         .arg("download")
         .arg("--input-only")
