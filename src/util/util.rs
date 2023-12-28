@@ -1,6 +1,8 @@
 mod commands;
 mod error;
 
+use std::path::PathBuf;
+
 use chrono::{Datelike, FixedOffset};
 use clap::Parser;
 pub(crate) use error::Result;
@@ -55,8 +57,8 @@ impl AocDate {
 
         Self { year, day }
     }
-    fn input_path(&self) -> std::path::PathBuf {
-        let mut path = std::path::PathBuf::from(CARGO_ROOT);
+    fn input_path(&self) -> PathBuf {
+        let mut path = PathBuf::from(CARGO_ROOT);
         path.push("input");
         self.push_path(&mut path);
         path.set_extension("txt");
@@ -67,8 +69,8 @@ impl AocDate {
         format!("{:0>4}-{:0>2}", self.year, self.day)
     }
 
-    fn bin_path(&self) -> std::path::PathBuf {
-        let mut path = std::path::PathBuf::from(CARGO_ROOT);
+    fn bin_path(&self) -> PathBuf {
+        let mut path = PathBuf::from(CARGO_ROOT);
         path.push("src");
         path.push("solutions");
         self.push_path(&mut path);
@@ -76,7 +78,7 @@ impl AocDate {
         path
     }
 
-    fn push_path(&self, path: &mut std::path::PathBuf) {
+    fn push_path(&self, path: &mut PathBuf) {
         path.push(self.year.to_string());
         if !path.exists() {
             std::fs::create_dir(path.clone()).unwrap();
