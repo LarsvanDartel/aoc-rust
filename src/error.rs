@@ -20,3 +20,15 @@ impl From<nom::error::Error<&str>> for Error {
         Error::Parse(nom::error::Error::new(e.input.to_string(), e.code))
     }
 }
+
+impl From<String> for Error {
+    fn from(e: String) -> Self {
+        Error::Message(e)
+    }
+}
+
+impl From<&str> for Error {
+    fn from(e: &str) -> Self {
+        Error::Message(e.to_string())
+    }
+}
