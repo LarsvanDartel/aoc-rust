@@ -170,6 +170,10 @@ path = 'src\solutions\2015\day-16.rs'
 name = "2015-17"
 path = 'src\solutions\2015\day-17.rs'
 
+[[bin]]
+name = "2015-18"
+path = 'src\solutions\2015\day-18.rs'
+
 [dependencies]
 chrono = "0.4.31"
 itertools = "0.12.0"
