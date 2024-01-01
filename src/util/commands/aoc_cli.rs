@@ -32,7 +32,7 @@ pub fn check_aoc_cli() -> Result<()> {
     Ok(())
 }
 
-pub fn download(date: &AocDate) -> Result<()> {
+pub fn download_input(date: &AocDate) -> Result<()> {
     let path = date.input_path()?;
     if path.exists() {
         println!(

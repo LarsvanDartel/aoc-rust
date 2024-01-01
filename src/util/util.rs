@@ -28,6 +28,9 @@ enum Args {
         #[clap(short, long)]
         day: Option<u8>,
 
+        #[clap(short, long)]
+        path: Option<PathBuf>,
+
         #[clap(long)]
         submit: Option<u8>,
     },
@@ -57,6 +60,7 @@ impl AocDate {
 
         Self { year, day }
     }
+
     fn input_path(&self) -> Result<PathBuf> {
         let mut path = PathBuf::from(CARGO_ROOT);
         path.push("input");
@@ -121,7 +125,12 @@ fn main() -> Result<()> {
             date.check_date()?;
             commands::scaffold(date)?;
         }
-        Args::Solve { year, day, submit } => {
+        Args::Solve {
+            year,
+            day,
+            path,
+            submit,
+        } => {
             if let Some(year) = year {
                 date.year = cleanup_year(year);
             }
@@ -129,7 +138,7 @@ fn main() -> Result<()> {
                 date.day = day;
             }
             date.check_date()?;
-            commands::solve(date, submit)?;
+            commands::solve(date, path, submit)?;
         }
     }
 

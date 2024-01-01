@@ -1,19 +1,33 @@
-use std::{fs::OpenOptions, io::Write, path::PathBuf};
+use std::fs::OpenOptions;
+use std::io::Write;
+use std::path::PathBuf;
+use std::process::Command;
 
 use toml::{map::Map, Value};
 
-use super::aoc_cli::{check_aoc_cli, download};
+use super::aoc_cli::{check_aoc_cli, download_input};
 use crate::{AocDate, Result, CARGO_ROOT};
 
 pub fn scaffold(date: AocDate) -> Result<()> {
     check_aoc_cli()?;
-    download(&date)?;
-    create_template(&date)?;
+    download_input(&date)?;
+    create_bin(&date)?;
     add_cargo_bin(&date)?;
+    open_editor(date.bin_path()?)?;
+    open_editor(date.input_path()?)?;
     Ok(())
 }
 
-fn create_template(date: &AocDate) -> Result<()> {
+fn open_editor(path: PathBuf) -> Result<()> {
+    let editor = std::env::var("EDITOR").unwrap_or_else(|_| "code.cmd".into());
+    let status = Command::new(editor).arg(path).status()?;
+    if !status.success() {
+        Err("Failed to open editor")?;
+    }
+    Ok(())
+}
+
+fn create_bin(date: &AocDate) -> Result<()> {
     let path = date.bin_path()?;
 
     if path.exists() {
