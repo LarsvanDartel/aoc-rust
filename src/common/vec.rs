@@ -7,6 +7,30 @@ impl<T> Vec2<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
+
+    pub fn map<U, F: Fn(T) -> U>(self, f: F) -> Vec2<U> {
+        Vec2 {
+            x: f(self.x),
+            y: f(self.y),
+        }
+    }
+
+    pub fn sum(self) -> T
+    where
+        T: std::ops::Add<Output = T>,
+    {
+        self.x + self.y
+    }
+}
+
+impl Vec2<bool> {
+    pub fn all(self) -> bool {
+        self.x && self.y
+    }
+
+    pub fn any(self) -> bool {
+        self.x || self.y
+    }
 }
 
 impl<T: Clone> Clone for Vec2<T> {
@@ -158,6 +182,31 @@ impl<T> Vec3<T> {
         T: Copy,
     {
         Vec2::new(self.x, self.y)
+    }
+
+    pub fn map<U, F: Fn(T) -> U>(self, f: F) -> Vec3<U> {
+        Vec3 {
+            x: f(self.x),
+            y: f(self.y),
+            z: f(self.z),
+        }
+    }
+
+    pub fn sum(self) -> T
+    where
+        T: std::ops::Add<Output = T>,
+    {
+        self.x + self.y + self.z
+    }
+}
+
+impl Vec3<bool> {
+    pub fn all(self) -> bool {
+        self.x && self.y && self.z
+    }
+
+    pub fn any(self) -> bool {
+        self.x || self.y || self.z
     }
 }
 
