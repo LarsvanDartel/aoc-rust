@@ -6,10 +6,10 @@ use nom::{branch::alt, bytes::complete::tag, Parser};
 /// North, East, South, West.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Direction {
-    North = 0,
-    East = 1,
-    South = 2,
-    West = 3,
+    North,
+    East,
+    South,
+    West,
 }
 
 impl Direction {
@@ -76,9 +76,9 @@ impl Direction {
 impl From<Direction> for Vec2<isize> {
     fn from(direction: Direction) -> Self {
         match direction {
-            Direction::North => Vec2::new(0, 1),
+            Direction::North => Vec2::new(0, -1),
             Direction::East => Vec2::new(1, 0),
-            Direction::South => Vec2::new(0, -1),
+            Direction::South => Vec2::new(0, 1),
             Direction::West => Vec2::new(-1, 0),
         }
     }
