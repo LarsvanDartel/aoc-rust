@@ -1,34 +1,35 @@
-pub type Result<T> = ::std::result::Result<T, Error>;
+pub type Result<T> = ::std::result::Result<T, AoCError>;
 
 #[derive(Debug)]
-pub enum Error {
+pub enum AoCError {
     Io(::std::io::Error),
     Parse(::nom::error::Error<String>),
 
+    NoSolution,
     Message(String),
     Unknown(String),
 }
 
-impl From<::std::io::Error> for Error {
+impl From<::std::io::Error> for AoCError {
     fn from(e: ::std::io::Error) -> Self {
-        Error::Io(e)
+        AoCError::Io(e)
     }
 }
 
-impl From<nom::error::Error<&str>> for Error {
+impl From<nom::error::Error<&str>> for AoCError {
     fn from(e: nom::error::Error<&str>) -> Self {
-        Error::Parse(nom::error::Error::new(e.input.to_string(), e.code))
+        AoCError::Parse(nom::error::Error::new(e.input.to_string(), e.code))
     }
 }
 
-impl From<String> for Error {
+impl From<String> for AoCError {
     fn from(e: String) -> Self {
-        Error::Message(e)
+        AoCError::Message(e)
     }
 }
 
-impl From<&str> for Error {
+impl From<&str> for AoCError {
     fn from(e: &str) -> Self {
-        Error::Message(e.to_string())
+        AoCError::Message(e.to_string())
     }
 }

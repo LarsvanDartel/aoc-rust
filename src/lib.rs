@@ -3,7 +3,7 @@ mod error;
 
 use clap::Parser;
 
-pub use error::Error;
+pub use error::AoCError;
 pub use error::Result;
 
 pub type ParseResult<'a, T> = nom::IResult<&'a str, T>;

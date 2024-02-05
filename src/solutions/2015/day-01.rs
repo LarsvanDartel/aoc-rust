@@ -41,7 +41,7 @@ impl Problem<i32, usize> for Day01 {
                 return Ok(i + 1);
             }
         }
-        Err(Error::Message(String::from("never reached basement")))
+        Err(AoCError::NoSolution)
     }
 }
 
