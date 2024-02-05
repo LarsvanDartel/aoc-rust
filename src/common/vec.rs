@@ -109,6 +109,15 @@ impl<T: std::cmp::PartialEq> std::cmp::PartialEq for Vec2<T> {
     }
 }
 
+impl<T: std::cmp::Eq> std::cmp::Eq for Vec2<T> {}
+
+impl<T: std::hash::Hash> std::hash::Hash for Vec2<T> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.x.hash(state);
+        self.y.hash(state);
+    }
+}
+
 impl<T> From<(T, T)> for Vec2<T> {
     fn from((x, y): (T, T)) -> Self {
         Self { x, y }
@@ -259,6 +268,16 @@ impl<T: std::ops::Neg<Output = T>> std::ops::Neg for Vec3<T> {
 impl<T: std::cmp::PartialEq> std::cmp::PartialEq for Vec3<T> {
     fn eq(&self, other: &Self) -> bool {
         self.x == other.x && self.y == other.y && self.z == other.z
+    }
+}
+
+impl<T: std::cmp::Eq> std::cmp::Eq for Vec3<T> {}
+
+impl<T: std::hash::Hash> std::hash::Hash for Vec3<T> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.x.hash(state);
+        self.y.hash(state);
+        self.z.hash(state);
     }
 }
 
