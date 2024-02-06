@@ -1,9 +1,5 @@
+use aoc_rust::common::MD5;
 use aoc_rust::*;
-
-extern crate crypto;
-
-use crypto::digest::Digest;
-use crypto::md5::Md5;
 
 struct Day04 {
     key: String,
@@ -11,16 +7,13 @@ struct Day04 {
 
 impl Day04 {
     fn starts_with_zeroes(&self, zeroes: usize) -> u32 {
-        let mut hasher = Md5::new();
-        let mut i = 0;
+        let mut index = 0;
         loop {
-            hasher.input_str(&format!("{}{}", self.key, i));
-            let hash = hasher.result_str();
-            hasher.reset();
-            if hash.starts_with(&"0".repeat(zeroes)) {
-                return i;
+            let hash = MD5::hash(&format!("{}{}", self.key, index));
+            if hash < (1 << (128 - zeroes * 4)) {
+                return index;
             }
-            i += 1;
+            index += 1;
         }
     }
 }
