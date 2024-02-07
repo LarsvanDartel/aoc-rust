@@ -1,4 +1,7 @@
-pub struct MD5;
+pub struct MD5 {
+    data: Vec<u8>,
+    hash: Option<u128>,
+}
 
 impl MD5 {
     const STATE_INIT: [u32; 4] = [0x6745_2301, 0xEFCD_AB89, 0x98BA_DCFE, 0x1032_5476];
@@ -26,8 +29,11 @@ impl MD5 {
         0x2ad7d2bb, 0xeb86d391,
     ];
 
-    fn str_to_bytes(s: &str) -> Vec<u8> {
-        s.bytes().collect()
+    pub fn init<B: AsRef<[u8]>>(key: B) -> Self {
+        Self {
+            data: key.as_ref().to_vec(),
+            hash: None,
+        }
     }
 
     fn pad(mut message: Vec<u8>) -> Vec<u8> {
@@ -84,19 +90,61 @@ impl MD5 {
         state
     }
 
-    pub fn hash(s: &str) -> u128 {
-        let bytes = Self::str_to_bytes(s);
-        let padded = Self::pad(bytes);
+    pub fn hash(&mut self) -> u128 {
+        if let Some(hash) = self.hash {
+            return hash;
+        }
+        let padded = Self::pad(self.data.clone());
         let result = Self::md5(&padded);
 
-        u128::from_be_bytes(
+        let hash = u128::from_be_bytes(
             result
                 .iter()
                 .flat_map(|x| x.to_le_bytes())
                 .collect::<Vec<u8>>()
                 .try_into()
                 .unwrap(),
-        )
+        );
+        self.hash = Some(hash);
+        hash
+    }
+
+    pub fn starts_with_zeroes(hash: u128, zeroes: usize) -> bool {
+        hash < (1 << (128 - zeroes * 4))
+    }
+
+    pub fn get_hex_digit(hash: u128, index: usize) -> u32 {
+        (hash >> (128 - index * 4)) as u32 & 0xf
+    }
+
+    pub fn get_hex_string(hash: u128) -> String {
+        format!("{:032x}", hash)
+    }
+
+    pub fn next_key(&mut self) {
+        let mut i = self.data.len() - 1;
+        while i > 0 && self.data[i] == b'9' {
+            self.data[i] = b'0';
+            i -= 1;
+        }
+        if self.data[i] > b'9' || self.data[i] < b'0' {
+            self.data.insert(i + 1, b'1');
+        } else {
+            self.data[i] += 1;
+        }
+        self.hash = None;
+    }
+
+    pub fn next_key_zeroes(&mut self, zeroes: usize) -> usize {
+        let mut steps = 0;
+        loop {
+            self.next_key();
+            steps += 1;
+            let hash = self.hash();
+            if Self::starts_with_zeroes(hash, zeroes) {
+                return steps;
+            }
+        }
     }
 }
 #[cfg(test)]
@@ -105,16 +153,19 @@ mod tests {
 
     #[test]
     fn test_hash_empty() {
-        assert_eq!(MD5::hash(""), 0xd41d8cd98f00b204e9800998ecf8427e);
+        let mut md5 = MD5::init("");
+        assert_eq!(md5.hash(), 0xd41d8cd98f00b204e9800998ecf8427e);
     }
 
     #[test]
     fn test_hash_abc() {
-        assert_eq!(MD5::hash("abc"), 0x900150983cd24fb0d6963f7d28e17f72);
+        let mut md5 = MD5::init("abc");
+        assert_eq!(md5.hash(), 0x900150983cd24fb0d6963f7d28e17f72);
     }
 
     #[test]
     fn test_hash_123() {
-        assert_eq!(MD5::hash("123"), 0x202cb962ac59075b964b07152d234b70);
+        let mut md5 = MD5::init("123");
+        assert_eq!(md5.hash(), 0x202cb962ac59075b964b07152d234b70);
     }
 }
