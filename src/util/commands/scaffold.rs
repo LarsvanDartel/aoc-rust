@@ -76,7 +76,8 @@ fn add_cargo_bin(date: &AocDate) -> Result<()> {
         .bin_path()?
         .strip_prefix(CARGO_ROOT)?
         .display()
-        .to_string();
+        .to_string()
+        .replace('\\', "/");
 
     let bins = cargo_toml
         .get_mut("bin")
