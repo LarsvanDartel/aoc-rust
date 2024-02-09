@@ -1,5 +1,5 @@
-use crate::ParseResult;
 use crate::common::Vec2;
+use crate::ParseResult;
 use nom::{branch::alt, bytes::complete::tag, Parser};
 
 /// A cardinal direction.

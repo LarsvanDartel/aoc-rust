@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
+use aoc_rust::common::{Direction, Vec2};
 use aoc_rust::*;
-use aoc_rust::common::{Vec2, Direction};
 
 use nom::{
     branch::alt, bytes::complete::tag, character::complete::u32 as parse_u32,

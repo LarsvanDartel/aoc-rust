@@ -59,7 +59,7 @@ impl Problem<String, String> for Day02 {
             [' ', 'A', 'B', 'C', ' '],
             [' ', ' ', 'D', ' ', ' '],
         ];
-        
+
         let mut pos = Vec2::new(-2, 0);
         let mut code = String::new();
         for instruction in self.instructions {

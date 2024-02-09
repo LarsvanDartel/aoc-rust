@@ -13,11 +13,14 @@ pub fn scaffold(date: AocDate) -> Result<()> {
     download_input(&date)?;
     create_bin(&date)?;
     add_cargo_bin(&date)?;
+    #[cfg(windows)]
     open_editor(date.bin_path()?)?;
+    #[cfg(windows)]
     open_editor(date.input_path()?)?;
     Ok(())
 }
 
+#[allow(dead_code)]
 fn open_editor(path: PathBuf) -> Result<()> {
     let editor = std::env::var("EDITOR").unwrap_or_else(|_| "code.cmd".into());
     let status = Command::new(editor).arg(path).status()?;
