@@ -4,239 +4,243 @@ path = "src/util/util.rs"
 
 [[bin]]
 name = "2023-01"
-path = 'src/solutions/2023/day-01.rs'
+path = "src/solutions/2023/day-01.rs"
 
 [[bin]]
 name = "2023-02"
-path = 'src/solutions/2023/day-02.rs'
+path = "src/solutions/2023/day-02.rs"
 
 [[bin]]
 name = "2023-03"
-path = 'src/solutions/2023/day-03.rs'
+path = "src/solutions/2023/day-03.rs"
 
 [[bin]]
 name = "2023-04"
-path = 'src/solutions/2023/day-04.rs'
+path = "src/solutions/2023/day-04.rs"
 
 [[bin]]
 name = "2023-05"
-path = 'src/solutions/2023/day-05.rs'
+path = "src/solutions/2023/day-05.rs"
 
 [[bin]]
 name = "2023-06"
-path = 'src/solutions/2023/day-06.rs'
+path = "src/solutions/2023/day-06.rs"
 
 [[bin]]
 name = "2023-07"
-path = 'src/solutions/2023/day-07.rs'
+path = "src/solutions/2023/day-07.rs"
 
 [[bin]]
 name = "2023-08"
-path = 'src/solutions/2023/day-08.rs'
+path = "src/solutions/2023/day-08.rs"
 
 [[bin]]
 name = "2023-09"
-path = 'src/solutions/2023/day-09.rs'
+path = "src/solutions/2023/day-09.rs"
 
 [[bin]]
 name = "2023-10"
-path = 'src/solutions/2023/day-10.rs'
+path = "src/solutions/2023/day-10.rs"
 
 [[bin]]
 name = "2023-11"
-path = 'src/solutions/2023/day-11.rs'
+path = "src/solutions/2023/day-11.rs"
 
 [[bin]]
 name = "2023-12"
-path = 'src/solutions/2023/day-12.rs'
+path = "src/solutions/2023/day-12.rs"
 
 [[bin]]
 name = "2023-13"
-path = 'src/solutions/2023/day-13.rs'
+path = "src/solutions/2023/day-13.rs"
 
 [[bin]]
 name = "2023-14"
-path = 'src/solutions/2023/day-14.rs'
+path = "src/solutions/2023/day-14.rs"
 
 [[bin]]
 name = "2023-15"
-path = 'src/solutions/2023/day-15.rs'
+path = "src/solutions/2023/day-15.rs"
 
 [[bin]]
 name = "2023-16"
-path = 'src/solutions/2023/day-16.rs'
+path = "src/solutions/2023/day-16.rs"
 
 [[bin]]
 name = "2023-17"
-path = 'src/solutions/2023/day-17.rs'
+path = "src/solutions/2023/day-17.rs"
 
 [[bin]]
 name = "2023-18"
-path = 'src/solutions/2023/day-18.rs'
+path = "src/solutions/2023/day-18.rs"
 
 [[bin]]
 name = "2023-19"
-path = 'src/solutions/2023/day-19.rs'
+path = "src/solutions/2023/day-19.rs"
 
 [[bin]]
 name = "2023-20"
-path = 'src/solutions/2023/day-20.rs'
+path = "src/solutions/2023/day-20.rs"
 
 [[bin]]
 name = "2023-21"
-path = 'src/solutions/2023/day-21.rs'
+path = "src/solutions/2023/day-21.rs"
 
 [[bin]]
 name = "2023-22"
-path = 'src/solutions/2023/day-22.rs'
+path = "src/solutions/2023/day-22.rs"
 
 [[bin]]
 name = "2023-23"
-path = 'src/solutions/2023/day-23.rs'
+path = "src/solutions/2023/day-23.rs"
 
 [[bin]]
 name = "2023-24"
-path = 'src/solutions/2023/day-24.rs'
+path = "src/solutions/2023/day-24.rs"
 
 [[bin]]
 name = "2023-25"
-path = 'src/solutions/2023/day-25.rs'
+path = "src/solutions/2023/day-25.rs"
 
 [[bin]]
 name = "2015-01"
-path = 'src/solutions/2015/day-01.rs'
+path = "src/solutions/2015/day-01.rs"
 
 [[bin]]
 name = "2015-02"
-path = 'src/solutions/2015/day-02.rs'
+path = "src/solutions/2015/day-02.rs"
 
 [[bin]]
 name = "2015-03"
-path = 'src/solutions/2015/day-03.rs'
+path = "src/solutions/2015/day-03.rs"
 
 [[bin]]
 name = "2015-04"
-path = 'src/solutions/2015/day-04.rs'
+path = "src/solutions/2015/day-04.rs"
 
 [[bin]]
 name = "2015-05"
-path = 'src/solutions/2015/day-05.rs'
+path = "src/solutions/2015/day-05.rs"
 
 [[bin]]
 name = "2015-06"
-path = 'src/solutions/2015/day-06.rs'
+path = "src/solutions/2015/day-06.rs"
 
 [[bin]]
 name = "2015-07"
-path = 'src/solutions/2015/day-07.rs'
+path = "src/solutions/2015/day-07.rs"
 
 [[bin]]
 name = "2015-08"
-path = 'src/solutions/2015/day-08.rs'
+path = "src/solutions/2015/day-08.rs"
 
 [[bin]]
 name = "2015-09"
-path = 'src/solutions/2015/day-09.rs'
+path = "src/solutions/2015/day-09.rs"
 
 [[bin]]
 name = "2015-10"
-path = 'src/solutions/2015/day-10.rs'
+path = "src/solutions/2015/day-10.rs"
 
 [[bin]]
 name = "2015-11"
-path = 'src/solutions/2015/day-11.rs'
+path = "src/solutions/2015/day-11.rs"
 
 [[bin]]
 name = "2015-12"
-path = 'src/solutions/2015/day-12.rs'
+path = "src/solutions/2015/day-12.rs"
 
 [[bin]]
 name = "2015-13"
-path = 'src/solutions/2015/day-13.rs'
+path = "src/solutions/2015/day-13.rs"
 
 [[bin]]
 name = "2015-14"
-path = 'src/solutions/2015/day-14.rs'
+path = "src/solutions/2015/day-14.rs"
 
 [[bin]]
 name = "2015-15"
-path = 'src/solutions/2015/day-15.rs'
+path = "src/solutions/2015/day-15.rs"
 
 [[bin]]
 name = "2015-16"
-path = 'src/solutions/2015/day-16.rs'
+path = "src/solutions/2015/day-16.rs"
 
 [[bin]]
 name = "2015-17"
-path = 'src/solutions/2015/day-17.rs'
+path = "src/solutions/2015/day-17.rs"
 
 [[bin]]
 name = "2015-18"
-path = 'src/solutions/2015/day-18.rs'
+path = "src/solutions/2015/day-18.rs"
 
 [[bin]]
 name = "2015-19"
-path = 'src/solutions/2015/day-19.rs'
+path = "src/solutions/2015/day-19.rs"
 
 [[bin]]
 name = "2015-20"
-path = 'src/solutions/2015/day-20.rs'
+path = "src/solutions/2015/day-20.rs"
 
 [[bin]]
 name = "2015-21"
-path = 'src/solutions/2015/day-21.rs'
+path = "src/solutions/2015/day-21.rs"
 
 [[bin]]
 name = "2015-22"
-path = 'src/solutions/2015/day-22.rs'
+path = "src/solutions/2015/day-22.rs"
 
 [[bin]]
 name = "2015-23"
-path = 'src/solutions/2015/day-23.rs'
+path = "src/solutions/2015/day-23.rs"
 
 [[bin]]
 name = "2015-24"
-path = 'src/solutions/2015/day-24.rs'
+path = "src/solutions/2015/day-24.rs"
 
 [[bin]]
 name = "2015-25"
-path = 'src/solutions/2015/day-25.rs'
+path = "src/solutions/2015/day-25.rs"
 
 [[bin]]
 name = "2016-01"
-path = 'src/solutions/2016/day-01.rs'
+path = "src/solutions/2016/day-01.rs"
 
 [[bin]]
 name = "2016-02"
-path = 'src/solutions/2016/day-02.rs'
+path = "src/solutions/2016/day-02.rs"
 
 [[bin]]
 name = "2016-03"
-path = 'src/solutions/2016/day-03.rs'
+path = "src/solutions/2016/day-03.rs"
 
 [[bin]]
 name = "2016-04"
-path = 'src/solutions/2016/day-04.rs'
+path = "src/solutions/2016/day-04.rs"
 
 [[bin]]
 name = "2016-05"
-path = 'src/solutions/2016/day-05.rs'
+path = "src/solutions/2016/day-05.rs"
 
 [[bin]]
 name = "2016-06"
-path = 'src/solutions/2016/day-06.rs'
+path = "src/solutions/2016/day-06.rs"
 
 [[bin]]
 name = "2016-07"
-path = 'src/solutions/2016/day-07.rs'
+path = "src/solutions/2016/day-07.rs"
 
 [[bin]]
 name = "2016-08"
-path = 'src/solutions/2016/day-08.rs'
+path = "src/solutions/2016/day-08.rs"
 
 [[bin]]
 name = "2016-09"
-path = 'src/solutions/2016/day-09.rs'
+path = "src/solutions/2016/day-09.rs"
+
+[[bin]]
+name = "2016-10"
+path = "src/solutions/2016/day-10.rs"
 
 [dependencies]
 chrono = "0.4.31"
