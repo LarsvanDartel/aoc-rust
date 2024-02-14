@@ -33,6 +33,13 @@ impl Item {
         )
         .parse(input)
     }
+
+    fn custom_hash(&self) -> u16 {
+        match self {
+            Self::MicroChip(element) => *element as u16,
+            Self::Generator(element) => (*element as u16) << (Element::N_ELEMENTS as u16),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -47,6 +54,8 @@ enum Element {
 }
 
 impl Element {
+    const N_ELEMENTS: usize = 7;
+
     fn parse(input: &str) -> ParseResult<Self> {
         alt((
             tag("thulium").map(|_| Self::Thulium),
@@ -123,24 +132,15 @@ impl Day11 {
         true
     }
 
-    fn state_hash(&self) -> u32 {
-        // 2 bits for elevator position
-        // 3 bits per floor for microchip count (we only have 7 elements)
-        // 3 bits per floor for generator count
-        // total = 2 + (3 + 3) * 4 = 28
+    fn state_hash(&self) -> u64 {
         let mut hash = 0;
         for (i, floor) in self.floors.iter().enumerate() {
-            let mut g_cnt = 0;
-            let mut m_cnt = 0;
             for item in floor {
-                match item {
-                    Item::MicroChip(_) => m_cnt += 1,
-                    Item::Generator(_) => g_cnt += 1,
-                }
+                hash |= (item.custom_hash() as u64) << (i as u64 * 2 * Element::N_ELEMENTS as u64);
             }
-            hash |= ((g_cnt << 3) | m_cnt) << (i * 6);
         }
-        hash | ((self.elevator as u32) << (4 * 6))
+        hash |= (self.elevator as u64) << (4 * 2 * Element::N_ELEMENTS as u64);
+        hash
     }
 
     fn solve(&self) -> usize {
