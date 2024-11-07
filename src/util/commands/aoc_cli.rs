@@ -5,6 +5,7 @@ use std::{
 
 use crate::{AocDate, Result, CARGO_ROOT};
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum AocClientError {
     CommandNotFound,

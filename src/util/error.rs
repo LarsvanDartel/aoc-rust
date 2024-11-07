@@ -2,6 +2,7 @@ use crate::{commands::aoc_cli::AocClientError, AocDate};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub(crate) enum Error {
     AocClient(AocClientError),

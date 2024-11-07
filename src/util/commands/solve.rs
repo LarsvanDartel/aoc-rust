@@ -12,7 +12,7 @@ pub fn solve(date: AocDate, path: Option<PathBuf>, _submit: Option<u8>) -> Resul
                 .arg("run")
                 .arg("--release")
                 .arg("--bin")
-                .arg(&date.bin_name())
+                .arg(date.bin_name())
                 .arg("--")
                 .arg(&input_path)
                 .spawn()
