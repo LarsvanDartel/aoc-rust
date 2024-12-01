@@ -12,6 +12,6 @@ pub use nom::{
     bytes::complete::tag,
     character::complete::{char, digit1, i32 as parse_i32, line_ending, space1, u32 as parse_u32},
     multi::{many1, separated_list1},
-    sequence::{delimited, pair, preceded, terminated, tuple},
+    sequence::{delimited, pair, preceded, separated_pair, terminated, tuple},
     Parser as _,
 };
