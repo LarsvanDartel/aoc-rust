@@ -1,3 +1,4 @@
 [alias]
 scaffold = "run --release --bin util scaffold"
 solve = "run --release --bin util solve"
+example = "run --release --bin util test"

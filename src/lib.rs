@@ -7,14 +7,6 @@ pub use error::AoCError;
 pub use error::Result;
 
 pub type ParseResult<'a, T> = nom::IResult<&'a str, T>;
-pub use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{char, digit1, i32 as parse_i32, line_ending, space1, u32 as parse_u32},
-    multi::{many1, separated_list1},
-    sequence::{delimited, preceded, terminated, tuple},
-    Parser as _,
-};
 
 #[derive(Parser, Debug)]
 pub struct Args {
@@ -91,9 +83,11 @@ macro_rules! aoc_main {
 #[macro_export]
 macro_rules! assert_task {
     ($problem:ty, $task:expr, $input:expr, $expected:expr) => {{
+        let input = $input.trim();
+
         let task = match $task {
-            1 => <$problem>::parse_1($input),
-            2 => <$problem>::parse_2($input),
+            1 => <$problem>::parse_1(input),
+            2 => <$problem>::parse_2(input),
             _ => panic!("Invalid task number"),
         };
 

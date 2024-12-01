@@ -42,20 +42,20 @@ impl Problem<u64, String> for Day25 {
 
 aoc_main!(Day25);
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    const EXAMPLE: &str = r#"
-    "#;
-
-    #[test]
-    fn test_part1() {
-        assert_task!(Day25, 1, EXAMPLE, ());
-    }
-
-    #[test]
-    fn test_part2() {
-        assert_task!(Day25, 2, EXAMPLE, ());
-    }
-}
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//
+//     const EXAMPLE: &str = r#"
+//     "#;
+//
+//     #[test]
+//     fn test_part1() {
+//         assert_task!(Day25, 1, EXAMPLE, ());
+//     }
+//
+//     #[test]
+//     fn test_part2() {
+//         assert_task!(Day25, 2, EXAMPLE, ());
+//     }
+// }

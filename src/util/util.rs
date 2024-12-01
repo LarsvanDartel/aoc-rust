@@ -34,6 +34,14 @@ enum Args {
         #[clap(long)]
         submit: Option<u8>,
     },
+
+    #[clap(name = "test")]
+    Test {
+        #[clap(short, long)]
+        year: Option<u16>,
+        #[clap(short, long)]
+        day: Option<u8>,
+    },
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -139,6 +147,16 @@ fn main() -> Result<()> {
             }
             date.check_date()?;
             commands::solve(date, path, submit)?;
+        }
+        Args::Test { year, day } => {
+            if let Some(year) = year {
+                date.year = cleanup_year(year);
+            }
+            if let Some(day) = day {
+                date.day = day;
+            }
+            date.check_date()?;
+            commands::test(date)?;
         }
     }
 

@@ -91,20 +91,20 @@ impl Problem<usize, usize> for Day09 {
 
 aoc_main!(Day09);
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    const EXAMPLE: &str = r#"
-    "#;
-
-    #[test]
-    fn test_part1() {
-        assert_task!(Day09, 1, EXAMPLE, ());
-    }
-
-    #[test]
-    fn test_part2() {
-        assert_task!(Day09, 2, EXAMPLE, ());
-    }
-}
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//
+//     const EXAMPLE: &str = r#"
+//     "#;
+//
+//     #[test]
+//     fn test_part1() {
+//         assert_task!(Day09, 1, EXAMPLE, ());
+//     }
+//
+//     #[test]
+//     fn test_part2() {
+//         assert_task!(Day09, 2, EXAMPLE, ());
+//     }
+// }

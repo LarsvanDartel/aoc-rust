@@ -1,4 +1,5 @@
 use aoc_rust::*;
+use common::*;
 
 struct Day{{day}} {}
 
@@ -23,7 +24,8 @@ mod tests {
     use super::*;
 
     const EXAMPLE: &str = r#"
-    "#;
+
+"#;
 
     #[test]
     fn test_part1() {

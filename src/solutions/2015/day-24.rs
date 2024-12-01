@@ -86,16 +86,25 @@ aoc_main!(Day24);
 mod tests {
     use super::*;
 
-    const EXAMPLE: &str = r#"
+    const EXAMPLE: &str = r#"1
+2
+3
+4
+5
+7
+8
+9
+10
+11
     "#;
 
     #[test]
     fn test_part1() {
-        assert_task!(Day24, 1, EXAMPLE, ());
+        assert_task!(Day24, 1, EXAMPLE, 99);
     }
 
     #[test]
     fn test_part2() {
-        assert_task!(Day24, 2, EXAMPLE, ());
+        assert_task!(Day24, 2, EXAMPLE, 44);
     }
 }

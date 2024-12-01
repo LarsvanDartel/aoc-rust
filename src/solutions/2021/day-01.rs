@@ -1,4 +1,5 @@
 use aoc_rust::*;
+use common::*;
 use itertools::Itertools;
 
 struct Day01 {
