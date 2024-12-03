@@ -44,10 +44,14 @@ macro_rules! aoc_main {
         fn main() -> Result<()> {
             let input = aoc_main!(@input);
 
+            println!("🎄 Running part 1...");
+
+            let start = std::time::Instant::now();
             let task1 = <$problem>::parse_1(&input);
             let task1 = aoc_main!(@finalize task1)?.1;
+            let duration = start.elapsed();
 
-            println!("🎄 Running part 1...");
+            println!("🎄 Task 1 parsed in: {:?}", duration);
 
             let start = std::time::Instant::now();
             let result1 = task1.part1()?;
@@ -56,11 +60,14 @@ macro_rules! aoc_main {
             println!("🎄 Task 1: {:?}", result1);
             println!("🎄 Task 1 took: {:?}", duration);
             println!();
+            println!("🎄 Running part 2...");
 
+            let start = std::time::Instant::now();
             let task2 = <$problem>::parse_2(&input);
             let task2 = aoc_main!(@finalize task2)?.1;
+            let duration = start.elapsed();
 
-            println!("🎄 Running part 2...");
+            println!("🎄 Task 2 parsed in: {:?}", duration);
 
             let start = std::time::Instant::now();
             let result2 = task2.part2()?;
