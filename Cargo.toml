@@ -262,6 +262,10 @@ path = "src/solutions/2024/day-01.rs"
 name = "2024-02"
 path = "src/solutions/2024/day-02.rs"
 
+[[bin]]
+name = "2024-03"
+path = "src/solutions/2024/day-03.rs"
+
 [dependencies]
 chrono = "0.4.31"
 itertools = "0.12.0"
