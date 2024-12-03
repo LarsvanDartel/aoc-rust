@@ -31,13 +31,9 @@ struct Day03 {
 impl Problem<i32, i32> for Day03 {
     fn parse(input: &str) -> ParseResult<Self> {
         // instructions separated by any sequence of characters
-        many1(
-            many_till(anychar, Instruction::parse)
-                .map(|(_, i)| i)
-                .map(|i| i),
-        )
-        .map(|instructions| Self { instructions })
-        .parse(input)
+        many1(many_till(anychar, Instruction::parse).map(|(_, i)| i))
+            .map(|instructions| Self { instructions })
+            .parse(input)
     }
 
     fn part1(self) -> Result<i32> {
