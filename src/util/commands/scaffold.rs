@@ -13,17 +13,18 @@ pub fn scaffold(date: AocDate) -> Result<()> {
     download_input(&date)?;
     create_bin(&date)?;
     add_cargo_bin(&date)?;
-    #[cfg(windows)]
-    open_editor(date.bin_path()?)?;
-    #[cfg(windows)]
-    open_editor(date.input_path()?)?;
+    open_editor(vec![date.bin_path()?, date.input_path()?])?;
     Ok(())
 }
 
 #[allow(dead_code)]
-fn open_editor(path: PathBuf) -> Result<()> {
+fn open_editor(paths: Vec<PathBuf>) -> Result<()> {
     let editor = std::env::var("EDITOR").unwrap_or_else(|_| "code.cmd".into());
-    let status = Command::new(editor).arg(path).status()?;
+    let mut cmd = Command::new(editor);
+    for path in paths {
+        cmd.arg(path);
+    }
+    let status = cmd.status()?;
     if !status.success() {
         Err("Failed to open editor")?;
     }
