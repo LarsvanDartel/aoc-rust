@@ -10,9 +10,42 @@ pub enum Direction {
     East,
     South,
     West,
+    NorthEast,
+    NorthWest,
+    SouthEast,
+    SouthWest,
 }
 
 impl Direction {
+    /// All cardinal directions.
+    pub fn cardinal() -> impl Iterator<Item = Self> {
+        [
+            Direction::North,
+            Direction::East,
+            Direction::South,
+            Direction::West,
+        ]
+        .iter()
+        .copied()
+    }
+
+    /// All ordinal directions.
+    pub fn ordinal() -> impl Iterator<Item = Self> {
+        [
+            Direction::NorthEast,
+            Direction::SouthEast,
+            Direction::SouthWest,
+            Direction::NorthWest,
+        ]
+        .iter()
+        .copied()
+    }
+
+    /// All directions.
+    pub fn all() -> impl Iterator<Item = Self> {
+        Self::cardinal().chain(Self::ordinal())
+    }
+
     /// Parse a cardinal direction from the input.
     /// Cardinal directions are represented by a single letter: N, E, S, W.
     /// N is North, E is East, S is South, W is West.
@@ -47,6 +80,10 @@ impl Direction {
             Direction::East => Direction::South,
             Direction::South => Direction::West,
             Direction::West => Direction::North,
+            Direction::NorthEast => Direction::SouthEast,
+            Direction::SouthEast => Direction::SouthWest,
+            Direction::SouthWest => Direction::NorthWest,
+            Direction::NorthWest => Direction::NorthEast,
         }
     }
 
@@ -58,6 +95,10 @@ impl Direction {
             Direction::West => Direction::South,
             Direction::South => Direction::East,
             Direction::East => Direction::North,
+            Direction::NorthEast => Direction::NorthWest,
+            Direction::SouthEast => Direction::NorthEast,
+            Direction::SouthWest => Direction::SouthEast,
+            Direction::NorthWest => Direction::SouthWest,
         }
     }
 
@@ -69,6 +110,10 @@ impl Direction {
             Direction::South => Direction::North,
             Direction::East => Direction::West,
             Direction::West => Direction::East,
+            Direction::NorthEast => Direction::SouthWest,
+            Direction::SouthEast => Direction::NorthWest,
+            Direction::SouthWest => Direction::NorthEast,
+            Direction::NorthWest => Direction::SouthEast,
         }
     }
 }
@@ -80,6 +125,10 @@ impl From<Direction> for Vec2<isize> {
             Direction::East => Vec2::new(1, 0),
             Direction::South => Vec2::new(0, 1),
             Direction::West => Vec2::new(-1, 0),
+            Direction::NorthEast => Vec2::new(1, -1),
+            Direction::NorthWest => Vec2::new(-1, -1),
+            Direction::SouthEast => Vec2::new(1, 1),
+            Direction::SouthWest => Vec2::new(-1, 1),
         }
     }
 }
