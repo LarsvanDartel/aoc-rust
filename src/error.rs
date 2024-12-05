@@ -4,6 +4,7 @@ pub type Result<T> = ::std::result::Result<T, AoCError>;
 pub enum AoCError {
     Io(::std::io::Error),
     Parse(::nom::error::Error<String>),
+    Graph(::petgraph::algo::Cycle<::petgraph::graph::NodeIndex>),
 
     NoSolution,
     Message(String),
@@ -19,6 +20,12 @@ impl From<::std::io::Error> for AoCError {
 impl From<nom::error::Error<&str>> for AoCError {
     fn from(e: nom::error::Error<&str>) -> Self {
         AoCError::Parse(nom::error::Error::new(e.input.to_string(), e.code))
+    }
+}
+
+impl From<::petgraph::algo::Cycle<::petgraph::graph::NodeIndex>> for AoCError {
+    fn from(e: ::petgraph::algo::Cycle<::petgraph::graph::NodeIndex>) -> Self {
+        AoCError::Graph(e)
     }
 }
 

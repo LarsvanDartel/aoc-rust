@@ -291,7 +291,7 @@ version = "4.5.22"
 
 [dependencies.ndarray-linalg]
 features = ["intel-mkl-static"]
-version = "0.15.0"
+version = "0.16.0"
 
 [package]
 edition = "2021"
