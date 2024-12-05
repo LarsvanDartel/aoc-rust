@@ -278,7 +278,7 @@ path = "src/solutions/2024/day-05.rs"
 chrono = "0.4.38"
 hashbrown = "0.15.2"
 itertools = "0.13.0"
-ndarray = "0.16.1"
+ndarray = "0.15.0"
 nom = "7.1.3"
 num-integer = "0.1.46"
 petgraph = "0.6.5"
@@ -291,7 +291,7 @@ version = "4.5.22"
 
 [dependencies.ndarray-linalg]
 features = ["intel-mkl-static"]
-version = "0.16.0"
+version = "0.15.0"
 
 [package]
 edition = "2021"
