@@ -167,6 +167,17 @@ impl<T> IndexMut<Coordinate> for Grid<T> {
     }
 }
 
+impl<T: Clone> Clone for Grid<T> {
+    fn clone(&self) -> Self {
+        Self {
+            width: self.width,
+            height: self.height,
+            data: self.data.clone(),
+            display: None,
+        }
+    }
+}
+
 impl<T: Display> Display for Grid<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for y in 0..self.height {
