@@ -44,6 +44,15 @@ impl<T: Clone> Clone for Vec2<T> {
 
 impl<T: Copy> Copy for Vec2<T> {}
 
+impl<T: Default> Default for Vec2<T> {
+    fn default() -> Self {
+        Self {
+            x: Default::default(),
+            y: Default::default(),
+        }
+    }
+}
+
 impl<T: std::ops::Add<Output = T>> std::ops::Add for Vec2<T> {
     type Output = Self;
 
