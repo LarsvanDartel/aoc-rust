@@ -131,6 +131,26 @@ impl<T> Grid<T> {
             self[c] = value;
         }
     }
+
+    pub fn get_row(&self, row: usize) -> Option<&[T]> {
+        if row < self.height {
+            Some(&self.data[row * self.width..(row + 1) * self.width])
+        } else {
+            None
+        }
+    }
+
+    pub fn get_column(&self, column: usize) -> Option<Vec<&T>> {
+        if column < self.width {
+            Some(
+                (0..self.height)
+                    .map(|y| &self.data[y * self.width + column])
+                    .collect(),
+            )
+        } else {
+            None
+        }
+    }
 }
 
 impl<T> Index<Coordinate> for Grid<T> {
