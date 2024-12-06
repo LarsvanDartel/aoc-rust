@@ -12,7 +12,7 @@ pub use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::{
-        char, digit1, i32 as parse_i32, line_ending, one_of, space1, u32 as parse_u32,
+        char, digit1, i32 as parse_i32, line_ending, one_of, space0, space1, u32 as parse_u32,
     },
     multi::{many1, separated_list1},
     sequence::{delimited, pair, preceded, separated_pair, terminated, tuple},

@@ -279,6 +279,9 @@ name = "2024-06"
 path = "src/solutions/2024/day-06.rs"
 
 [[bin]]
+name = "2021-04"
+path = "src/solutions/2021/day-04.rs"
+
 [[bin]]
 name = "2021-03"
 path = "src/solutions/2021/day-03.rs"
