@@ -98,6 +98,11 @@ impl<T> Grid<T> {
         self.display = Some(Box::new(f));
     }
 
+    pub fn contains<C: Into<Vec2<isize>>>(&self, c: C) -> bool {
+        let c: Vec2<isize> = c.into();
+        c.x >= 0 && c.y >= 0 && c.x < self.width as isize && c.y < self.height as isize
+    }
+
     fn coord<C: Into<Vec2<isize>>>(&self, c: C) -> Option<Coordinate> {
         let c: Vec2<isize> = c.into();
         if c.x < 0 || c.y < 0 || c.x >= self.width as isize || c.y >= self.height as isize {
@@ -112,16 +117,16 @@ impl<T> Grid<T> {
             .flat_map(move |y| (0..self.width).map(move |x| Vec2::new(x as isize, y as isize)))
     }
 
-    pub fn get(&self, pos: Vec2<isize>) -> Option<&T> {
+    pub fn get<C: Into<Vec2<isize>>>(&self, pos: C) -> Option<&T> {
         Some(&self[self.coord(pos)?])
     }
 
-    pub fn get_mut(&mut self, pos: Vec2<isize>) -> Option<&mut T> {
+    pub fn get_mut<C: Into<Vec2<isize>>>(&mut self, pos: C) -> Option<&mut T> {
         let c = self.coord(pos)?;
         Some(&mut self[c])
     }
 
-    pub fn set(&mut self, pos: Vec2<isize>, value: T) {
+    pub fn set<C: Into<Vec2<isize>>>(&mut self, pos: C, value: T) {
         if let Some(c) = self.coord(pos) {
             self[c] = value;
         }
