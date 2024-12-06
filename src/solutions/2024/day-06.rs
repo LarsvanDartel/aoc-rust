@@ -1,80 +1,136 @@
 use aoc_rust::*;
 use common::*;
-use hashbrown::HashSet;
+use hashbrown::{HashMap, HashSet};
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum Cell {
+    Empty,
+    Wall,
+    Start,
+    Passed,
+}
+
+impl Cell {
+    fn parse(input: &str) -> ParseResult<Self> {
+        one_of(".#^")
+            .map(|c| match c {
+                '.' => Self::Empty,
+                '#' => Self::Wall,
+                '^' => Self::Start,
+                _ => unreachable!(),
+            })
+            .parse(input)
+    }
+}
 
 struct Day06 {
-    grid: Grid<char>,
+    start: Vec2<isize>,
+    grid: Grid<Cell>,
+    jump_table: HashMap<(Vec2<isize>, Direction), Vec2<isize>>,
+}
+
+impl Day06 {
+    fn loops(&self, mut pos: Vec2<isize>, mut dir: Direction, stone: Vec2<isize>) -> bool {
+        let mut visited = HashSet::new();
+        while self.grid.get(pos).is_some() {
+            if visited.contains(&(pos, dir)) {
+                return true;
+            }
+            visited.insert((pos, dir));
+            if pos.x == stone.x || pos.y == stone.y {
+                while let Some(&Cell::Wall) = self.grid.get(pos + dir) {
+                    dir = dir.right();
+                }
+                pos += dir;
+            } else {
+                if let Some(&jump) = self.jump_table.get(&(pos, dir)) {
+                    pos = jump;
+                } else {
+                    return false;
+                }
+                dir = dir.right();
+            };
+        }
+
+        false
+    }
 }
 
 impl Problem<usize, usize> for Day06 {
     fn parse(input: &str) -> ParseResult<Self> {
-        Grid::parse(one_of(".#^"))
-            .map(|grid| Self { grid })
+        Grid::parse(Cell::parse)
+            .map(|grid| {
+                let mut jump_table = HashMap::new();
+                let mut start = Default::default();
+                for pos in grid.coordinates() {
+                    if grid.get(pos) == Some(&Cell::Start) {
+                        start = pos;
+                    }
+                    for dir in Direction::cardinal() {
+                        let mut jump = pos;
+                        while let Some(c) = grid.get(jump + dir) {
+                            if c == &Cell::Wall {
+                                jump_table.insert((pos, dir), jump);
+                                break;
+                            }
+                            jump += dir;
+                        }
+                    }
+                }
+
+                Self {
+                    start,
+                    grid,
+                    jump_table,
+                }
+            })
             .parse(input)
     }
 
-    fn part1(self) -> Result<usize> {
-        let start = self
-            .grid
-            .coordinates()
-            .find(|&c| self.grid.get(c) == Some(&'^'))
-            .ok_or("No starting position")?;
-
-        let mut visited = HashSet::new();
-        let mut pos = start;
+    fn part1(mut self) -> Result<usize> {
+        let mut cnt = 0;
+        let mut pos = self.start;
         let mut dir = Direction::North;
+        self.grid.set(self.start, Cell::Empty);
 
-        while self.grid.contains(pos) {
-            visited.insert(pos);
-            while self.grid.get(pos + dir) == Some(&'#') {
+        while let Some(&c) = self.grid.get(pos) {
+            if let Cell::Empty = c {
+                cnt += 1;
+                self.grid.set(pos, Cell::Passed);
+            }
+
+            while let Some(&Cell::Wall) = self.grid.get(pos + dir) {
                 dir = dir.right();
             }
+
             pos += dir;
         }
 
-        Ok(visited.len())
+        Ok(cnt)
     }
 
-    fn part2(self) -> Result<usize> {
-        let start = self
-            .grid
-            .coordinates()
-            .find(|&c| self.grid.get(c) == Some(&'^'))
-            .ok_or("No starting position")?;
-
-        let mut visited = HashSet::new();
-        let mut pos = start;
+    fn part2(mut self) -> Result<usize> {
+        let mut pos = self.start;
         let mut dir = Direction::North;
+        let mut cnt = 0;
 
-        while self.grid.contains(pos) {
-            visited.insert(pos);
-            while self.grid.get(pos + dir) == Some(&'#') {
+        while let Some(&c) = self.grid.get(pos) {
+            if let Cell::Empty = c {
+                self.grid.set(pos, Cell::Wall);
+                if self.loops(pos - dir, dir, pos) {
+                    cnt += 1;
+                }
+                self.grid.set(pos, Cell::Passed);
+            }
+
+            while let Some(&Cell::Wall) = self.grid.get(pos + dir) {
                 dir = dir.right();
             }
+
             pos += dir;
         }
 
-        Ok(visited
-            .into_iter()
-            .filter(|&box_pos| {
-                let mut pos = start;
-                let mut dir = Direction::North;
-                let mut visited = HashSet::new();
-
-                while self.grid.contains(pos) {
-                    if visited.contains(&(pos, dir)) {
-                        return true;
-                    }
-                    visited.insert((pos, dir));
-                    while self.grid.get(pos + dir) == Some(&'#') || pos + dir == box_pos {
-                        dir = dir.right();
-                    }
-                    pos += dir;
-                }
-
-                false
-            })
-            .count())
+        Ok(cnt)
     }
 }
 
