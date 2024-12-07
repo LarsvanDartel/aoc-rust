@@ -13,6 +13,7 @@ pub use nom::{
     bytes::complete::tag,
     character::complete::{
         char, digit1, i32 as parse_i32, line_ending, one_of, space0, space1, u32 as parse_u32,
+        u64 as parse_u64,
     },
     multi::{many1, separated_list1},
     sequence::{delimited, pair, preceded, separated_pair, terminated, tuple},
