@@ -45,20 +45,22 @@ impl Test {
             .parse(input)
     }
 
-    fn is_valid(&self, operations: &[Operation]) -> bool {
-        let mut possible = vec![self.value];
-        for val in self.equation.iter().skip(1).rev() {
-            let mut next = Vec::new();
-            for res in possible {
-                for op in operations {
-                    if let Some(res) = op.apply_backwards(res, *val) {
-                        next.push(res);
-                    }
-                }
-            }
-            possible = next;
+    fn test(&self, target: u64, idx: usize, operations: &[Operation]) -> bool {
+        if idx == 0 {
+            return self.equation[0] == target;
         }
-        possible.contains(&self.equation[0])
+        let mut result = false;
+        for op in operations {
+            if let Some(res) = op.apply_backwards(target, self.equation[idx]) {
+                result |= self.test(res, idx - 1, operations);
+            }
+        }
+
+        result
+    }
+
+    fn is_valid(&self, operations: &[Operation]) -> bool {
+        self.test(self.value, self.equation.len() - 1, operations)
     }
 }
 
