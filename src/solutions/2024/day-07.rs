@@ -13,13 +13,26 @@ enum Operation {
 }
 
 impl Operation {
-    fn apply(&self, a: u64, b: u64) -> u64 {
+    fn apply_backwards(&self, result: u64, operand: u64) -> Option<u64> {
         match self {
-            Self::Add => a + b,
-            Self::Multiply => a * b,
+            Self::Add => result.checked_sub(operand),
+            Self::Multiply => {
+                if result % operand == 0 {
+                    Some(result / operand)
+                } else {
+                    None
+                }
+            }
             Self::Concatenate => {
-                let l = (b as f64).log10() as u32 + 1;
-                a * 10u64.pow(l) + b
+                let mut p10 = 1;
+                while p10 <= operand {
+                    p10 *= 10;
+                }
+                if result % p10 == operand {
+                    Some(result / p10)
+                } else {
+                    None
+                }
             }
         }
     }
@@ -33,19 +46,19 @@ impl Test {
     }
 
     fn is_valid(&self, operations: &[Operation]) -> bool {
-        let mut values = vec![self.equation[0]];
-
-        for i in 1..self.equation.len() {
-            let mut new_values = Vec::with_capacity(values.len() * operations.len());
-            for value in values {
-                for operation in operations {
-                    new_values.push(operation.apply(value, self.equation[i]));
+        let mut possible = vec![self.value];
+        for val in self.equation.iter().skip(1).rev() {
+            let mut next = Vec::new();
+            for res in possible {
+                for op in operations {
+                    if let Some(res) = op.apply_backwards(res, *val) {
+                        next.push(res);
+                    }
                 }
             }
-            values = new_values;
+            possible = next;
         }
-
-        values.contains(&self.value)
+        possible.contains(&self.equation[0])
     }
 }
 
