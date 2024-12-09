@@ -14,14 +14,14 @@ struct File {
 
 struct FileSystem {
     files: Vec<File>,
-    space: [BinaryHeap<Reverse<(usize, usize)>>; 10],
+    space: [BinaryHeap<Reverse<usize>>; 10],
 }
 
 impl From<Vec<usize>> for FileSystem {
     fn from(filesystem: Vec<usize>) -> Self {
         let mut start = 0;
         let mut files = Vec::new();
-        let mut space: [BinaryHeap<Reverse<(usize, usize)>>; 10] = Default::default();
+        let mut space: [BinaryHeap<Reverse<usize>>; 10] = Default::default();
         for (i, size) in filesystem.into_iter().enumerate() {
             if i % 2 == 0 {
                 files.push(File {
@@ -35,7 +35,7 @@ impl From<Vec<usize>> for FileSystem {
                     start,
                     size,
                 });
-                space[size].push(Reverse((start, i)));
+                space[size].push(Reverse(i));
             }
             start += size;
         }
@@ -66,8 +66,8 @@ impl FileSystem {
                 l_idx = self.space[r_size..10]
                     .iter()
                     .flat_map(|heap| heap.peek().cloned())
-                    .max() // Max here, because the elements are reversed
-                    .map(|Reverse((_start, idx))| idx)
+                    .map(|Reverse(idx)| idx)
+                    .min()
                     .unwrap_or(r_idx);
             } else {
                 while l_idx <= r_idx && self.files[l_idx].size == 0 {
@@ -107,7 +107,7 @@ impl FileSystem {
                     self.files[r_idx + 1].start -= r_size;
                     r_idx -= 2;
                     if preserve_contiguous {
-                        self.space[l_size - r_size].push(Reverse((l_start + r_size, l_idx)));
+                        self.space[l_size - r_size].push(Reverse(l_idx));
                     }
                 }
             }
