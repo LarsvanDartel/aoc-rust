@@ -153,6 +153,28 @@ impl<T> Grid<T> {
     }
 }
 
+impl<T> Index<Vec2<isize>> for Grid<T> {
+    type Output = T;
+
+    fn index(&self, index: Vec2<isize>) -> &Self::Output {
+        if let Some(c) = self.coord(index) {
+            &self[c]
+        } else {
+            panic!("Index out of bounds")
+        }
+    }
+}
+
+impl<T> IndexMut<Vec2<isize>> for Grid<T> {
+    fn index_mut(&mut self, index: Vec2<isize>) -> &mut Self::Output {
+        if let Some(c) = self.coord(index) {
+            &mut self[c]
+        } else {
+            panic!("Index out of bounds")
+        }
+    }
+}
+
 impl<T> Index<Coordinate> for Grid<T> {
     type Output = T;
 
