@@ -105,7 +105,7 @@ MMMISSJEEE
 
     #[test]
     fn test_part1() {
-        assert_task!(Day12, 1, EXAMPLE, 1903);
+        assert_task!(Day12, 1, EXAMPLE, 1930);
     }
 
     #[test]
