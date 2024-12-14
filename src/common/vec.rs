@@ -136,6 +136,16 @@ impl<T: std::ops::Neg<Output = T>> std::ops::Neg for Vec2<T> {
     }
 }
 
+impl<T: std::ops::Rem<Output = T>> std::ops::Rem for Vec2<T> {
+    type Output = Self;
+    fn rem(self, rhs: Self) -> Self::Output {
+        Vec2 {
+            x: self.x % rhs.x,
+            y: self.y % rhs.y,
+        }
+    }
+}
+
 impl<T: std::cmp::PartialEq> std::cmp::PartialEq for Vec2<T> {
     fn eq(&self, other: &Self) -> bool {
         self.x == other.x && self.y == other.y
