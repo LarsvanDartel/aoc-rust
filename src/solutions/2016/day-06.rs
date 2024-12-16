@@ -1,17 +1,15 @@
 use aoc_rust::*;
+use common::*;
 
 struct Day06 {
     messages: Vec<String>,
 }
 
 impl Problem<String, String> for Day06 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Day06 {
-                messages: input.lines().map(|l| l.trim().to_string()).collect(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Day06 {
+            messages: input.lines().map(|l| l.trim().to_string()).collect(),
+        })
     }
 
     fn part1(self) -> Result<String> {

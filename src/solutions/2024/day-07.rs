@@ -22,7 +22,7 @@ impl Operation {
                 } else {
                     None
                 }
-            }
+            },
             Self::Concatenate => {
                 let mut p10 = 1;
                 while p10 <= operand {
@@ -33,16 +33,16 @@ impl Operation {
                 } else {
                     None
                 }
-            }
+            },
         }
     }
 }
 
 impl Test {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_pair(parse_u64, tag(": "), separated_list1(space1, parse_u64))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated_pair(dec_u64, ": ", list(dec_u64, space1))
             .map(|(value, equation)| Self { value, equation })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn test(&self, target: u64, idx: usize, operations: &[Operation]) -> bool {
@@ -69,10 +69,10 @@ struct Day07 {
 }
 
 impl Problem<u64, u64> for Day07 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Test::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Test::parse, line_ending)
             .map(|tests| Self { tests })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u64> {

@@ -1,12 +1,5 @@
-use std::collections::HashSet;
-
-use nom::{
-    character::complete::{line_ending, one_of},
-    multi::{many1, separated_list1},
-    Parser,
-};
-
 use aoc_rust::*;
+use common::*;
 
 #[derive(Clone)]
 struct Day16 {
@@ -89,8 +82,8 @@ enum Mirror {
 }
 
 impl Mirror {
-    fn parse(input: &str) -> ParseResult<Self> {
-        one_of("|-/\\.")
+    fn parse(input: &mut &str) -> PResult<Self> {
+        one_of(['|', '-', '/', '\\', '.'])
             .map(|c| match c {
                 '|' => Mirror::Pipe,
                 '-' => Mirror::Dash,
@@ -99,7 +92,7 @@ impl Mirror {
                 '.' => Mirror::Empty,
                 _ => unreachable!(),
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn next(&self, dir: Direction) -> Vec<Direction> {
@@ -138,10 +131,10 @@ impl std::fmt::Debug for Mirror {
 }
 
 impl Problem<usize, usize> for Day16 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, many1(Mirror::parse))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(many(Mirror::parse), line_ending)
             .map(Self::new)
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

@@ -1,4 +1,5 @@
 use aoc_rust::*;
+use common::*;
 
 struct Day09 {
     file: String,
@@ -71,13 +72,10 @@ impl Day09 {
 }
 
 impl Problem<usize, usize> for Day09 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Day09 {
-                file: input.trim().to_string(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Day09 {
+            file: input.trim().to_string(),
+        })
     }
 
     fn part1(self) -> Result<usize> {
@@ -90,21 +88,3 @@ impl Problem<usize, usize> for Day09 {
 }
 
 aoc_main!(Day09);
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//
-//     const EXAMPLE: &str = r#"
-//     "#;
-//
-//     #[test]
-//     fn test_part1() {
-//         assert_task!(Day09, 1, EXAMPLE, ());
-//     }
-//
-//     #[test]
-//     fn test_part2() {
-//         assert_task!(Day09, 2, EXAMPLE, ());
-//     }
-// }

@@ -1,13 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::{tag, take_till},
-    character::complete::{alpha1, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::{separated_pair, terminated},
-    Parser,
-};
+use common::*;
 
 struct Day15 {
     initialization_sequence: Vec<String>,
@@ -28,26 +20,23 @@ enum Operation {
 }
 
 impl Operation {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            terminated(alpha1, tag("-")).map(|s: &str| Operation::Remove(s.to_string())),
-            separated_pair(alpha1, tag("="), parse_u32)
-                .map(|(s, n): (&str, _)| Operation::Set(s.to_string(), n)),
+            terminated(alpha1.map(String::from), "-").map(Operation::Remove),
+            separated_pair(alpha1.map(String::from), "=", dec_u32)
+                .map(|(s, n)| Operation::Set(s, n)),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
 impl Problem<u32, u32> for Day15 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(
-            tag(","),
-            take_till(|c| c == ',').map(|s: &str| s.to_string()),
-        )
-        .map(|v| Self {
-            initialization_sequence: v,
-        })
-        .parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(take_till(0.., |c| c == ',').map(String::from), ',')
+            .map(|v| Self {
+                initialization_sequence: v,
+            })
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {
@@ -62,7 +51,7 @@ impl Problem<u32, u32> for Day15 {
         let operations = self
             .initialization_sequence
             .iter()
-            .map(|s| Operation::parse(s).unwrap().1)
+            .map(|s| Operation::parse(&mut s.as_str()).unwrap())
             .collect::<Vec<_>>();
 
         Ok(operations
@@ -78,13 +67,13 @@ impl Problem<u32, u32> for Day15 {
                             } else {
                                 map[hash as usize].push((s.to_string(), *n));
                             }
-                        }
+                        },
                         Operation::Remove(s) => {
                             let hash = Self::hash(s.to_string());
                             if let Some(i) = map[hash as usize].iter().position(|(k, _)| k == s) {
                                 map[hash as usize].remove(i);
                             }
-                        }
+                        },
                     }
                     map
                 },

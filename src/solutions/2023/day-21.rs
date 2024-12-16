@@ -1,6 +1,5 @@
 use aoc_rust::*;
-
-use std::collections::HashSet;
+use common::*;
 
 struct Day21 {
     map: Vec<Vec<bool>>,
@@ -8,7 +7,7 @@ struct Day21 {
 }
 
 impl Problem<usize, usize> for Day21 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         let mut start_pos = (0, 0);
         let map = input
             .lines()
@@ -22,14 +21,14 @@ impl Problem<usize, usize> for Day21 {
                         'S' => {
                             start_pos = (x, y);
                             false
-                        }
+                        },
                         _ => panic!("Invalid character"),
                     })
                     .collect()
             })
             .collect();
 
-        Ok(("", Self { map, start_pos }))
+        Ok(Self { map, start_pos })
     }
 
     fn part1(self) -> Result<usize> {

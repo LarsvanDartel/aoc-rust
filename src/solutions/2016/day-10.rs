@@ -1,15 +1,5 @@
-use std::collections::HashMap;
-
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{digit1, line_ending},
-    multi::separated_list1,
-    sequence::{preceded, separated_pair, tuple},
-    Parser,
-};
+use common::*;
 
 struct Day10 {
     instructions: Vec<Instruction>,
@@ -29,30 +19,23 @@ enum Instruction {
 }
 
 impl Instruction {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
             preceded(
-                tag("value "),
-                separated_pair(
-                    digit1.map(str::parse::<usize>),
-                    tag(" goes to "),
-                    Destination::parse,
-                ),
+                "value ",
+                separated_pair(dec_uint, " goes to ", Destination::parse),
             )
-            .map(|(value, to)| Self::Value {
-                value: value.unwrap(),
-                to,
-            }),
-            tuple((
+            .map(|(value, to)| Self::Value { value, to }),
+            (
                 Destination::parse,
-                tag(" gives low to "),
+                " gives low to ",
                 Destination::parse,
-                tag(" and high to "),
+                " and high to ",
                 Destination::parse,
-            ))
-            .map(|(from, _, low, _, high)| Self::Transfer { from, low, high }),
+            )
+                .map(|(from, _, low, _, high)| Self::Transfer { from, low, high }),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -63,20 +46,12 @@ enum Destination {
 }
 
 impl Destination {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            preceded(
-                tag("bot "),
-                digit1.map(|s: &str| s.parse::<usize>().unwrap()),
-            )
-            .map(Self::Bot),
-            preceded(
-                tag("output "),
-                digit1.map(|s: &str| s.parse::<usize>().unwrap()),
-            )
-            .map(Self::Output),
+            preceded("bot ", dec_uint).map(Self::Bot),
+            preceded("output ", dec_uint).map(Self::Output),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -131,7 +106,7 @@ fn build_robots(instructions: Vec<Instruction>) -> Result<HashMap<Destination, R
                 } else {
                     Err("Cannot transfer from output")?;
                 }
-            }
+            },
             Instruction::Value { value, to } => {
                 if let Destination::Bot(_) = to {
                     let r = robots.entry(to).or_insert(Robot::new(to));
@@ -139,7 +114,7 @@ fn build_robots(instructions: Vec<Instruction>) -> Result<HashMap<Destination, R
                 } else {
                     Err("Cannont transfer to output in initialization")?;
                 }
-            }
+            },
         }
     }
 
@@ -147,10 +122,10 @@ fn build_robots(instructions: Vec<Instruction>) -> Result<HashMap<Destination, R
 }
 
 impl Problem<usize, usize> for Day10 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Instruction::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Instruction::parse, line_ending)
             .map(|instructions| Self { instructions })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

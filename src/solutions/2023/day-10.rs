@@ -1,15 +1,8 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::VecDeque;
 use std::ops::Add;
 
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::line_ending,
-    multi::{many1, separated_list1},
-    Parser,
-};
-
 use aoc_rust::*;
+use common::*;
 
 struct Day10 {
     grid: Vec<Vec<Pipe>>,
@@ -40,49 +33,49 @@ enum Pipe {
 }
 
 impl Pipe {
-    fn parse(input: &str) -> ParseResult<Pipe> {
+    fn parse(input: &mut &str) -> PResult<Pipe> {
         alt((
-            tag(".").map(|_| Pipe::Empty),
-            tag("-").map(|_| Pipe::Horizontal),
-            tag("|").map(|_| Pipe::Vertical),
-            tag("L").map(|_| Pipe::NorthEast),
-            tag("J").map(|_| Pipe::NorthWest),
-            tag("7").map(|_| Pipe::SouthWest),
-            tag("F").map(|_| Pipe::SouthEast),
-            tag("S").map(|_| Pipe::Source),
+            ".".map(|_| Pipe::Empty),
+            "-".map(|_| Pipe::Horizontal),
+            "|".map(|_| Pipe::Vertical),
+            "L".map(|_| Pipe::NorthEast),
+            "J".map(|_| Pipe::NorthWest),
+            "7".map(|_| Pipe::SouthWest),
+            "F".map(|_| Pipe::SouthEast),
+            "S".map(|_| Pipe::Source),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 
     const fn increase_resolution(&self) -> [[Pipe; 3]; 3] {
         let mut grid = [[Pipe::Empty; 3]; 3];
         grid[1][1] = *self;
         match self {
-            Pipe::Empty => {}
+            Pipe::Empty => {},
             Pipe::Horizontal => {
                 grid[1][0] = Pipe::Horizontal;
                 grid[1][2] = Pipe::Horizontal;
-            }
+            },
             Pipe::Vertical => {
                 grid[0][1] = Pipe::Vertical;
                 grid[2][1] = Pipe::Vertical;
-            }
+            },
             Pipe::NorthEast => {
                 grid[0][1] = Pipe::Vertical;
                 grid[1][2] = Pipe::Horizontal;
-            }
+            },
             Pipe::NorthWest => {
                 grid[0][1] = Pipe::Vertical;
                 grid[1][0] = Pipe::Horizontal;
-            }
+            },
             Pipe::SouthEast => {
                 grid[2][1] = Pipe::Vertical;
                 grid[1][2] = Pipe::Horizontal;
-            }
+            },
             Pipe::SouthWest => {
                 grid[2][1] = Pipe::Vertical;
                 grid[1][0] = Pipe::Horizontal;
-            }
+            },
             _ => unreachable!(),
         }
         grid
@@ -245,10 +238,10 @@ impl Day10 {
 }
 
 impl Problem<usize, usize> for Day10 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, many1(Pipe::parse))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(many(Pipe::parse), line_ending)
             .map(|grid| Self { grid })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

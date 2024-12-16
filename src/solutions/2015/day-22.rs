@@ -1,8 +1,5 @@
 use aoc_rust::*;
-use nom::{
-    bytes::complete::tag,
-    character::complete::{i32 as number, line_ending},
-};
+use common::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Spell {
@@ -66,14 +63,14 @@ impl Player {
                     if *turns == 1 {
                         self.armor = 0;
                     }
-                }
+                },
                 Spell::Poison => {
                     boss.hp -= 3;
-                }
+                },
                 Spell::Recharge => {
                     self.mana += 101;
-                }
-                _ => {}
+                },
+                _ => {},
             }
             *turns -= 1;
         }
@@ -91,21 +88,21 @@ impl Player {
         match spell {
             Spell::MagicMissile => {
                 boss.hp -= 4;
-            }
+            },
             Spell::Drain => {
                 boss.hp -= 2;
                 self.hp += 2;
-            }
+            },
             Spell::Shield => {
                 self.armor = 7;
                 self.effects.push((Spell::Shield, 6));
-            }
+            },
             Spell::Poison => {
                 self.effects.push((Spell::Poison, 6));
-            }
+            },
             Spell::Recharge => {
                 self.effects.push((Spell::Recharge, 5));
-            }
+            },
         }
         true
     }
@@ -161,20 +158,17 @@ impl Day22 {
 }
 
 impl Problem<i32, i32> for Day22 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, _) = tag("Hit Points: ")(input)?;
-        let (input, hp) = number(input)?;
-        let (input, _) = line_ending(input)?;
-        let (input, _) = tag("Damage: ")(input)?;
-        let (input, damage) = number(input)?;
-        let (input, _) = line_ending(input)?;
-        Ok((
-            input,
-            Self {
-                player: Player::new(50, 500),
-                boss: Boss { hp, damage },
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let _ = "Hit Points: ".parse_next(input)?;
+        let hp = dec_int(input)?;
+        let _ = line_ending(input)?;
+        let _ = "Damage: ".parse_next(input)?;
+        let damage = dec_int(input)?;
+        let _ = line_ending(input)?;
+        Ok(Self {
+            player: Player::new(50, 500),
+            boss: Boss { hp, damage },
+        })
     }
 
     fn part1(self) -> Result<i32> {

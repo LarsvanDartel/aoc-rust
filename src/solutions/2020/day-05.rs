@@ -6,10 +6,10 @@ struct Day05 {
 }
 
 impl Problem<u32, u32> for Day05 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, alpha1.map(|s: &str| s.to_string()))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., alpha1.map(String::from), line_ending)
             .map(|boarding_passes| Day05 { boarding_passes })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

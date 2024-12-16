@@ -9,17 +9,16 @@ struct Line {
 }
 
 impl Line {
-    fn parse(s: &str) -> ParseResult<Self> {
-        fn parse_vec2(s: &str) -> ParseResult<Vec2<i32>> {
-            let (s, x) = parse_i32(s)?;
-            let (s, _) = tag(",")(s)?;
-            let (s, y) = parse_i32(s)?;
-            Ok((s, Vec2::new(x, y)))
+    fn parse(s: &mut &str) -> PResult<Self> {
+        fn parse_vec2(s: &mut &str) -> PResult<Vec2<i32>> {
+            separated_pair(dec_int, ',', dec_int)
+                .map(Into::into)
+                .parse_next(s)
         }
 
-        separated_pair(parse_vec2, tag(" -> "), parse_vec2)
+        separated_pair(parse_vec2, " -> ", parse_vec2)
             .map(|(start, end)| Line { start, end })
-            .parse(s)
+            .parse_next(s)
     }
 
     fn is_orthogonal(&self) -> bool {
@@ -39,10 +38,10 @@ struct Day05 {
 }
 
 impl Problem<usize, usize> for Day05 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Line::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Line::parse, line_ending)
             .map(|lines| Day05 { lines })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {
@@ -113,6 +112,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_task!(Day05, 2, EXAMPLE, ());
+        assert_task!(Day05, 2, EXAMPLE, 12);
     }
 }

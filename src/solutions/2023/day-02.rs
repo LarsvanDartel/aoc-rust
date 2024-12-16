@@ -1,13 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{line_ending, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::{delimited, separated_pair},
-    Parser,
-};
+use common::*;
 
 struct Day02 {
     games: Vec<Game>,
@@ -20,12 +12,11 @@ struct Game {
 }
 
 impl Game {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, id) = delimited(tag("Game "), parse_u32, tag(": "))(input)?;
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let id = delimited("Game ", dec_u32, ": ").parse_next(input)?;
+        let draws = list(Draw::parse, "; ").parse_next(input)?;
 
-        let (input, draws) = separated_list1(tag("; "), Draw::parse)(input)?;
-
-        Ok((input, Self { id, draws }))
+        Ok(Self { id, draws })
     }
 
     fn is_possible(&self, draw: &Draw) -> bool {
@@ -66,14 +57,14 @@ struct Draw {
 }
 
 impl Draw {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(
-            tag(", "),
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(
             separated_pair(
-                parse_u32,
-                tag(" "),
-                alt((tag("red"), tag("green"), tag("blue"))),
+                dec_u32,
+                " ",
+                alt(("red", "green", "blue")).map(String::from),
             ),
+            ", ",
         )
         .map(|balls| {
             let mut red = 0;
@@ -81,7 +72,7 @@ impl Draw {
             let mut blue = 0;
 
             for (ball, color) in balls {
-                match color {
+                match color.as_str() {
                     "red" => red = ball,
                     "green" => green = ball,
                     "blue" => blue = ball,
@@ -91,15 +82,15 @@ impl Draw {
 
             Self { red, green, blue }
         })
-        .parse(input)
+        .parse_next(input)
     }
 }
 
 impl Problem<u32, u32> for Day02 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Game::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Game::parse, line_ending)
             .map(|games| Self { games })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

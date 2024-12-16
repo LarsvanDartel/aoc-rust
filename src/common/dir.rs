@@ -1,10 +1,11 @@
+use winnow::combinator::alt;
+use winnow::prelude::*;
+
 use crate::common::Vec2;
-use crate::ParseResult;
-use nom::{branch::alt, bytes::complete::tag, Parser};
 
 /// A cardinal direction.
 /// North, East, South, West.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum Direction {
     North,
     East,
@@ -49,27 +50,40 @@ impl Direction {
     /// Parse a cardinal direction from the input.
     /// Cardinal directions are represented by a single letter: N, E, S, W.
     /// N is North, E is East, S is South, W is West.
-    pub fn parse_nsew(input: &str) -> ParseResult<Self> {
+    pub fn parse_nsew(input: &mut &str) -> PResult<Self> {
         alt((
-            tag("N").map(|_| Direction::North),
-            tag("E").map(|_| Direction::East),
-            tag("S").map(|_| Direction::South),
-            tag("W").map(|_| Direction::West),
+            'N'.map(|_| Direction::North),
+            'E'.map(|_| Direction::East),
+            'S'.map(|_| Direction::South),
+            'W'.map(|_| Direction::West),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 
     /// Parse a direction from the input.
     /// Directions are represented by a single letter: U, R, D, L.
     /// U is Up, R is Right, D is Down, L is Left.
-    pub fn parse_udlr(input: &str) -> ParseResult<Self> {
+    pub fn parse_udlr(input: &mut &str) -> PResult<Self> {
         alt((
-            tag("U").map(|_| Direction::North),
-            tag("R").map(|_| Direction::East),
-            tag("D").map(|_| Direction::South),
-            tag("L").map(|_| Direction::West),
+            'U'.map(|_| Direction::North),
+            'R'.map(|_| Direction::East),
+            'D'.map(|_| Direction::South),
+            'L'.map(|_| Direction::West),
         ))
-        .parse(input)
+        .parse_next(input)
+    }
+
+    /// Parse a direction from the input.
+    /// Directions are represented by a single character: ^, >, v, <.
+    /// ^ is North, > is East, v is South, < is West.
+    pub fn parse_arrows(input: &mut &str) -> PResult<Self> {
+        alt((
+            '^'.map(|_| Direction::North),
+            '>'.map(|_| Direction::East),
+            'v'.map(|_| Direction::South),
+            '<'.map(|_| Direction::West),
+        ))
+        .parse_next(input)
     }
 
     /// Return the direction to the right of the current direction.
@@ -115,6 +129,35 @@ impl Direction {
             Direction::SouthWest => Direction::NorthEast,
             Direction::NorthWest => Direction::SouthEast,
         }
+    }
+
+    /// Return whether the direction is cardinal.
+    pub const fn is_cardinal(self) -> bool {
+        matches!(
+            self,
+            Direction::North | Direction::East | Direction::South | Direction::West
+        )
+    }
+
+    /// Return whether the direction is ordinal.
+    pub const fn is_ordinal(self) -> bool {
+        matches!(
+            self,
+            Direction::NorthEast
+                | Direction::SouthEast
+                | Direction::SouthWest
+                | Direction::NorthWest
+        )
+    }
+
+    /// Return whether the direction is vertical.
+    pub const fn is_vertical(self) -> bool {
+        matches!(self, Direction::North | Direction::South)
+    }
+
+    /// Return whether the direction is horizontal.
+    pub const fn is_horizontal(self) -> bool {
+        matches!(self, Direction::East | Direction::West)
     }
 }
 

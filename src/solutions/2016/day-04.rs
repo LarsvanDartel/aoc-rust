@@ -1,12 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    bytes::complete::{tag, take_while},
-    character::complete::{line_ending, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::delimited,
-    Parser,
-};
+use common::*;
 
 struct Day04 {
     rooms: Vec<Room>,
@@ -19,23 +12,16 @@ struct Room {
 }
 
 impl Room {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, name) = take_while(|c: char| !c.is_ascii_digit())(input)?;
-        let (input, sector_id) = parse_u32(input)?;
-        let (input, checksum) = delimited(
-            tag("["),
-            take_while(|c: char| c.is_ascii_lowercase()),
-            tag("]"),
-        )(input)?;
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let name = take_till(0.., |c: char| c.is_ascii_digit()).parse_next(input)?;
+        let sector_id = dec_uint(input)?;
+        let checksum = delimited("[", take(5usize), "]").parse_next(input)?;
 
-        Ok((
-            input,
-            Self {
-                name: name.to_string(),
-                sector_id,
-                checksum: checksum.to_string(),
-            },
-        ))
+        Ok(Self {
+            name: name.to_string(),
+            sector_id,
+            checksum: checksum.to_string(),
+        })
     }
 
     fn is_real(&self) -> bool {
@@ -81,10 +67,10 @@ impl std::fmt::Debug for Room {
 }
 
 impl Problem<u32, u32> for Day04 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Room::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Room::parse, line_ending)
             .map(|rooms| Self { rooms })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

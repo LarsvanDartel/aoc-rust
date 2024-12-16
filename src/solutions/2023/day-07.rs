@@ -1,12 +1,5 @@
 use aoc_rust::*;
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{line_ending, one_of, space1, u64 as parse_u64},
-    multi::{many1, separated_list1},
-    sequence::separated_pair,
-    Parser,
-};
+use common::*;
 
 struct Day07 {
     hands: Vec<Hand>,
@@ -39,30 +32,31 @@ impl Card {
                 } else {
                     11
                 }
-            }
+            },
             Card::Queen => 12,
             Card::King => 13,
             Card::Ace => 14,
         }
     }
 
-    fn parse(input: &str) -> ParseResult<Card> {
-        let number = one_of("23456789").map(|c| Card::Number(c.to_digit(10).unwrap()));
-        let ten = tag("T").map(|_| Card::Ten);
-        let jack = tag("J").map(|_| Card::Jack);
-        let queen = tag("Q").map(|_| Card::Queen);
-        let king = tag("K").map(|_| Card::King);
-        let ace = tag("A").map(|_| Card::Ace);
-
-        alt((number, ten, jack, queen, king, ace)).parse(input)
+    fn parse(input: &mut &str) -> PResult<Card> {
+        alt((
+            one_of('2'..='9').map(|c: char| Card::Number(c.to_digit(10).unwrap())),
+            "T".map(|_| Card::Ten),
+            "J".map(|_| Card::Jack),
+            "Q".map(|_| Card::Queen),
+            "K".map(|_| Card::King),
+            "A".map(|_| Card::Ace),
+        ))
+        .parse_next(input)
     }
 }
 
 impl Hand {
-    fn parse(input: &str) -> ParseResult<Hand> {
-        separated_pair(many1(Card::parse), space1, parse_u64)
+    fn parse(input: &mut &str) -> PResult<Hand> {
+        separated_pair(many(Card::parse), space1, dec_u64)
             .map(|(cards, bid)| Hand { cards, bid })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn score(&self, jokers: bool) -> u64 {
@@ -91,14 +85,14 @@ impl Hand {
                 } else {
                     3
                 }
-            }
+            },
             2 => {
                 if counts[1] == 2 {
                     2
                 } else {
                     1
                 }
-            }
+            },
             1 => 0,
             _ => panic!("invalid hand"),
         };
@@ -110,10 +104,10 @@ impl Hand {
 }
 
 impl Problem<u64, u64> for Day07 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Hand::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Hand::parse, line_ending)
             .map(|hands| Self { hands })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u64> {

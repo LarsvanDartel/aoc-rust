@@ -9,12 +9,14 @@ enum Cell {
 }
 
 impl Cell {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            char('.').map(|_| Cell::Empty),
-            verify(anychar, char::is_ascii_alphanumeric).map(Cell::Antenna),
+            '.'.map(|_| Cell::Empty),
+            anychar
+                .verify(char::is_ascii_alphanumeric)
+                .map(Cell::Antenna),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -32,10 +34,10 @@ struct Day08 {
 }
 
 impl Problem<usize, usize> for Day08 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         Grid::parse(Cell::parse)
             .map(|grid| Self { grid })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

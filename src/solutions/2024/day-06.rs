@@ -11,15 +11,15 @@ enum Cell {
 }
 
 impl Cell {
-    fn parse(input: &str) -> ParseResult<Self> {
-        one_of(".#^")
+    fn parse(input: &mut &str) -> PResult<Self> {
+        one_of(['.', '#', '^'])
             .map(|c| match c {
                 '.' => Self::Empty,
                 '#' => Self::Wall,
                 '^' => Self::Start,
                 _ => unreachable!(),
             })
-            .parse(input)
+            .parse_next(input)
     }
 }
 
@@ -57,7 +57,7 @@ impl Day06 {
 }
 
 impl Problem<usize, usize> for Day06 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         Grid::parse(Cell::parse)
             .map(|grid| {
                 let mut jump_table = HashMap::new();
@@ -84,7 +84,7 @@ impl Problem<usize, usize> for Day06 {
                     jump_table,
                 }
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

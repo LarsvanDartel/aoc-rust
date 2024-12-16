@@ -1,15 +1,7 @@
-use std::collections::HashMap;
 use std::ops::Add;
 
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::line_ending,
-    multi::{many1, separated_list1},
-    Parser,
-};
-
 use aoc_rust::*;
+use common::*;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Direction {
@@ -132,13 +124,13 @@ enum Rock {
 }
 
 impl Rock {
-    fn parse(input: &str) -> ParseResult<Rock> {
+    fn parse(input: &mut &str) -> PResult<Rock> {
         alt((
-            tag("O").map(|_| Rock::Rounded),
-            tag("#").map(|_| Rock::Cube),
-            tag(".").map(|_| Rock::Empty),
+            "O".map(|_| Rock::Rounded),
+            "#".map(|_| Rock::Cube),
+            ".".map(|_| Rock::Empty),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -153,10 +145,10 @@ impl std::fmt::Debug for Rock {
 }
 
 impl Problem<usize, usize> for Day14 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, many1(Rock::parse))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(many(Rock::parse), line_ending)
             .map(|grid| Self { grid })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

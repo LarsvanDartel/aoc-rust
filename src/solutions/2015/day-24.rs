@@ -1,18 +1,12 @@
 use aoc_rust::*;
-
-use itertools::Itertools;
-use nom::{
-    character::complete::{line_ending, u32 as number},
-    multi::separated_list0,
-    Parser,
-};
+use common::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct Package(u32);
 
 impl Package {
-    fn parse(input: &str) -> ParseResult<Self> {
-        number.map(Self).parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        dec_uint.map(Self).parse_next(input)
     }
 }
 
@@ -63,10 +57,10 @@ fn find_quantum_entanglement(packages: &[Package], group_count: u32, group_sum: 
 }
 
 impl Problem<u64, u64> for Day24 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list0(line_ending, Package::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Package::parse, line_ending)
             .map(|packages| Self { packages })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u64> {

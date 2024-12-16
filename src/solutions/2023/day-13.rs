@@ -1,10 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    character::complete::{line_ending, one_of},
-    multi::{many1, separated_list1},
-    Parser,
-};
+use common::*;
 
 struct Day13 {
     grids: Vec<Grid>,
@@ -68,13 +63,12 @@ impl Grid {
 }
 
 impl Problem<usize, usize> for Day13 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let grid =
-            separated_list1(line_ending, many1(one_of(".#").map(|c| c == '#'))).map(Grid::new);
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let grid = list(many(one_of(['.', '#']).map(|c| c == '#')), line_ending).map(Grid::new);
 
-        separated_list1(line_ending.and(line_ending), grid)
+        list(grid, (line_ending, line_ending))
             .map(|grids| Self { grids })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

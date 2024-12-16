@@ -1,10 +1,5 @@
 use aoc_rust::*;
-use nom::{
-    bytes::complete::tag,
-    character::complete::{alpha1, line_ending, u32 as number},
-    multi::separated_list1,
-    Parser,
-};
+use common::*;
 
 struct Day14 {
     reindeer: Vec<Reindeer>,
@@ -20,24 +15,21 @@ struct Reindeer {
 }
 
 impl Reindeer {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, name) = alpha1.parse(input)?;
-        let (input, _) = tag(" can fly ").parse(input)?;
-        let (input, speed) = number.parse(input)?;
-        let (input, _) = tag(" km/s for ").parse(input)?;
-        let (input, fly_time) = number.parse(input)?;
-        let (input, _) = tag(" seconds, but then must rest for ").parse(input)?;
-        let (input, rest_time) = number.parse(input)?;
-        let (input, _) = tag(" seconds.").parse(input)?;
-        Ok((
-            input,
-            Reindeer {
-                name: name.to_string(),
-                speed,
-                fly_time,
-                rest_time,
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let name = alpha1.parse_next(input)?;
+        let _ = " can fly ".parse_next(input)?;
+        let speed = dec_uint.parse_next(input)?;
+        let _ = " km/s for ".parse_next(input)?;
+        let fly_time = dec_uint.parse_next(input)?;
+        let _ = " seconds, but then must rest for ".parse_next(input)?;
+        let rest_time = dec_uint.parse_next(input)?;
+        let _ = " seconds.".parse_next(input)?;
+        Ok(Reindeer {
+            name: name.to_string(),
+            speed,
+            fly_time,
+            rest_time,
+        })
     }
 
     fn distance_at(&self, time: u32) -> u32 {
@@ -50,10 +42,10 @@ impl Reindeer {
 }
 
 impl Problem<u32, u32> for Day14 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Reindeer::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Reindeer::parse, line_ending)
             .map(|reindeer| Day14 { reindeer })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

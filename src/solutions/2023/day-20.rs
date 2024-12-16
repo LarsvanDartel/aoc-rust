@@ -1,15 +1,7 @@
+use std::collections::VecDeque;
+
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{alpha1, newline},
-    multi::separated_list1,
-    sequence::{preceded, separated_pair},
-    Parser,
-};
-
-use std::collections::{HashMap, VecDeque};
+use common::*;
 
 struct Day20 {
     modules: HashMap<String, Module>,
@@ -32,24 +24,24 @@ enum ModuleType {
 }
 
 impl Module {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         separated_pair(
             alt((
-                tag("broadcaster").map(|name: &str| (name.to_string(), ModuleType::Broadcaster)),
-                preceded(tag("%"), alpha1)
+                "broadcaster".map(|name: &str| (name.to_string(), ModuleType::Broadcaster)),
+                preceded("%", alpha1)
                     .map(|name: &str| (name.to_string(), ModuleType::FlipFlop(false))),
-                preceded(tag("&"), alpha1)
+                preceded("&", alpha1)
                     .map(|name: &str| (name.to_string(), ModuleType::Conjunction(HashMap::new()))),
             )),
-            tag(" -> "),
-            separated_list1(tag(", "), alpha1.map(|name: &str| name.to_string())),
+            " -> ",
+            list(alpha1.map(String::from), ", "),
         )
         .map(|((name, r#type), connections)| Module {
             name,
             r#type,
             connections,
         })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn process(&mut self, from: &String, value: bool) -> Vec<(String, bool)> {
@@ -69,7 +61,7 @@ impl Module {
                         .map(|connection| (connection.clone(), *cur_state))
                         .collect()
                 }
-            }
+            },
             ModuleType::Conjunction(counts) => {
                 let (cur_state, count) = counts.get_mut(from).unwrap();
                 if *cur_state != value {
@@ -82,15 +74,15 @@ impl Module {
                     .iter()
                     .map(|connection| (connection.clone(), signal))
                     .collect()
-            }
+            },
             ModuleType::None => vec![],
         }
     }
 }
 
 impl Problem<usize, usize> for Day20 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, modules) = separated_list1(newline, Module::parse).parse(input)?;
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let modules = list(Module::parse, line_ending).parse_next(input)?;
 
         let mut modules = modules
             .into_iter()
@@ -140,7 +132,7 @@ impl Problem<usize, usize> for Day20 {
             }
         }
 
-        Ok((input, Self { modules, inverse }))
+        Ok(Self { modules, inverse })
     }
 
     fn part1(self) -> Result<usize> {

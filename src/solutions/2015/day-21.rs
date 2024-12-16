@@ -1,8 +1,5 @@
 use aoc_rust::*;
-use nom::{
-    bytes::complete::tag,
-    character::complete::{line_ending, u32 as parse_u32},
-};
+use common::*;
 
 const WEAPONS: [Item; 5] = [
     Item::new(8, 4, 0),
@@ -82,23 +79,20 @@ impl Character {
 }
 
 impl Problem<u32, u32> for Day21 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, _) = tag("Hit Points: ")(input)?;
-        let (input, hp) = parse_u32(input)?;
-        let (input, _) = line_ending(input)?;
-        let (input, _) = tag("Damage: ")(input)?;
-        let (input, damage) = parse_u32(input)?;
-        let (input, _) = line_ending(input)?;
-        let (input, _) = tag("Armor: ")(input)?;
-        let (input, armor) = parse_u32(input)?;
-        let (input, _) = line_ending(input)?;
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let _ = "Hit Points: ".parse_next(input)?;
+        let hp = dec_uint(input)?;
+        let _ = line_ending(input)?;
+        let _ = "Damage: ".parse_next(input)?;
+        let damage = dec_uint(input)?;
+        let _ = line_ending(input)?;
+        let _ = "Armor: ".parse_next(input)?;
+        let armor = dec_uint(input)?;
+        let _ = line_ending(input)?;
 
-        Ok((
-            input,
-            Self {
-                boss: Character { hp, damage, armor },
-            },
-        ))
+        Ok(Self {
+            boss: Character { hp, damage, armor },
+        })
     }
 
     fn part1(self) -> Result<u32> {

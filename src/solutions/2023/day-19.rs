@@ -1,14 +1,6 @@
 use aoc_rust::*;
+use common::*;
 
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{alpha1, digit1, line_ending, one_of},
-    multi::separated_list1,
-    sequence::{delimited, pair, preceded, separated_pair, tuple},
-    Parser,
-};
-use std::collections::HashMap;
 struct Day19 {
     parts: Vec<Part>,
     workflows: HashMap<String, Vec<Rule>>,
@@ -23,28 +15,19 @@ struct Part {
 }
 
 impl Part {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         delimited(
-            tag("{"),
-            tuple((
-                preceded(tag("x="), digit1.map(|s: &str| s.parse::<usize>().unwrap())),
-                preceded(
-                    tag(",m="),
-                    digit1.map(|s: &str| s.parse::<usize>().unwrap()),
-                ),
-                preceded(
-                    tag(",a="),
-                    digit1.map(|s: &str| s.parse::<usize>().unwrap()),
-                ),
-                preceded(
-                    tag(",s="),
-                    digit1.map(|s: &str| s.parse::<usize>().unwrap()),
-                ),
-            )),
-            tag("}"),
+            "{",
+            (
+                preceded("x=", dec_usize),
+                preceded(",m=", dec_usize),
+                preceded(",a=", dec_usize),
+                preceded(",s=", dec_usize),
+            ),
+            "}",
         )
         .map(|(x, m, a, s)| Self { x, m, a, s })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn apply_rules(&self, workflow: Vec<Rule>) -> Rule {
@@ -131,7 +114,7 @@ impl RangePart {
                     };
                     return r1.apply_workflow(workflows, workflow)
                         + r2.apply_workflow(workflows, workflow);
-                }
+                },
             }
         }
         unreachable!()
@@ -157,44 +140,42 @@ enum Rule {
 }
 
 impl Rule {
-    fn parse_result(input: &str) -> ParseResult<Self> {
-        alt((
-            tag("R").map(|_| Rule::Result(false)),
-            tag("A").map(|_| Rule::Result(true)),
-        ))
-        .parse(input)
+    fn parse_result(input: &mut &str) -> PResult<Self> {
+        one_of(('R', 'A'))
+            .map(|c| Rule::Result(c == 'A'))
+            .parse_next(input)
     }
 
-    fn parse_workflow(input: &str) -> ParseResult<Self> {
+    fn parse_workflow(input: &mut &str) -> PResult<Self> {
         alpha1
-            .map(|s: &str| Rule::Workflow(s.to_string()))
-            .parse(input)
+            .map(|s| Rule::Workflow(String::from(s)))
+            .parse_next(input)
     }
 
-    fn parse_condition(input: &str) -> ParseResult<Self> {
-        tuple((
-            one_of("xmas"),
-            one_of("<>").map(|c| c == '<'),
-            digit1.map(|s: &str| s.parse::<usize>().unwrap()),
-            tag(":"),
+    fn parse_condition(input: &mut &str) -> PResult<Self> {
+        (
+            one_of(('x', 'm', 'a', 's')),
+            one_of(('<', '>')).map(|c| c == '<'),
+            dec_usize,
+            ":",
             alt((Self::parse_result, Self::parse_workflow)),
-        ))
-        .map(|(c, l, v, _, r)| Rule::Condition {
-            attribute: c,
-            less_than: l,
-            value: v,
-            result: Box::new(r),
-        })
-        .parse(input)
+        )
+            .map(|(c, l, v, _, r)| Rule::Condition {
+                attribute: c,
+                less_than: l,
+                value: v,
+                result: Box::new(r),
+            })
+            .parse_next(input)
     }
 
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
             Self::parse_condition,
             Self::parse_result,
             Self::parse_workflow,
         ))
-        .parse(input)
+        .parse_next(input)
     }
 
     fn apply(&self, part: &Part) -> Option<Self> {
@@ -217,7 +198,7 @@ impl Rule {
                 } else {
                     None
                 }
-            }
+            },
             Rule::Workflow(_) => Some(self.clone()),
             Rule::Result(_) => Some(self.clone()),
         }
@@ -258,7 +239,7 @@ impl Rule {
                     }
                     Err((*attribute, a.split(*value, false)))
                 }
-            }
+            },
             Rule::Workflow(_) => Ok(Some(self.clone())),
             Rule::Result(_) => Ok(Some(self.clone())),
         }
@@ -266,20 +247,22 @@ impl Rule {
 }
 
 impl Problem<usize, usize> for Day19 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let workflow = pair(
-            alpha1.map(|s: &str| s.to_string()),
-            delimited(tag("{"), separated_list1(tag(","), Rule::parse), tag("}")),
-        );
+    fn parse(input: &mut &str) -> PResult<Self> {
+        fn workflow(input: &mut &str) -> PResult<(String, Vec<Rule>)> {
+            (
+                alpha1.map(String::from),
+                delimited("{", list(Rule::parse, ','), "}"),
+            )
+                .parse_next(input)
+        }
 
         separated_pair(
-            separated_list1(line_ending, workflow)
-                .map(|v| v.into_iter().collect::<HashMap<_, _>>()),
-            line_ending.and(line_ending),
-            separated_list1(line_ending, Part::parse),
+            list(workflow, line_ending).map(|v| v.into_iter().collect::<HashMap<_, _>>()),
+            (line_ending, line_ending),
+            list(Part::parse, line_ending),
         )
         .map(|(workflows, parts)| Self { workflows, parts })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

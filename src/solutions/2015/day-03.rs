@@ -1,77 +1,43 @@
-use std::collections::HashSet;
-
 use aoc_rust::*;
-
-use nom::{branch::alt, bytes::complete::tag, multi::many1, Parser};
+use common::*;
 
 struct Day03 {
-    moves: Vec<Move>,
-}
-
-enum Move {
-    North,
-    South,
-    East,
-    West,
-}
-
-impl Move {
-    fn parse(input: &str) -> ParseResult<Self> {
-        alt((
-            tag("^").map(|_| Move::North),
-            tag("v").map(|_| Move::South),
-            tag(">").map(|_| Move::East),
-            tag("<").map(|_| Move::West),
-        ))
-        .parse(input)
-    }
+    moves: Vec<Direction>,
 }
 
 impl Problem<usize, usize> for Day03 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        many1(Move::parse).map(|moves| Self { moves }).parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        repeat(0.., Direction::parse_arrows)
+            .map(|moves| Self { moves })
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {
         let mut houses = HashSet::new();
-        let mut x = 0;
-        let mut y = 0;
-        houses.insert((x, y));
-        for m in &self.moves {
-            match m {
-                Move::North => y += 1,
-                Move::South => y -= 1,
-                Move::East => x += 1,
-                Move::West => x -= 1,
-            }
-            houses.insert((x, y));
+        let mut pos = Vec2::new(0, 0);
+        houses.insert(pos);
+        for &m in &self.moves {
+            pos += m;
+            houses.insert(pos);
         }
         Ok(houses.len())
     }
 
     fn part2(self) -> Result<usize> {
         let mut houses = HashSet::new();
-        let mut santa_x = 0;
-        let mut santa_y = 0;
+        let mut santa = Vec2::new(0, 0);
+        let mut robot = Vec2::new(0, 0);
 
-        let mut robo_x = 0;
-        let mut robo_y = 0;
+        houses.insert(santa);
 
-        houses.insert((santa_x, santa_y));
-
-        for (i, m) in self.moves.iter().enumerate() {
-            let (x, y) = match i % 2 {
-                0 => (&mut santa_x, &mut santa_y),
-                1 => (&mut robo_x, &mut robo_y),
-                _ => unreachable!(),
-            };
-            match m {
-                Move::North => *y += 1,
-                Move::South => *y -= 1,
-                Move::East => *x += 1,
-                Move::West => *x -= 1,
+        for (i, &m) in self.moves.iter().enumerate() {
+            if i % 2 == 0 {
+                santa += m;
+                houses.insert(santa);
+            } else {
+                robot += m;
+                houses.insert(robot);
             }
-            houses.insert((*x, *y));
         }
 
         Ok(houses.len())

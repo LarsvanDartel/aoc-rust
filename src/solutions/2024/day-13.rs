@@ -8,27 +8,21 @@ struct Game {
 }
 
 impl Game {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, btn_a) = preceded(
-            tag("Button A: X+"),
-            separated_pair(digit1, tag(", Y+"), digit1),
-        )(input)?;
-        let (input, _) = line_ending(input)?;
-        let (input, btn_b) = preceded(
-            tag("Button B: X+"),
-            separated_pair(digit1, tag(", Y+"), digit1),
-        )(input)?;
-        let (input, _) = line_ending(input)?;
-        let (input, prize) = preceded(
-            tag("Prize: X="),
-            separated_pair(digit1, tag(", Y="), digit1),
-        )(input)?;
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let btn_a = preceded("Button A: X+", separated_pair(dec_isize, ", Y+", dec_isize))
+            .parse_next(input)?;
+        let _ = line_ending(input)?;
+        let btn_b = preceded("Button B: X+", separated_pair(dec_isize, ", Y+", dec_isize))
+            .parse_next(input)?;
+        let _ = line_ending(input)?;
+        let prize = preceded("Prize: X=", separated_pair(dec_isize, ", Y=", dec_isize))
+            .parse_next(input)?;
 
-        let a = Vec2::new(btn_a.0.parse().unwrap(), btn_a.1.parse().unwrap());
-        let b = Vec2::new(btn_b.0.parse().unwrap(), btn_b.1.parse().unwrap());
-        let prize = Vec2::new(prize.0.parse().unwrap(), prize.1.parse().unwrap());
-
-        Ok((input, Game { a, b, prize }))
+        Ok(Self {
+            a: btn_a.into(),
+            b: btn_b.into(),
+            prize: prize.into(),
+        })
     }
 
     fn cost(&self, offset: isize) -> Option<isize> {
@@ -52,10 +46,10 @@ struct Day13 {
 }
 
 impl Problem<isize, isize> for Day13 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending.and(line_ending), Game::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Game::parse, (line_ending, line_ending))
             .map(|games| Day13 { games })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<isize> {

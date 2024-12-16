@@ -1,4 +1,5 @@
 use aoc_rust::*;
+use common::*;
 
 struct Day10 {
     seq: String,
@@ -29,13 +30,10 @@ impl Day10 {
 }
 
 impl Problem<usize, usize> for Day10 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Self {
-                seq: input.trim().to_string(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Self {
+            seq: input.trim().to_string(),
+        })
     }
 
     fn part1(self) -> Result<usize> {

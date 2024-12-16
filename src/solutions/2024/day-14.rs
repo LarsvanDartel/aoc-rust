@@ -8,18 +8,15 @@ struct Robot {
 }
 
 impl Robot {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, _) = tag("p=")(input)?;
-        let (input, pos) = separated_pair(parse_i32, tag(","), parse_i32)(input)?;
-        let (input, _) = tag(" v=")(input)?;
-        let (input, vel) = separated_pair(parse_i32, tag(","), parse_i32)(input)?;
-        Ok((
-            input,
-            Robot {
-                pos: pos.into(),
-                vel: vel.into(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let _ = "p=".parse_next(input)?;
+        let pos = separated_pair(dec_i32, ",", dec_i32).parse_next(input)?;
+        let _ = " v=".parse_next(input)?;
+        let vel = separated_pair(dec_i32, ",", dec_i32).parse_next(input)?;
+        Ok(Robot {
+            pos: pos.into(),
+            vel: vel.into(),
+        })
     }
 }
 
@@ -28,10 +25,10 @@ struct Day14 {
 }
 
 impl Problem<usize, usize> for Day14 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Robot::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Robot::parse, line_ending)
             .map(|robots| Day14 { robots })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

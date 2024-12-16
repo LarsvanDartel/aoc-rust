@@ -8,13 +8,13 @@ enum Command {
 }
 
 impl Command {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            preceded(tag("forward "), parse_i32).map(Command::Forward),
-            preceded(tag("up "), parse_i32).map(Command::Up),
-            preceded(tag("down "), parse_i32).map(Command::Down),
+            preceded("forward ", dec_int).map(Command::Forward),
+            preceded("up ", dec_int).map(Command::Up),
+            preceded("down ", dec_int).map(Command::Down),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -23,10 +23,10 @@ struct Day02 {
 }
 
 impl Problem<i32, i32> for Day02 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Command::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Command::parse, line_ending)
             .map(|commands| Day02 { commands })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<i32> {
@@ -52,7 +52,7 @@ impl Problem<i32, i32> for Day02 {
                 Command::Forward(distance) => {
                     horizontal += distance;
                     depth += aim * distance;
-                }
+                },
                 Command::Up(distance) => aim -= distance,
                 Command::Down(distance) => aim += distance,
             }

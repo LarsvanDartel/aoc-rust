@@ -1,16 +1,6 @@
 use aoc_rust::*;
+use common::*;
 use itertools::Itertools;
-
-use std::collections::{HashMap, HashSet};
-
-use nom::{
-    branch::alt,
-    bytes::complete::{tag, take_until},
-    character::complete::{i32 as number, line_ending},
-    multi::separated_list1,
-    sequence::{delimited, tuple},
-    Parser,
-};
 
 struct Day13 {
     happiness: HashMap<(String, String), i32>,
@@ -29,29 +19,26 @@ impl Day13 {
 }
 
 impl Problem<i32, i32> for Day13 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(
-            line_ending,
-            tuple((
-                take_until(" would").map(|s: &str| s.to_string()),
-                alt((
-                    tag(" would gain ").map(|_| 1),
-                    tag(" would lose ").map(|_| -1),
-                )),
-                number,
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(
+            0..,
+            (
+                alpha1.map(|s: &str| s.to_string()),
+                alt((" would gain ".map(|_| 1), " would lose ".map(|_| -1))),
+                dec_int::<_, i32, _>,
                 delimited(
-                    tag(" happiness units by sitting next to "),
-                    take_until("."),
-                    tag("."),
-                )
-                .map(|s: &str| s.to_string()),
-            ))
-            .map(|(a, sign, n, b)| ((a, b), sign * n)),
+                    " happiness units by sitting next to ",
+                    alpha1.map(|s: &str| s.to_string()),
+                    '.',
+                ),
+            )
+                .map(|(a, sign, n, b)| ((a, b), sign * n)),
+            line_ending,
         )
-        .map(|pairs| Day13 {
+        .map(|pairs: Vec<((String, String), i32)>| Day13 {
             happiness: pairs.into_iter().collect(),
         })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<i32> {

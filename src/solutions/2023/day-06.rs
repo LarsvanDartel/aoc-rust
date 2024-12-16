@@ -1,12 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    bytes::complete::tag,
-    character::complete::{i128 as parse_i128, line_ending, space1},
-    multi::separated_list1,
-    sequence::{preceded, separated_pair},
-    Parser,
-};
+use common::*;
 
 struct Day06 {
     races: Vec<Race>,
@@ -34,15 +27,9 @@ impl Race {
 }
 
 impl Problem<i128, i128> for Day06 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let times = preceded(
-            preceded(tag("Time:"), space1),
-            separated_list1(space1, parse_i128),
-        );
-        let distances = preceded(
-            preceded(tag("Distance:"), space1),
-            separated_list1(space1, parse_i128),
-        );
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let times = preceded(("Time:", space1), list(dec_i128, space1));
+        let distances = preceded(("Distance:", space1), list(dec_i128, space1));
 
         separated_pair(times, line_ending, distances)
             .map(|(times, distances)| {
@@ -53,7 +40,7 @@ impl Problem<i128, i128> for Day06 {
                     .collect();
                 Self { races }
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<i128> {

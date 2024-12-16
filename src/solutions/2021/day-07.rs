@@ -6,10 +6,10 @@ struct Day07 {
 }
 
 impl Problem<usize, usize> for Day07 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(tag(","), parse_i32)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., dec_int::<_, i32, _>, ',')
             .map(|crabs| Day07 { crabs })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

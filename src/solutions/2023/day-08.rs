@@ -1,16 +1,6 @@
-use std::collections::HashMap;
-
 use aoc_rust::*;
+use common::*;
 use num_integer::Integer;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{alpha1, line_ending},
-    multi::{many1, separated_list1},
-    sequence::{preceded, separated_pair, terminated},
-    Parser,
-};
 
 struct Day08 {
     moves: Vec<Move>,
@@ -24,34 +14,36 @@ enum Move {
 }
 
 impl Move {
-    fn parse(input: &str) -> ParseResult<Move> {
-        alt((tag("L").map(|_| Move::Left), tag("R").map(|_| Move::Right))).parse(input)
+    fn parse(input: &mut &str) -> PResult<Move> {
+        one_of(['L', 'R'])
+            .map(|c| match c {
+                'L' => Move::Left,
+                'R' => Move::Right,
+                _ => unreachable!(),
+            })
+            .parse_next(input)
     }
 }
 
 impl Problem<usize, usize> for Day08 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         let node = separated_pair(
             alpha1,
-            tag(" = "),
-            preceded(
-                tag("("),
-                terminated(separated_pair(alpha1, tag(", "), alpha1), tag(")")),
-            ),
+            " = ",
+            delimited("(", separated_pair(alpha1, ", ", alpha1), ")"),
         );
 
-        let nodes =
-            separated_list1(line_ending, node).map(|nodes_repr: Vec<(&str, (&str, &str))>| {
-                let mut network: HashMap<String, (String, String)> = HashMap::new();
-                for (name, (left, right)) in nodes_repr {
-                    network.insert(name.to_string(), (left.to_string(), right.to_string()));
-                }
-                network
-            });
+        let nodes = list(node, line_ending).map(|nodes_repr: Vec<(&str, (&str, &str))>| {
+            let mut network: HashMap<String, (String, String)> = HashMap::new();
+            for (name, (left, right)) in nodes_repr {
+                network.insert(name.to_string(), (left.to_string(), right.to_string()));
+            }
+            network
+        });
 
-        separated_pair(many1(Move::parse), line_ending.and(line_ending), nodes)
+        separated_pair(many(Move::parse), (line_ending, line_ending), nodes)
             .map(|(moves, network)| Self { moves, network })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

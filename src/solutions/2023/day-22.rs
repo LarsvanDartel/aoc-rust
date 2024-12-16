@@ -1,12 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    bytes::complete::tag,
-    character::complete::{newline, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::tuple,
-    Parser,
-};
+use common::*;
 
 struct Day22 {
     bricks: Vec<Brick>,
@@ -23,29 +16,19 @@ struct Brick {
 }
 
 impl Brick {
-    fn parse(input: &str) -> ParseResult<Self> {
-        tuple((
-            parse_u32,
-            tag(","),
-            parse_u32,
-            tag(","),
-            parse_u32,
-            tag("~"),
-            parse_u32,
-            tag(","),
-            parse_u32,
-            tag(","),
-            parse_u32,
-        ))
-        .map(|(x0, _, y0, _, z0, _, x1, _, y1, _, z1)| Brick {
-            x0,
-            x1,
-            y0,
-            y1,
-            z0,
-            z1,
-        })
-        .parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        (
+            dec_u32, ",", dec_u32, ",", dec_u32, "~", dec_u32, ",", dec_u32, ",", dec_u32,
+        )
+            .map(|(x0, _, y0, _, z0, _, x1, _, y1, _, z1)| Brick {
+                x0,
+                x1,
+                y0,
+                y1,
+                z0,
+                z1,
+            })
+            .parse_next(input)
     }
 }
 
@@ -82,10 +65,10 @@ fn drop_brick(brick: &Brick, tallest: &mut [[u32; 10]; 10]) -> Brick {
 }
 
 impl Problem<usize, usize> for Day22 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(newline, Brick::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Brick::parse, line_ending)
             .map(|bricks| Self { bricks })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

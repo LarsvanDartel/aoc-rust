@@ -1,13 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{digit1, line_ending, one_of},
-    multi::separated_list0,
-    sequence::{terminated, tuple},
-    Parser,
-};
+use common::*;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Register {
@@ -16,14 +8,14 @@ enum Register {
 }
 
 impl Register {
-    fn parse(input: &str) -> ParseResult<Self> {
-        one_of("ab")
+    fn parse(input: &mut &str) -> PResult<Self> {
+        one_of(['a', 'b'])
             .map(|c| match c {
                 'a' => Self::A,
                 'b' => Self::B,
                 _ => unreachable!(),
             })
-            .parse(input)
+            .parse_next(input)
     }
 }
 
@@ -47,24 +39,24 @@ enum Instruction {
 }
 
 impl Instruction {
-    fn parse(input: &str) -> ParseResult<Self> {
-        fn number(input: &str) -> ParseResult<isize> {
-            let (input, sign) = one_of("+-")(input)?;
-            let (input, number) = digit1(input)?;
-            let number = number.parse::<isize>().unwrap();
-            Ok((input, if sign == '+' { number } else { -number } - 1))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        fn number(input: &mut &str) -> PResult<isize> {
+            let sign = one_of(['+', '-']).parse_next(input)?;
+            let number: isize = dec_int(input)?;
+            Ok(if sign == '+' { number } else { -number } - 1)
         }
+
         alt((
-            tuple((tag("hlf "), Register::parse)).map(|(_, r)| Self::Half(r)),
-            tuple((tag("tpl "), Register::parse)).map(|(_, r)| Self::Triple(r)),
-            tuple((tag("inc "), Register::parse)).map(|(_, r)| Self::Increment(r)),
-            tuple((tag("jmp "), number)).map(|(_, n)| Self::Jump(n)),
-            tuple((tag("jie "), terminated(Register::parse, tag(", ")), number))
-                .map(|(_, r, n)| Self::JumpIfEven(r, n)),
-            tuple((tag("jio "), terminated(Register::parse, tag(", ")), number))
-                .map(|(_, r, n)| Self::JumpIfOne(r, n)),
+            preceded("hlf ", Register::parse).map(Self::Half),
+            preceded("tpl ", Register::parse).map(Self::Triple),
+            preceded("inc ", Register::parse).map(Self::Increment),
+            preceded("jmp ", number).map(Self::Jump),
+            preceded("jie ", separated_pair(Register::parse, ", ", number))
+                .map(|(r, n)| Self::JumpIfEven(r, n)),
+            preceded("jio ", separated_pair(Register::parse, ", ", number))
+                .map(|(r, n)| Self::JumpIfOne(r, n)),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 
     fn apply(&self, registers: &mut [u32; 2], instruction_pointer: &mut usize) {
@@ -77,12 +69,12 @@ impl Instruction {
                 if registers[usize::from(*r)] % 2 == 0 {
                     *instruction_pointer = (*instruction_pointer as isize + n) as usize;
                 }
-            }
+            },
             Self::JumpIfOne(r, n) => {
                 if registers[usize::from(*r)] == 1 {
                     *instruction_pointer = (*instruction_pointer as isize + n) as usize;
                 }
-            }
+            },
         }
     }
 }
@@ -104,14 +96,14 @@ impl Day23 {
 }
 
 impl Problem<u32, u32> for Day23 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list0(line_ending, Instruction::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Instruction::parse, line_ending)
             .map(|instructions| Self {
                 instructions,
                 instruction_pointer: 0,
                 registers: [0, 0],
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<u32> {

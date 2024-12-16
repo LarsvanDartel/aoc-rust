@@ -9,19 +9,17 @@ struct Day05 {
 }
 
 impl Problem<u32, u32> for Day05 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         separated_pair(
-            separated_list1(line_ending, separated_pair(parse_u32, tag("|"), parse_u32)).map(
-                |orderings| {
-                    let mut rules = HashMap::new();
-                    for (a, b) in orderings {
-                        rules.entry(b).or_insert_with(HashSet::new).insert(a);
-                    }
-                    rules
-                },
-            ),
-            line_ending.and(line_ending),
-            separated_list1(line_ending, separated_list1(tag(","), parse_u32)),
+            list(separated_pair(dec_u32, "|", dec_u32), line_ending).map(|orderings| {
+                let mut rules = HashMap::new();
+                for (a, b) in orderings {
+                    rules.entry(b).or_insert_with(HashSet::new).insert(a);
+                }
+                rules
+            }),
+            (line_ending, line_ending),
+            list(list(dec_u32, ','), line_ending),
         )
         .map(|(mut rules, updates)| {
             for update in &updates {
@@ -39,7 +37,7 @@ impl Problem<u32, u32> for Day05 {
                 unsorted_updates,
             }
         })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

@@ -1,11 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    bytes::complete::tag,
-    character::complete::{alpha1, i32 as number, line_ending},
-    multi::separated_list1,
-    Parser,
-};
+use common::*;
 
 struct Day15 {
     ingredients: Vec<Ingredient>,
@@ -23,37 +17,34 @@ struct Ingredient {
 }
 
 impl Ingredient {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, name) = alpha1(input)?;
-        let (input, _) = tag(": capacity ")(input)?;
-        let (input, capacity) = number(input)?;
-        let (input, _) = tag(", durability ")(input)?;
-        let (input, durability) = number(input)?;
-        let (input, _) = tag(", flavor ")(input)?;
-        let (input, flavor) = number(input)?;
-        let (input, _) = tag(", texture ")(input)?;
-        let (input, texture) = number(input)?;
-        let (input, _) = tag(", calories ")(input)?;
-        let (input, calories) = number(input)?;
-        Ok((
-            input,
-            Ingredient {
-                name: name.to_string(),
-                capacity,
-                durability,
-                flavor,
-                texture,
-                calories,
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let name = alpha1(input)?;
+        let _ = ": capacity ".parse_next(input)?;
+        let capacity = dec_int(input)?;
+        let _ = ", durability ".parse_next(input)?;
+        let durability = dec_int(input)?;
+        let _ = ", flavor ".parse_next(input)?;
+        let flavor = dec_int(input)?;
+        let _ = ", texture ".parse_next(input)?;
+        let texture = dec_int(input)?;
+        let _ = ", calories ".parse_next(input)?;
+        let calories = dec_int(input)?;
+        Ok(Ingredient {
+            name: name.to_string(),
+            capacity,
+            durability,
+            flavor,
+            texture,
+            calories,
+        })
     }
 }
 
 impl Problem<i32, i32> for Day15 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Ingredient::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Ingredient::parse, line_ending)
             .map(|ingredients| Self { ingredients })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<i32> {

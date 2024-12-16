@@ -1,15 +1,8 @@
-use aoc_rust::common::{Vec2, Vec3};
 use aoc_rust::*;
+use common::*;
 
 use ndarray::prelude::*;
 use ndarray_linalg::Solve;
-use nom::{
-    bytes::complete::tag,
-    character::complete::{i64 as parse_i64, newline, space1},
-    multi::separated_list1,
-    sequence::{delimited, separated_pair, tuple},
-    Parser,
-};
 
 struct Day24 {
     hailstones: Vec<HailStone>,
@@ -21,23 +14,17 @@ struct HailStone {
     vel: Vec3<i64>,
 }
 
-fn parse_vec3(input: &str) -> ParseResult<Vec3<i64>> {
-    tuple((
-        parse_i64,
-        tag(",").and(space1),
-        parse_i64,
-        tag(",").and(space1),
-        parse_i64,
-    ))
-    .map(|(x, _, y, _, z)| Vec3::new(x, y, z))
-    .parse(input)
+fn parse_vec3(input: &mut &str) -> PResult<Vec3<i64>> {
+    (dec_i64, (",", space1), dec_i64, (",", space1), dec_i64)
+        .map(|(x, _, y, _, z)| Vec3::new(x, y, z))
+        .parse_next(input)
 }
 
 impl HailStone {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_pair(parse_vec3, delimited(space1, tag("@"), space1), parse_vec3)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated_pair(parse_vec3, delimited(space1, "@", space1), parse_vec3)
             .map(|(pos, vel)| Self { pos, vel })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn intersects(&self, other: &Self) -> Option<(f64, f64)> {
@@ -75,10 +62,10 @@ impl std::fmt::Debug for HailStone {
 }
 
 impl Problem<usize, i64> for Day24 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(newline, HailStone::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(HailStone::parse, line_ending)
             .map(|hailstones| Self { hailstones })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

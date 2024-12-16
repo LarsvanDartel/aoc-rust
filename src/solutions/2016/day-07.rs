@@ -1,12 +1,5 @@
 use aoc_rust::*;
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{alpha1, line_ending},
-    multi::{many1, separated_list1},
-    sequence::delimited,
-    Parser,
-};
+use common::*;
 
 struct Day07 {
     ip_addresses: Vec<IpAddress>,
@@ -17,10 +10,10 @@ struct IpAddress {
 }
 
 impl IpAddress {
-    fn parse(input: &str) -> ParseResult<Self> {
-        many1(IpPart::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        repeat(0.., IpPart::parse)
             .map(|parts| IpAddress { parts })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn supports_tls(&self) -> bool {
@@ -61,9 +54,9 @@ struct IpPart {
 }
 
 impl IpPart {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            delimited(tag("["), alpha1, tag("]")).map(|s: &str| IpPart {
+            delimited("[", alpha1, "]").map(|s: &str| IpPart {
                 is_hypernet: true,
                 value: s.to_string(),
             }),
@@ -72,7 +65,7 @@ impl IpPart {
                 value: s.to_string(),
             }),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 
     fn has_abba(&self) -> Option<bool> {
@@ -106,10 +99,10 @@ impl IpPart {
 }
 
 impl Problem<usize, usize> for Day07 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, IpAddress::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., IpAddress::parse, line_ending)
             .map(|ip_addresses| Day07 { ip_addresses })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

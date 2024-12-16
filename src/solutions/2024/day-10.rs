@@ -1,6 +1,5 @@
 use aoc_rust::*;
 use common::*;
-use hashbrown::HashSet;
 
 struct Day10 {
     grid: Grid<u8>,
@@ -25,10 +24,10 @@ impl Day10 {
 }
 
 impl Problem<usize, usize> for Day10 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Grid::parse(verify(anychar, char::is_ascii_digit).map(|c| c as u8 - b'0'))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Grid::parse(anychar.verify(char::is_ascii_digit).map(|c| c as u8 - b'0'))
             .map(|grid| Day10 { grid })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

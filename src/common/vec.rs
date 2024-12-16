@@ -161,6 +161,24 @@ impl<T: std::hash::Hash> std::hash::Hash for Vec2<T> {
     }
 }
 
+impl<T: std::cmp::PartialOrd> std::cmp::PartialOrd for Vec2<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.x.partial_cmp(&other.x).and_then(|o| {
+            if o == std::cmp::Ordering::Equal {
+                self.y.partial_cmp(&other.y)
+            } else {
+                Some(o)
+            }
+        })
+    }
+}
+
+impl<T: std::cmp::Ord> std::cmp::Ord for Vec2<T> {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.x.cmp(&other.x).then(self.y.cmp(&other.y))
+    }
+}
+
 impl<T> From<(T, T)> for Vec2<T> {
     fn from((x, y): (T, T)) -> Self {
         Self { x, y }

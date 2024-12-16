@@ -1,11 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    bytes::complete::tag,
-    character::complete::{line_ending, u32 as number},
-    multi::separated_list1,
-    Parser,
-};
+use common::*;
 
 struct Day02 {
     presents: Vec<Present>,
@@ -18,21 +12,21 @@ struct Present {
 }
 
 impl Present {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, l) = number.parse(input)?;
-        let (input, _) = tag("x")(input)?;
-        let (input, w) = number.parse(input)?;
-        let (input, _) = tag("x")(input)?;
-        let (input, h) = number.parse(input)?;
-        Ok((input, Self { l, w, h }))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let l = dec_uint.parse_next(input)?;
+        let _ = 'x'.parse_next(input)?;
+        let w = dec_uint.parse_next(input)?;
+        let _ = 'x'.parse_next(input)?;
+        let h = dec_uint.parse_next(input)?;
+        Ok(Self { l, w, h })
     }
 }
 
 impl Problem<u32, u32> for Day02 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Present::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Present::parse, line_ending)
             .map(|presents| Self { presents })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

@@ -1,10 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    character::complete::{alphanumeric1, line_ending},
-    multi::separated_list1,
-    Parser,
-};
+use common::*;
 
 struct Day01 {
     values: Vec<CalibrationValue>,
@@ -15,12 +10,12 @@ struct CalibrationValue {
 }
 
 impl CalibrationValue {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alphanumeric1
             .map(|value: &str| Self {
                 line: value.to_string(),
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn value(&self) -> u32 {
@@ -57,10 +52,10 @@ impl CalibrationValue {
 }
 
 impl Problem<u32, u32> for Day01 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, CalibrationValue::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(CalibrationValue::parse, line_ending)
             .map(|values| Self { values })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

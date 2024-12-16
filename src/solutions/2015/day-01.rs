@@ -1,6 +1,5 @@
 use aoc_rust::*;
-
-use nom::{branch::alt, bytes::complete::tag, multi::many1, Parser};
+use common::*;
 
 struct Day01 {
     moves: Vec<Move>,
@@ -12,10 +11,9 @@ enum Move {
 }
 
 impl Move {
-    fn parse(input: &str) -> ParseResult<Self> {
-        alt((tag("(").map(|_| Move::Up), tag(")").map(|_| Move::Down))).parse(input)
+    fn parse(input: &mut &str) -> PResult<Move> {
+        alt(('('.map(|_| Move::Up), ')'.map(|_| Move::Down))).parse_next(input)
     }
-
     fn apply(&self, floor: i32) -> i32 {
         match self {
             Move::Up => floor + 1,
@@ -25,8 +23,10 @@ impl Move {
 }
 
 impl Problem<i32, usize> for Day01 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        many1(Move::parse).map(|moves| Self { moves }).parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        repeat(0.., Move::parse)
+            .map(|moves| Day01 { moves })
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<i32> {

@@ -5,8 +5,7 @@ use clap::Parser;
 
 pub use error::AoCError;
 pub use error::Result;
-
-pub type ParseResult<'a, T> = nom::IResult<&'a str, T>;
+use winnow::PResult;
 
 #[derive(Parser, Debug)]
 pub struct Args {
@@ -25,13 +24,13 @@ where
     T2: std::fmt::Debug,
     Self: Sized,
 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         Self::parse_1(input)
     }
-    fn parse_1(input: &str) -> ParseResult<Self> {
+    fn parse_1(input: &mut &str) -> PResult<Self> {
         Self::parse(input)
     }
-    fn parse_2(input: &str) -> ParseResult<Self> {
+    fn parse_2(input: &mut &str) -> PResult<Self> {
         Self::parse(input)
     }
     fn part1(self) -> Result<T1>;
@@ -46,9 +45,9 @@ macro_rules! aoc_main {
 
             println!("🎄 Running part 1...");
 
+            let mut input_1 = input.as_str();
             let start = std::time::Instant::now();
-            let task1 = <$problem>::parse_1(&input);
-            let task1 = aoc_main!(@finalize task1)?.1;
+            let task1 = <$problem>::parse_1(&mut input_1)?;
             let duration = start.elapsed();
 
             println!("🎄 Task 1 parsed in: {:?}", duration);
@@ -62,9 +61,10 @@ macro_rules! aoc_main {
             println!();
             println!("🎄 Running part 2...");
 
+
+            let mut input_2 = input.as_str();
             let start = std::time::Instant::now();
-            let task2 = <$problem>::parse_2(&input);
-            let task2 = aoc_main!(@finalize task2)?.1;
+            let task2 = <$problem>::parse_2(&mut input_2)?;
             let duration = start.elapsed();
 
             println!("🎄 Task 2 parsed in: {:?}", duration);
@@ -82,27 +82,29 @@ macro_rules! aoc_main {
     (@input) => {
         <$crate::Args as ::clap::Parser>::parse().input()?
     };
-    (@finalize $input:expr) => {
-        ::nom::Finish::finish($input)
-    }
 }
 
 #[macro_export]
 macro_rules! assert_task {
     ($problem:ty, $task:expr, $input:expr, $expected:expr) => {{
-        let input = $input.trim();
+        let mut input = $input.trim();
 
         let task = match $task {
-            1 => <$problem>::parse_1(input),
-            2 => <$problem>::parse_2(input),
+            1 => <$problem>::parse_1(&mut input),
+            2 => <$problem>::parse_2(&mut input),
             _ => panic!("Invalid task number"),
-        };
-
-        let task = aoc_main!(@finalize task).unwrap().1;
+        }
+        .unwrap();
 
         match $task {
-            1 => assert_eq!(format!("{:?}", task.part1().unwrap()), format!("{:?}", $expected)),
-            2 => assert_eq!(format!("{:?}", task.part2().unwrap()), format!("{:?}", $expected)),
+            1 => assert_eq!(
+                format!("{:?}", task.part1().unwrap()),
+                format!("{:?}", $expected)
+            ),
+            2 => assert_eq!(
+                format!("{:?}", task.part2().unwrap()),
+                format!("{:?}", $expected)
+            ),
             _ => panic!("Invalid task number"),
         }
     }};

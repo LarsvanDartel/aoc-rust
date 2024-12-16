@@ -6,10 +6,10 @@ struct Day04 {
 }
 
 impl Problem<usize, usize> for Day04 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Grid::parse(one_of("XMAS").map(|c| c as u8))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Grid::parse(one_of(('X', 'M', 'A', 'S')).map(|c| c as u8))
             .map(|grid| Self { grid })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

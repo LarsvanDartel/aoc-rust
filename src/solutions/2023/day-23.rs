@@ -1,12 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::newline,
-    multi::{many1, separated_list1},
-    Parser,
-};
+use common::*;
 
 struct Day23 {
     map: Vec<Vec<Path>>,
@@ -31,8 +24,9 @@ enum Direction {
 
 impl Direction {
     fn all() -> impl Iterator<Item = Self> {
-        use Direction::*;
-        [North, South, East, West].iter().copied()
+        [Self::North, Self::South, Self::East, Self::West]
+            .iter()
+            .copied()
     }
 }
 
@@ -40,12 +34,11 @@ impl std::ops::Add<Direction> for (usize, usize) {
     type Output = (usize, usize);
 
     fn add(self, rhs: Direction) -> Self::Output {
-        use Direction::*;
         match rhs {
-            North => (self.0 - 1, self.1),
-            South => (self.0 + 1, self.1),
-            East => (self.0, self.1 + 1),
-            West => (self.0, self.1 - 1),
+            Direction::North => (self.0 - 1, self.1),
+            Direction::South => (self.0 + 1, self.1),
+            Direction::East => (self.0, self.1 + 1),
+            Direction::West => (self.0, self.1 - 1),
         }
     }
 }
@@ -136,17 +129,17 @@ fn max_distance(
 }
 
 impl Problem<usize, usize> for Day23 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(
-            newline,
-            many1(alt((
-                tag(".").map(|_| Path::Empty),
-                tag("#").map(|_| Path::Wall),
-                tag("^").map(|_| Path::Slope(Direction::North)),
-                tag("v").map(|_| Path::Slope(Direction::South)),
-                tag("<").map(|_| Path::Slope(Direction::West)),
-                tag(">").map(|_| Path::Slope(Direction::East)),
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(
+            many(alt((
+                ".".map(|_| Path::Empty),
+                "#".map(|_| Path::Wall),
+                "^".map(|_| Path::Slope(Direction::North)),
+                "v".map(|_| Path::Slope(Direction::South)),
+                "<".map(|_| Path::Slope(Direction::West)),
+                ">".map(|_| Path::Slope(Direction::East)),
             ))),
+            line_ending,
         )
         .map(|map| {
             let start = (0, map[0].iter().position(|p| p == &Path::Empty).unwrap());
@@ -159,7 +152,7 @@ impl Problem<usize, usize> for Day23 {
             );
             Self { map, start, end }
         })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

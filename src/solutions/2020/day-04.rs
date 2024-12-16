@@ -1,6 +1,5 @@
 use aoc_rust::*;
 use common::*;
-use hashbrown::HashMap;
 
 #[derive(Debug)]
 struct Passport {
@@ -8,19 +7,20 @@ struct Passport {
 }
 
 impl Passport {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(
+            0..,
+            separated_pair(
+                alpha1.map(String::from),
+                ':',
+                take_till(0.., char::is_whitespace).map(String::from),
+            ),
             alt((space1, line_ending)),
-            separated_pair(alpha1, char(':'), take_till(char::is_whitespace)),
         )
-        .map(|fields| {
-            let fields = fields
-                .into_iter()
-                .map(|(k, v): (&str, &str)| (k.to_string(), v.to_string()))
-                .collect();
-            Passport { fields }
+        .map(|fields: Vec<(String, String)>| Passport {
+            fields: fields.into_iter().collect(),
         })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn is_valid(&self) -> bool {
@@ -34,15 +34,15 @@ impl Passport {
                 "byr" => {
                     let year = v.parse::<u32>().unwrap();
                     (1920..=2002).contains(&year)
-                }
+                },
                 "iyr" => {
                     let year = v.parse::<u32>().unwrap();
                     (2010..=2020).contains(&year)
-                }
+                },
                 "eyr" => {
                     let year = v.parse::<u32>().unwrap();
                     (2020..=2030).contains(&year)
-                }
+                },
                 "hgt" => {
                     let unit = &v[v.len() - 2..];
                     let value = v[..v.len() - 2].parse::<u32>().unwrap();
@@ -51,12 +51,12 @@ impl Passport {
                         "in" => (59..=76).contains(&value),
                         _ => false,
                     }
-                }
+                },
                 "hcl" => {
                     v.len() == 7
                         && v.starts_with('#')
                         && v.chars().skip(1).all(|c| c.is_ascii_hexdigit())
-                }
+                },
                 "ecl" => ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(&v.as_str()),
                 "pid" => v.len() == 9 && v.chars().all(char::is_numeric),
                 _ => true,
@@ -69,10 +69,10 @@ struct Day04 {
 }
 
 impl Problem<usize, usize> for Day04 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending.and(line_ending), Passport::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Passport::parse, line_ending)
             .map(|passports| Day04 { passports })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

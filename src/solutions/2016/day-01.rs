@@ -1,12 +1,5 @@
-use std::collections::HashSet;
-
-use aoc_rust::common::{Direction, Vec2};
 use aoc_rust::*;
-
-use nom::{
-    branch::alt, bytes::complete::tag, character::complete::u32 as parse_u32,
-    multi::separated_list1, Parser,
-};
+use common::*;
 
 struct Day01 {
     instructions: Vec<Instruction>,
@@ -18,17 +11,13 @@ struct Instruction {
 }
 
 impl Instruction {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, turn_direction) =
-            alt((tag("R").map(|_| true), tag("L").map(|_| false))).parse(input)?;
-        let (input, distance) = parse_u32(input)?;
-        Ok((
-            input,
-            Instruction {
-                turn_direction,
-                distance,
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let turn_direction = one_of(['R', 'L']).map(|c| c == 'R').parse_next(input)?;
+        let distance = dec_uint(input)?;
+        Ok(Instruction {
+            turn_direction,
+            distance,
+        })
     }
 }
 
@@ -40,10 +29,10 @@ impl std::fmt::Debug for Instruction {
 }
 
 impl Problem<isize, isize> for Day01 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(tag(", "), Instruction::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Instruction::parse, ", ")
             .map(|instructions| Self { instructions })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<isize> {

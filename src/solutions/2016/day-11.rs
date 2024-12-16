@@ -1,14 +1,7 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::VecDeque;
 
 use aoc_rust::*;
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::line_ending,
-    multi::separated_list1,
-    sequence::{delimited, preceded, terminated},
-    Parser,
-};
+use common::*;
 
 #[derive(Clone)]
 struct Day11 {
@@ -23,15 +16,15 @@ enum Item {
 }
 
 impl Item {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         preceded(
-            tag("a "),
+            "a ",
             alt((
-                terminated(Element::parse, tag("-compatible microchip")).map(Self::MicroChip),
-                terminated(Element::parse, tag(" generator")).map(Self::Generator),
+                terminated(Element::parse, "-compatible microchip").map(Self::MicroChip),
+                terminated(Element::parse, " generator").map(Self::Generator),
             )),
         )
-        .parse(input)
+        .parse_next(input)
     }
 
     fn custom_hash(&self) -> u16 {
@@ -56,15 +49,15 @@ enum Element {
 impl Element {
     const N_ELEMENTS: usize = 7;
 
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            tag("thulium").map(|_| Self::Thulium),
-            tag("plutonium").map(|_| Self::Plutonium),
-            tag("strontium").map(|_| Self::Strontium),
-            tag("promethium").map(|_| Self::Promethium),
-            tag("ruthenium").map(|_| Self::Ruthenium),
+            "thulium".map(|_| Self::Thulium),
+            "plutonium".map(|_| Self::Plutonium),
+            "strontium".map(|_| Self::Strontium),
+            "promethium".map(|_| Self::Promethium),
+            "ruthenium".map(|_| Self::Ruthenium),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -180,35 +173,31 @@ impl Day11 {
 }
 
 impl Problem<usize, usize> for Day11 {
-    fn parse(mut input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         const FLOORS: [&str; 4] = ["first", "second", "third", "fourth"];
 
-        fn parse_floor<'a>(floor: &str, input: &'a str) -> ParseResult<'a, Vec<Item>> {
+        fn parse_floor(floor: &str, input: &mut &str) -> PResult<Vec<Item>> {
             delimited(
-                tag(format!("The {} floor contains ", floor).as_str()),
+                format!("The {} floor contains ", floor).as_str(),
                 alt((
-                    separated_list1(alt((tag(" and "), tag(", and "), tag(", "))), Item::parse),
-                    tag("nothing relevant").map(|_| Vec::new()),
+                    separated(1.., Item::parse, alt((" and ", ", and ", ", "))),
+                    "nothing relevant".map(|_| Vec::new()),
                 )),
-                tag(".").and(line_ending),
+                (".", line_ending),
             )
-            .parse(input)
+            .parse_next(input)
         }
 
         let mut floors: [HashSet<Item>; 4] = Default::default();
         for (i, floor) in FLOORS.iter().enumerate() {
-            let floor_vec;
-            (input, floor_vec) = parse_floor(floor, input)?;
+            let floor_vec = parse_floor(floor, input)?;
             floors[i] = floor_vec.into_iter().collect();
         }
 
-        Ok((
-            input,
-            Self {
-                floors,
-                elevator: 0,
-            },
-        ))
+        Ok(Self {
+            floors,
+            elevator: 0,
+        })
     }
 
     fn part1(self) -> Result<usize> {

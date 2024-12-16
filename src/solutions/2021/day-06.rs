@@ -6,16 +6,16 @@ struct Day06 {
 }
 
 impl Problem<usize, usize> for Day06 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(tag(","), parse_u32)
-            .map(|v| {
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., dec_uint::<_, usize, _>, ',')
+            .map(|v: Vec<usize>| {
                 let mut fish = [0; 9];
                 for i in v {
-                    fish[i as usize] += 1;
+                    fish[i] += 1;
                 }
                 Self { fish }
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

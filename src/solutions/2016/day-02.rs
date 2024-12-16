@@ -1,11 +1,5 @@
-use aoc_rust::common::{Direction, Vec2};
 use aoc_rust::*;
-
-use nom::{
-    character::complete::line_ending,
-    multi::{many1, separated_list1},
-    Parser,
-};
+use common::*;
 
 struct Day02 {
     instructions: Vec<Instruction>,
@@ -16,18 +10,18 @@ struct Instruction {
 }
 
 impl Instruction {
-    fn parse(input: &str) -> ParseResult<Self> {
-        many1(Direction::parse_udlr)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        repeat(0.., Direction::parse_udlr)
             .map(|code| Self { code })
-            .parse(input)
+            .parse_next(input)
     }
 }
 
 impl Problem<String, String> for Day02 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Instruction::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Instruction::parse, line_ending)
             .map(|instructions| Self { instructions })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<String> {

@@ -1,14 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::take_until,
-    character::complete::{char as ch, i32 as number},
-    multi::separated_list1,
-    sequence::{delimited, separated_pair},
-    Parser,
-};
-use std::collections::HashMap;
+use common::*;
 
 struct Day12 {
     root: Json,
@@ -22,28 +13,24 @@ enum Json {
 }
 
 impl Json {
-    fn parse(input: &str) -> ParseResult<Self> {
-        fn parse_str(input: &str) -> ParseResult<String> {
-            delimited(ch('"'), take_until("\""), ch('"'))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        fn parse_str(input: &mut &str) -> PResult<String> {
+            delimited('"', take_until(0.., "\""), '"')
                 .map(|s: &str| s.to_string())
-                .parse(input)
+                .parse_next(input)
         }
         alt((
             parse_str.map(Json::String),
-            number.map(Json::Number),
+            dec_int.map(Json::Number),
+            delimited('[', separated(0.., Json::parse, ',').map(Json::Array), ']'),
             delimited(
-                ch('['),
-                separated_list1(ch(','), Json::parse).map(Json::Array),
-                ch(']'),
-            ),
-            delimited(
-                ch('{'),
-                separated_list1(ch(','), separated_pair(parse_str, ch(':'), Json::parse))
-                    .map(|pairs| Json::Object(pairs.into_iter().collect())),
-                ch('}'),
+                '{',
+                separated(0.., separated_pair(parse_str, ':', Json::parse), ',')
+                    .map(|pairs: Vec<(String, Json)>| Json::Object(pairs.into_iter().collect())),
+                '}',
             ),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -61,7 +48,7 @@ impl std::fmt::Debug for Json {
                     write!(f, "{:?}", v)?;
                 }
                 write!(f, "]")
-            }
+            },
             Json::Object(o) => {
                 write!(f, "{{")?;
                 for (i, (k, v)) in o.iter().enumerate() {
@@ -71,7 +58,7 @@ impl std::fmt::Debug for Json {
                     write!(f, "\"{}\": {:?}", k, v)?;
                 }
                 write!(f, "}}")
-            }
+            },
         }
     }
 }
@@ -92,14 +79,14 @@ impl Json {
                     }
                 }
                 o.values().map(|v| v.sum(ignore)).sum()
-            }
+            },
         }
     }
 }
 
 impl Problem<i32, i32> for Day12 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Json::parse.map(|root| Self { root }).parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Json::parse.map(|root| Self { root }).parse_next(input)
     }
 
     fn part1(self) -> Result<i32> {

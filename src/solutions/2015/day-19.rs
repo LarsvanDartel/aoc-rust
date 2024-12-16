@@ -1,13 +1,5 @@
-use std::collections::HashSet;
-
 use aoc_rust::*;
-use nom::{
-    bytes::complete::tag,
-    character::complete::{alpha1, line_ending},
-    multi::separated_list1,
-    sequence::separated_pair,
-    Parser,
-};
+use common::*;
 
 struct Day19 {
     replacements: Vec<(String, String)>,
@@ -15,29 +7,23 @@ struct Day19 {
 }
 
 impl Problem<usize, usize> for Day19 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, replacements) = separated_list1(
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let replacements = separated(
+            0..,
+            separated_pair(alpha1.map(String::from), " => ", alpha1.map(String::from)),
             line_ending,
-            separated_pair(
-                alpha1.map(String::from),
-                tag(" => "),
-                alpha1.map(String::from),
-            ),
         )
-        .parse(input)?;
+        .parse_next(input)?;
 
-        let (input, _) = line_ending(input)?;
-        let (input, _) = line_ending(input)?;
+        let _ = line_ending(input)?;
+        let _ = line_ending(input)?;
 
-        let (input, molecule) = alpha1.map(String::from).parse(input)?;
+        let molecule = alpha1.map(String::from).parse_next(input)?;
 
-        Ok((
-            input,
-            Self {
-                replacements,
-                molecule,
-            },
-        ))
+        Ok(Self {
+            replacements,
+            molecule,
+        })
     }
 
     fn part1(self) -> Result<usize> {

@@ -38,10 +38,14 @@ impl Day12 {
 }
 
 impl Problem<usize, usize> for Day12 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Grid::parse(verify(anychar, char::is_ascii_alphabetic).map(|c| c as u8 - b'A'))
-            .map(|garden| Self { garden })
-            .parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Grid::parse(
+            anychar
+                .verify(char::is_ascii_alphabetic)
+                .map(|c| c as u8 - b'A'),
+        )
+        .map(|garden| Self { garden })
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

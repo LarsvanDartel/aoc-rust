@@ -1,17 +1,15 @@
 use aoc_rust::*;
+use common::*;
 
 struct Day08 {
     strings: Vec<String>,
 }
 
 impl Problem<usize, usize> for Day08 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Self {
-                strings: input.lines().map(|line| line.trim().to_string()).collect(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Self {
+            strings: input.lines().map(|line| line.trim().to_string()).collect(),
+        })
     }
 
     fn part1(self) -> Result<usize> {
@@ -27,9 +25,9 @@ impl Problem<usize, usize> for Day08 {
                             Some('x') => {
                                 chars.next();
                                 chars.next();
-                            }
-                            Some('\\') => {}
-                            Some('"') => {}
+                            },
+                            Some('\\') => {},
+                            Some('"') => {},
                             None => break,
                             _ => unreachable!(),
                         }

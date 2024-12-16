@@ -1,10 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    character::complete::{i32 as parse_i32, line_ending, space1},
-    multi::separated_list1,
-    Parser,
-};
+use common::*;
 
 struct Day09 {
     readings: Vec<Reading>,
@@ -15,10 +10,10 @@ struct Reading {
 }
 
 impl Reading {
-    fn parse(input: &str) -> ParseResult<Reading> {
-        separated_list1(space1, parse_i32)
+    fn parse(input: &mut &str) -> PResult<Reading> {
+        list(dec_i32, space1)
             .map(|numbers| Reading { numbers })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn diff(&self) -> Reading {
@@ -47,10 +42,10 @@ impl Reading {
 }
 
 impl Problem<i32, i32> for Day09 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Reading::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Reading::parse, line_ending)
             .map(|readings| Self { readings })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<i32> {

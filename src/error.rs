@@ -3,7 +3,7 @@ pub type Result<T> = ::std::result::Result<T, AoCError>;
 #[derive(Debug)]
 pub enum AoCError {
     Io(::std::io::Error),
-    Parse(::nom::error::Error<String>),
+    Parse(::winnow::error::ErrMode<::winnow::error::ContextError>),
     ParseInt(::std::num::ParseIntError),
     Graph(::petgraph::algo::Cycle<::petgraph::graph::NodeIndex>),
 
@@ -18,9 +18,9 @@ impl From<::std::io::Error> for AoCError {
     }
 }
 
-impl From<nom::error::Error<&str>> for AoCError {
-    fn from(e: nom::error::Error<&str>) -> Self {
-        AoCError::Parse(nom::error::Error::new(e.input.to_string(), e.code))
+impl From<::winnow::error::ErrMode<::winnow::error::ContextError>> for AoCError {
+    fn from(e: ::winnow::error::ErrMode<::winnow::error::ContextError>) -> Self {
+        AoCError::Parse(e)
     }
 }
 

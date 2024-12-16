@@ -6,10 +6,10 @@ struct Day03 {
 }
 
 impl Problem<u32, u32> for Day03 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Grid::parse(one_of("01").map(|c| c == '1'))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Grid::parse(one_of(['0', '1']).map(|c| c == '1'))
             .map(|report| Self { report })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

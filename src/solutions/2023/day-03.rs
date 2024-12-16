@@ -1,6 +1,5 @@
-use std::collections::{HashMap, HashSet};
-
 use aoc_rust::*;
+use common::*;
 
 struct Day03 {
     grid: Vec<Vec<char>>,
@@ -138,13 +137,13 @@ impl Day03 {
 }
 
 impl Problem<u32, u32> for Day03 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         let grid = input
             .lines()
             .map(|line| line.chars().collect())
             .collect::<Vec<_>>();
 
-        Ok(("", Self { grid }))
+        Ok(Self { grid })
     }
 
     fn part1(self) -> Result<u32> {

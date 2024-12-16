@@ -1,20 +1,15 @@
 use aoc_rust::*;
-
-use nom::{
-    character::complete::{line_ending, u32 as parse_u32},
-    multi::separated_list1,
-    Parser,
-};
+use common::*;
 
 struct Day17 {
     containers: Vec<u32>,
 }
 
 impl Problem<u32, u32> for Day17 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, parse_u32)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., dec_uint::<_, u32, _>, line_ending)
             .map(|containers| Day17 { containers })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {
@@ -50,11 +45,11 @@ impl Problem<u32, u32> for Day17 {
                     std::cmp::Ordering::Less => {
                         min_containers = containers;
                         combinations = 1;
-                    }
+                    },
                     std::cmp::Ordering::Equal => {
                         combinations += 1;
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
             }
         }

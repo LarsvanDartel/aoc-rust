@@ -2,7 +2,6 @@ use std::iter;
 
 use aoc_rust::*;
 use common::*;
-use hashbrown::HashSet;
 
 struct Day04 {
     numbers: Vec<u32>,
@@ -10,14 +9,14 @@ struct Day04 {
 }
 
 impl Problem<u32, u32> for Day04 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         separated_pair(
-            separated_list1(tag(","), parse_u32),
-            line_ending.and(line_ending),
-            separated_list1(line_ending, Grid::parse(preceded(space0, parse_u32))),
+            separated(0.., dec_uint::<_, u32, _>, ','),
+            (line_ending, line_ending),
+            separated(0.., Grid::parse(preceded(space0, dec_uint)), line_ending),
         )
         .map(|(numbers, cards)| Day04 { numbers, cards })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

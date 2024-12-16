@@ -1,6 +1,5 @@
 use aoc_rust::*;
 use common::*;
-use nom::{character::complete::anychar, multi::many_till};
 
 enum Instruction {
     Mul(i32, i32),
@@ -9,18 +8,14 @@ enum Instruction {
 }
 
 impl Instruction {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            delimited(
-                tag("mul("),
-                separated_pair(parse_i32, tag(","), parse_i32),
-                tag(")"),
-            )
-            .map(|(a, b)| Self::Mul(a, b)),
-            tag("do()").map(|_| Self::Do),
-            tag("don't()").map(|_| Self::Dont),
+            delimited("mul(", separated_pair(dec_i32, ",", dec_i32), ")")
+                .map(|(a, b)| Self::Mul(a, b)),
+            "do()".map(|_| Self::Do),
+            "don't()".map(|_| Self::Dont),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -29,11 +24,13 @@ struct Day03 {
 }
 
 impl Problem<i32, i32> for Day03 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        // instructions separated by any sequence of characters
-        many1(many_till(anychar, Instruction::parse).map(|(_, i)| i))
-            .map(|instructions| Self { instructions })
-            .parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        repeat(
+            0..,
+            repeat_till(0.., anychar, Instruction::parse).map(|(_, i): ((), Instruction)| i),
+        )
+        .map(|instructions| Self { instructions })
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<i32> {
@@ -57,7 +54,7 @@ impl Problem<i32, i32> for Day03 {
                     if d {
                         sum += a * b
                     }
-                }
+                },
                 Instruction::Do => d = true,
                 Instruction::Dont => d = false,
             }

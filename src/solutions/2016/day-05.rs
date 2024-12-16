@@ -1,17 +1,15 @@
-use aoc_rust::common::MD5;
 use aoc_rust::*;
+use common::*;
+
 struct Day05 {
     door_id: String,
 }
 
 impl Problem<String, String> for Day05 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Day05 {
-                door_id: input.trim().to_string(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Day05 {
+            door_id: input.trim().to_string(),
+        })
     }
 
     fn part1(self) -> Result<String> {

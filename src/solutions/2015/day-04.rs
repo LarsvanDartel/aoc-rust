@@ -1,18 +1,15 @@
-use aoc_rust::common::MD5;
 use aoc_rust::*;
+use common::*;
 
 struct Day04 {
     key: String,
 }
 
 impl Problem<usize, usize> for Day04 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Self {
-                key: input.trim().to_string(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Self {
+            key: input.trim().to_string(),
+        })
     }
 
     fn part1(self) -> Result<usize> {

@@ -1,12 +1,7 @@
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::collections::BinaryHeap;
 
 use aoc_rust::*;
-
-use nom::{
-    character::complete::{line_ending, one_of},
-    multi::{many1, separated_list1},
-    Parser,
-};
+use common::*;
 
 struct Day17 {
     grid: Vec<Vec<u32>>,
@@ -32,14 +27,12 @@ impl Direction {
     }
 
     const fn opposite(&self) -> Direction {
-        use Direction::*;
-
         match self {
-            North => South,
-            East => West,
-            South => North,
-            West => East,
-            None => None,
+            Self::North => Self::South,
+            Self::East => Self::West,
+            Self::South => Self::North,
+            Self::West => Self::East,
+            Self::None => Self::None,
         }
     }
 }
@@ -48,14 +41,12 @@ impl std::ops::Add<Direction> for (isize, isize) {
     type Output = (isize, isize);
 
     fn add(self, rhs: Direction) -> Self::Output {
-        use Direction::*;
-
         match rhs {
-            None => panic!("Cannot add None direction"),
-            North => (self.0, self.1 - 1),
-            East => (self.0 + 1, self.1),
-            South => (self.0, self.1 + 1),
-            West => (self.0 - 1, self.1),
+            Direction::None => panic!("Cannot add None direction"),
+            Direction::North => (self.0, self.1 - 1),
+            Direction::East => (self.0 + 1, self.1),
+            Direction::South => (self.0, self.1 + 1),
+            Direction::West => (self.0 - 1, self.1),
         }
     }
 }
@@ -64,14 +55,12 @@ impl std::ops::Add<Direction> for (usize, usize) {
     type Output = (usize, usize);
 
     fn add(self, rhs: Direction) -> Self::Output {
-        use Direction::*;
-
         match rhs {
-            None => panic!("Cannot add None direction"),
-            North => (self.0, self.1 - 1),
-            East => (self.0 + 1, self.1),
-            South => (self.0, self.1 + 1),
-            West => (self.0 - 1, self.1),
+            Direction::None => panic!("Cannot add None direction"),
+            Direction::North => (self.0, self.1 - 1),
+            Direction::East => (self.0 + 1, self.1),
+            Direction::South => (self.0, self.1 + 1),
+            Direction::West => (self.0 - 1, self.1),
         }
     }
 }
@@ -154,13 +143,13 @@ impl Day17 {
 }
 
 impl Problem<u32, u32> for Day17 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(
+            many(one_of('0'..='9').map(|c: char| c.to_digit(10).unwrap())),
             line_ending,
-            many1(one_of("0123456789").map(|c| c.to_digit(10).unwrap())),
         )
         .map(|grid| Self { grid })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

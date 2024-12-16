@@ -100,13 +100,13 @@ impl FileSystem {
                     self.files[r_idx + 1].size += l_size;
                     self.files[r_idx + 1].start -= l_size;
                     l_idx += 2;
-                }
+                },
                 Ordering::Equal => {
                     self.files[l_idx].start = r_start;
                     self.files[r_idx].start = l_start;
                     r_idx -= 2;
                     l_idx += 2;
-                }
+                },
                 Ordering::Greater => {
                     self.files[l_idx].size -= r_size;
                     self.files[l_idx].start += r_size;
@@ -122,7 +122,7 @@ impl FileSystem {
                             min_idx[l_size - r_size] = Some(l_idx);
                         }
                     }
-                }
+                },
             }
             if preserve_contiguous {
                 min_idx[l_size] = (l_idx..=r_idx)
@@ -169,12 +169,16 @@ struct Day09 {
 }
 
 impl Problem<usize, usize> for Day09 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        many1(verify(anychar, char::is_ascii_digit).map(|c| (c as u8 - b'0') as usize))
-            .map(|filesystem| Day09 {
-                filesystem: filesystem.into(),
-            })
-            .parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        many(
+            anychar
+                .verify(char::is_ascii_digit)
+                .map(|c| (c as u8 - b'0') as usize),
+        )
+        .map(|filesystem| Day09 {
+            filesystem: filesystem.into(),
+        })
+        .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

@@ -1,14 +1,6 @@
-use std::collections::HashMap;
-
 use aoc_rust::*;
-use itertools::Itertools;
-use nom::{
-    bytes::complete::{tag, take_until},
-    character::complete::{alpha1, line_ending, space1},
-    multi::separated_list1,
-    sequence::separated_pair,
-    Parser,
-};
+use common::*;
+
 use petgraph::prelude::*;
 use rustworkx_core::connectivity::stoer_wagner_min_cut;
 
@@ -17,17 +9,17 @@ struct Day25 {
 }
 
 impl Problem<usize, String> for Day25 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(
-            line_ending,
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(
             separated_pair(
-                take_until(":").map(|s: &str| s.to_string()),
-                tag(":").and(space1),
-                separated_list1(space1, alpha1.map(|s: &str| s.to_string())),
+                take_until(0.., ":").map(String::from),
+                (":", space1),
+                list(alpha1.map(String::from), space1),
             ),
+            line_ending,
         )
         .map(|adjacency| Self { adjacency })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

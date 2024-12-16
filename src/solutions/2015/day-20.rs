@@ -1,13 +1,14 @@
 use aoc_rust::*;
+use common::*;
 
 struct Day20 {
     n: usize,
 }
 
 impl Problem<usize, usize> for Day20 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         let n = input.trim().parse().unwrap();
-        Ok(("", Day20 { n }))
+        Ok(Day20 { n })
     }
 
     fn part1(self) -> Result<usize> {

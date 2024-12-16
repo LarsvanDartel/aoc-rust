@@ -1,15 +1,5 @@
-use std::collections::HashMap;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{alpha1, line_ending, u16 as number},
-    multi::separated_list1,
-    sequence::tuple,
-    Parser,
-};
-
 use aoc_rust::*;
+use common::*;
 
 struct Day07 {
     wires: HashMap<String, Wire>,
@@ -26,18 +16,16 @@ enum Wire {
 }
 
 impl Wire {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            tuple((tag("NOT "), Value::parse)).map(|(_, v)| Wire::Not(v)),
-            tuple((Value::parse, tag(" AND "), Value::parse)).map(|(v0, _, v1)| Wire::And(v0, v1)),
-            tuple((Value::parse, tag(" OR "), Value::parse)).map(|(v0, _, v1)| Wire::Or(v0, v1)),
-            tuple((Value::parse, tag(" LSHIFT "), Value::parse))
-                .map(|(v0, _, v1)| Wire::LShift(v0, v1)),
-            tuple((Value::parse, tag(" RSHIFT "), Value::parse))
-                .map(|(v0, _, v1)| Wire::RShift(v0, v1)),
+            ("NOT ", Value::parse).map(|(_, v)| Wire::Not(v)),
+            (Value::parse, " AND ", Value::parse).map(|(v0, _, v1)| Wire::And(v0, v1)),
+            (Value::parse, " OR ", Value::parse).map(|(v0, _, v1)| Wire::Or(v0, v1)),
+            (Value::parse, " LSHIFT ", Value::parse).map(|(v0, _, v1)| Wire::LShift(v0, v1)),
+            (Value::parse, " RSHIFT ", Value::parse).map(|(v0, _, v1)| Wire::RShift(v0, v1)),
             Value::parse.map(Wire::Source),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -61,12 +49,12 @@ enum Value {
 }
 
 impl Value {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            number.map(Value::Value),
+            dec_uint.map(Value::Value),
             alpha1.map(|s: &str| Value::Wire(s.to_string())),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -110,16 +98,16 @@ impl Day07 {
 }
 
 impl Problem<u16, u16> for Day07 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, tuple((Wire::parse, tag(" -> "), alpha1)))
-            .map(|wires| {
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., (Wire::parse, " -> ", alpha1), line_ending)
+            .map(|wires: Vec<(Wire, _, &str)>| {
                 let wires = wires
                     .into_iter()
                     .map(|(op, _, name)| (name.to_string(), op))
                     .collect();
                 Self { wires }
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u16> {

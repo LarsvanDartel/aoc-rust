@@ -1,4 +1,5 @@
 use aoc_rust::*;
+use common::*;
 
 struct Day11 {
     galaxies: Vec<(usize, usize)>,
@@ -67,7 +68,7 @@ impl Day11 {
 }
 
 impl Problem<usize, usize> for Day11 {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         let grid = input
             .lines()
             .map(|line| {
@@ -81,7 +82,7 @@ impl Problem<usize, usize> for Day11 {
             })
             .collect();
 
-        Ok(("", Self::new(grid)))
+        Ok(Self::new(grid))
     }
 
     fn part1(self) -> Result<usize> {

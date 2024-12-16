@@ -9,13 +9,13 @@ struct Day01 {
 }
 
 impl Problem<i32, i32> for Day01 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, separated_pair(parse_i32, space1, parse_i32))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(separated_pair(dec_i32, space1, dec_i32), line_ending)
             .map(|n| {
                 let (n1, n2) = n.iter().cloned().unzip();
                 Day01 { n1, n2 }
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<i32> {

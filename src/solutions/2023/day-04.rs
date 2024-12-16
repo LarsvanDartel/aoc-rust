@@ -1,13 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    bytes::complete::tag,
-    character::complete::space1,
-    character::complete::{line_ending, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::tuple,
-    Parser,
-};
+use common::*;
 
 struct Day04 {
     cards: Vec<Card>,
@@ -20,24 +12,24 @@ struct Card {
 }
 
 impl Card {
-    fn parse(input: &str) -> ParseResult<Self> {
-        tuple((
-            tag("Card"),
+    fn parse(input: &mut &str) -> PResult<Self> {
+        (
+            "Card",
             space1,
-            parse_u32,
-            tag(":"),
+            dec_u32,
+            ":",
             space1,
-            separated_list1(space1, parse_u32),
+            list(dec_u32, space1),
             space1,
-            tag("|"),
+            "|",
             space1,
-            separated_list1(space1, parse_u32),
-        ))
-        .map(|(_, _, _, _, _, winning_numbers, _, _, _, numbers)| Card {
-            winning_numbers,
-            numbers,
-        })
-        .parse(input)
+            list(dec_u32, space1),
+        )
+            .map(|(_, _, _, _, _, winning_numbers, _, _, _, numbers)| Card {
+                winning_numbers,
+                numbers,
+            })
+            .parse_next(input)
     }
 
     fn score(&self) -> u32 {
@@ -49,10 +41,10 @@ impl Card {
 }
 
 impl Problem<u32, u32> for Day04 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Card::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Card::parse, line_ending)
             .map(|cards| Self { cards })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

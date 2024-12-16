@@ -1,5 +1,5 @@
 use aoc_rust::*;
-use nom::{bytes::complete::tag, character::complete::u32 as number};
+use common::*;
 
 struct Day25 {
     row: u32,
@@ -7,15 +7,13 @@ struct Day25 {
 }
 
 impl Problem<u64, String> for Day25 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, _) = tag(
-            "To continue, please consult the code grid in the manual.  Enter the code at row ",
-        )(input)?;
-        let (input, row) = number(input)?;
-        let (input, _) = tag(", column ")(input)?;
-        let (input, col) = number(input)?;
-        let (input, _) = tag(".")(input)?;
-        Ok((input, Self { row, col }))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let _ = "To continue, please consult the code grid in the manual.  Enter the code at row "
+            .parse_next(input)?;
+        let row = dec_uint(input)?;
+        let _ = ", column ".parse_next(input)?;
+        let col = dec_uint(input)?;
+        Ok(Self { row, col })
     }
 
     fn part1(self) -> Result<u64> {

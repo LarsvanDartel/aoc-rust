@@ -1,4 +1,5 @@
 use aoc_rust::*;
+use common::*;
 
 const VOWELS: &str = "aeiou";
 const BAD_STRINGS: [(char, char); 4] = [('a', 'b'), ('c', 'd'), ('p', 'q'), ('x', 'y')];
@@ -44,13 +45,10 @@ impl Day05 {
 }
 
 impl Problem<usize, usize> for Day05 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Self {
-                strings: input.lines().map(|s| s.to_string()).collect(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Self {
+            strings: input.lines().map(|s| s.to_string()).collect(),
+        })
     }
 
     fn part1(self) -> Result<usize> {

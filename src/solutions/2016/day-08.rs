@@ -1,15 +1,8 @@
 use aoc_rust::*;
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{line_ending, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::{preceded, separated_pair},
-    Parser,
-};
+use common::*;
 
 struct Day08 {
-    operations: Box<[Operation]>,
+    operations: Vec<Operation>,
 }
 
 struct Screen {
@@ -96,39 +89,32 @@ enum Operation {
 }
 
 impl Operation {
-    fn parse(input: &str) -> ParseResult<Self> {
-        fn parse_usize(input: &str) -> ParseResult<usize> {
-            parse_u32.map(|x| x as usize).parse(input)
-        }
-
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
             preceded(
-                tag("rect "),
-                separated_pair(parse_usize, tag("x"), parse_usize)
-                    .map(|(a, b)| Operation::Rect(a, b)),
+                "rect ",
+                separated_pair(dec_uint, "x", dec_uint).map(|(a, b)| Operation::Rect(a, b)),
             ),
             preceded(
-                tag("rotate row y="),
-                separated_pair(parse_usize, tag(" by "), parse_u32)
+                "rotate row y=",
+                separated_pair(dec_uint, " by ", dec_uint)
                     .map(|(row, by)| Operation::RotateRow { row, by }),
             ),
             preceded(
-                tag("rotate column x="),
-                separated_pair(parse_usize, tag(" by "), parse_u32)
+                "rotate column x=",
+                separated_pair(dec_uint, " by ", dec_uint)
                     .map(|(column, by)| Operation::RotateColumn { column, by }),
             ),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
 impl Problem<usize, ()> for Day08 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Operation::parse)
-            .map(|operations| Day08 {
-                operations: operations.into_boxed_slice(),
-            })
-            .parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Operation::parse, line_ending)
+            .map(|operations| Day08 { operations })
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

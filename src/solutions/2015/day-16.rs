@@ -1,12 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    bytes::complete::tag,
-    character::complete::{alpha1, line_ending, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::separated_pair,
-    Parser,
-};
+use common::*;
 
 struct Day16 {
     mfcsam: Sue,
@@ -29,10 +22,10 @@ struct Sue {
 }
 
 impl Sue {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let (input, _) = tag("Sue ")(input)?;
-        let (input, number) = parse_u32(input)?;
-        let (input, _) = tag(": ")(input)?;
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let _ = "Sue ".parse_next(input)?;
+        let number = dec_uint(input)?;
+        let _ = ": ".parse_next(input)?;
 
         let mut sue = Sue {
             number,
@@ -48,8 +41,8 @@ impl Sue {
             perfumes: None,
         };
 
-        let (input, properties) =
-            separated_list1(tag(", "), separated_pair(alpha1, tag(": "), parse_u32))(input)?;
+        let properties: Vec<(&str, u32)> =
+            separated(0.., separated_pair(alpha1, ": ", dec_uint), ", ").parse_next(input)?;
 
         for (property, value) in properties {
             match property {
@@ -67,7 +60,7 @@ impl Sue {
             }
         }
 
-        Ok((input, sue))
+        Ok(sue)
     }
 
     fn matches(&self, mfcam: &Sue, retroencabulator: bool) -> bool {
@@ -109,8 +102,8 @@ impl Sue {
 }
 
 impl Problem<u32, u32> for Day16 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Sue::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated(0.., Sue::parse, line_ending)
             .map(|sues| {
                 let mfcsam = Sue {
                     number: 0,
@@ -127,7 +120,7 @@ impl Problem<u32, u32> for Day16 {
                 };
                 Self { mfcsam, sues }
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {

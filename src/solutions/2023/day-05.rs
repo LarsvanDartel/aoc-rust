@@ -1,12 +1,5 @@
-use nom::{
-    bytes::complete::tag,
-    character::complete::{alpha1, line_ending, space1, u64 as parse_u64},
-    multi::separated_list1,
-    sequence::{preceded, separated_pair, terminated, tuple},
-    Parser,
-};
-
 use aoc_rust::*;
+use common::*;
 
 struct Day05 {
     seeds: Vec<u64>,
@@ -19,17 +12,17 @@ struct Map {
 }
 
 impl Map {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let range = tuple((parse_u64, space1, parse_u64, space1, parse_u64))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let range = (dec_u64, space1, dec_u64, space1, dec_u64)
             .map(|(dst_start, _, src_start, _, length)| (src_start, dst_start, length));
 
         separated_pair(
-            terminated(separated_pair(alpha1, tag("-to-"), alpha1), tag(" map:")),
+            terminated(separated_pair(alpha1, "-to-", alpha1), " map:"),
             line_ending,
-            separated_list1(line_ending, range),
+            list(range, line_ending),
         )
         .map(|(_, ranges)| Self { ranges })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn map(&self, val: u64) -> u64 {
@@ -69,16 +62,16 @@ impl Map {
 }
 
 impl Problem<u64, u64> for Day05 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        let seeds = preceded(tag("seeds: "), separated_list1(tag(" "), parse_u64));
+    fn parse(input: &mut &str) -> PResult<Self> {
+        let seeds = preceded("seeds: ", list(dec_u64, space1));
 
         separated_pair(
             seeds,
-            line_ending.and(line_ending),
-            separated_list1(line_ending.and(line_ending), Map::parse),
+            (line_ending, line_ending),
+            list(Map::parse, (line_ending, line_ending)),
         )
         .map(|(seeds, maps)| Self { seeds, maps })
-        .parse(input)
+        .parse_next(input)
     }
 
     fn part1(self) -> Result<u64> {

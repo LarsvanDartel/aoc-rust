@@ -1,12 +1,5 @@
 use aoc_rust::*;
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{digit1, line_ending, space1},
-    multi::{many1, separated_list1},
-    sequence::separated_pair,
-    Parser,
-};
+use common::*;
 
 struct Day12 {
     records: Vec<Record>,
@@ -26,13 +19,13 @@ enum Spring {
 }
 
 impl Spring {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            tag("?").map(|_| Self::Unknown),
-            tag(".").map(|_| Self::Operational),
-            tag("#").map(|_| Self::Damaged),
+            "?".map(|_| Self::Unknown),
+            ".".map(|_| Self::Operational),
+            "#".map(|_| Self::Damaged),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -47,15 +40,10 @@ impl std::fmt::Debug for Spring {
 }
 
 impl Record {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_pair(
-            many1(Spring::parse),
-            space1,
-            separated_list1(tag(","), digit1)
-                .map(|v| v.into_iter().map(|s: &str| s.parse().unwrap()).collect()),
-        )
-        .map(|(springs, counts)| Self { springs, counts })
-        .parse(input)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        separated_pair(many(Spring::parse), space1, list(dec_usize, ','))
+            .map(|(springs, counts)| Self { springs, counts })
+            .parse_next(input)
     }
 
     fn num_ways(&self) -> usize {
@@ -132,7 +120,7 @@ impl Record {
                 } else {
                     0
                 }
-            }
+            },
             Spring::Damaged => self._num_ways(s_idx + 1, c_idx, count + 1),
             Spring::Unknown => {
                 let mut sum = 0;
@@ -142,7 +130,7 @@ impl Record {
                 sum += self._num_ways(s_idx, c_idx, count);
                 self.springs[s_idx] = Spring::Unknown;
                 sum
-            }
+            },
         }
     }
 }
@@ -164,10 +152,10 @@ impl std::fmt::Debug for Record {
 }
 
 impl Problem<usize, usize> for Day12 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Record::parse)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(Record::parse, line_ending)
             .map(|records| Self { records })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

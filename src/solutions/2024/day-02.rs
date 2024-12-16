@@ -31,10 +31,10 @@ impl Day02 {
 }
 
 impl Problem<usize, usize> for Day02 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, separated_list1(space1, parse_i32))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(list(dec_i32, space1), line_ending)
             .map(|numbers| Day02 { numbers })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

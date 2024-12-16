@@ -4,7 +4,7 @@ use common::*;
 struct Day{{day}} {}
 
 impl Problem<(), ()> for Day{{day}} {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         todo!()
     }
 

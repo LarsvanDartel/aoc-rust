@@ -36,8 +36,8 @@ impl Day11 {
 }
 
 impl Problem<usize, usize> for Day11 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        separated_list1(space1, parse_u64)
+    fn parse(input: &mut &str) -> PResult<Self> {
+        list(dec_u64, space1)
             .map(|stones| {
                 let mut map = HashMap::new();
                 for s in stones {
@@ -45,7 +45,7 @@ impl Problem<usize, usize> for Day11 {
                 }
                 Day11 { stones: map }
             })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(mut self) -> Result<usize> {

@@ -1,13 +1,5 @@
 use aoc_rust::*;
-
-use nom::{
-    branch::alt,
-    bytes::complete::tag,
-    character::complete::{digit1, hex_digit1, line_ending, space1},
-    multi::separated_list1,
-    sequence::{delimited, preceded, separated_pair},
-    Parser,
-};
+use common::*;
 
 struct Day18 {
     dig_plan: Vec<Dig>,
@@ -28,14 +20,14 @@ enum Direction {
 }
 
 impl Direction {
-    fn parse(input: &str) -> ParseResult<Self> {
+    fn parse(input: &mut &str) -> PResult<Self> {
         alt((
-            tag("L").map(|_| Direction::Left),
-            tag("R").map(|_| Direction::Right),
-            tag("U").map(|_| Direction::Up),
-            tag("D").map(|_| Direction::Down),
+            "L".map(|_| Direction::Left),
+            "R".map(|_| Direction::Right),
+            "U".map(|_| Direction::Up),
+            "D".map(|_| Direction::Down),
         ))
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -43,13 +35,11 @@ impl std::ops::Add<Direction> for (isize, isize) {
     type Output = (isize, isize);
 
     fn add(self, rhs: Direction) -> Self::Output {
-        use Direction::*;
-
         match rhs {
-            Left => (self.0 - 1, self.1),
-            Right => (self.0 + 1, self.1),
-            Up => (self.0, self.1 - 1),
-            Down => (self.0, self.1 + 1),
+            Direction::Left => (self.0 - 1, self.1),
+            Direction::Right => (self.0 + 1, self.1),
+            Direction::Up => (self.0, self.1 - 1),
+            Direction::Down => (self.0, self.1 + 1),
         }
     }
 }
@@ -58,31 +48,21 @@ impl std::ops::Mul<usize> for Direction {
     type Output = (isize, isize);
 
     fn mul(self, rhs: usize) -> Self::Output {
-        use Direction::*;
-
         match self {
-            Left => (-(rhs as isize), 0),
-            Right => (rhs as isize, 0),
-            Up => (0, -(rhs as isize)),
-            Down => (0, rhs as isize),
+            Direction::Left => (-(rhs as isize), 0),
+            Direction::Right => (rhs as isize, 0),
+            Direction::Up => (0, -(rhs as isize)),
+            Direction::Down => (0, rhs as isize),
         }
     }
 }
 
 impl Dig {
-    fn parse(input: &str, use_color: bool) -> ParseResult<Self> {
+    fn parse(input: &mut &str, use_color: bool) -> PResult<Self> {
         separated_pair(
-            separated_pair(
-                Direction::parse,
-                space1,
-                digit1.map(|s: &str| s.parse::<usize>().unwrap()),
-            ),
+            separated_pair(Direction::parse, space1, dec_usize),
             space1,
-            delimited(
-                tag("("),
-                preceded(tag("#"), hex_digit1.map(|s: &str| String::from(s))),
-                tag(")"),
-            ),
+            delimited("(", preceded("#", hex_digit1.map(String::from)), ")"),
         )
         .map(|((dir, len), color)| {
             if !use_color {
@@ -100,7 +80,7 @@ impl Dig {
                 Dig { dir, len }
             }
         })
-        .parse(input)
+        .parse_next(input)
     }
 }
 
@@ -129,16 +109,22 @@ impl Day18 {
 }
 
 impl Problem<usize, usize> for Day18 {
-    fn parse_1(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, |input| Dig::parse(input, false))
+    fn parse_1(input: &mut &str) -> PResult<Self> {
+        fn dig_parse(input: &mut &str) -> PResult<Dig> {
+            Dig::parse(input, false)
+        }
+        list(dig_parse, line_ending)
             .map(|dig_plan| Self { dig_plan })
-            .parse(input)
+            .parse_next(input)
     }
 
-    fn parse_2(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, |input| Dig::parse(input, true))
+    fn parse_2(input: &mut &str) -> PResult<Self> {
+        fn dig_parse(input: &mut &str) -> PResult<Dig> {
+            Dig::parse(input, true)
+        }
+        list(dig_parse, line_ending)
             .map(|dig_plan| Self { dig_plan })
-            .parse(input)
+            .parse_next(input)
     }
 
     fn part1(self) -> Result<usize> {

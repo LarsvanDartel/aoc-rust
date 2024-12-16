@@ -1,10 +1,5 @@
 use aoc_rust::*;
-use nom::{
-    character::complete::{line_ending, space1, u32 as parse_u32},
-    multi::separated_list1,
-    sequence::tuple,
-    Parser,
-};
+use common::*;
 
 struct Day03 {
     triangles: Vec<Triangle>,
@@ -13,10 +8,10 @@ struct Day03 {
 struct Triangle((u32, u32, u32));
 
 impl Triangle {
-    fn parse(input: &str) -> ParseResult<Self> {
-        tuple((space1, parse_u32, space1, parse_u32, space1, parse_u32))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        (space1, dec_uint, space1, dec_uint, space1, dec_uint)
             .map(|(_, a, _, b, _, c)| Self((a, b, c)))
-            .parse(input)
+            .parse_next(input)
     }
 
     fn is_valid(&self) -> bool {
@@ -27,13 +22,13 @@ impl Triangle {
 }
 
 impl Problem<usize, usize> for Day03 {
-    fn parse_1(input: &str) -> ParseResult<Self> {
-        separated_list1(line_ending, Triangle::parse)
+    fn parse_1(input: &mut &str) -> PResult<Self> {
+        separated(0.., Triangle::parse, line_ending)
             .map(|triangles| Self { triangles })
-            .parse(input)
+            .parse_next(input)
     }
 
-    fn parse_2(input: &str) -> ParseResult<Self> {
+    fn parse_2(input: &mut &str) -> PResult<Self> {
         let mut triangles = Vec::new();
         let mut lines = input.lines().map(str::trim);
         while let (Some(a), Some(b), Some(c)) = (lines.next(), lines.next(), lines.next()) {
@@ -58,7 +53,7 @@ impl Problem<usize, usize> for Day03 {
             }
         }
 
-        Ok(("", Self { triangles }))
+        Ok(Self { triangles })
     }
 
     fn part1(self) -> Result<usize> {

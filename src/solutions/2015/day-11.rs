@@ -1,5 +1,5 @@
 use aoc_rust::*;
-use std::collections::HashSet;
+use common::*;
 
 struct Day11 {
     password: String,
@@ -39,7 +39,7 @@ impl Day11 {
                 Some(c) => {
                     next.push((c as u8 + 1) as char);
                     carry = false;
-                }
+                },
                 None => next.push('a'),
             }
         }
@@ -58,13 +58,10 @@ impl Day11 {
 }
 
 impl Problem<String, String> for Day11 {
-    fn parse(input: &str) -> ParseResult<Self> {
-        Ok((
-            "",
-            Self {
-                password: input.trim().to_string(),
-            },
-        ))
+    fn parse(input: &mut &str) -> PResult<Self> {
+        Ok(Self {
+            password: input.trim().to_string(),
+        })
     }
 
     fn part1(mut self) -> Result<String> {
