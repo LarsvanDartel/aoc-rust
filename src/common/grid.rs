@@ -2,11 +2,11 @@ use std::fmt::{Debug, Display};
 use std::ops::{Index, IndexMut};
 
 use winnow::ascii::line_ending;
-use winnow::error::{ErrMode, ParserError};
+use winnow::error::ParserError;
 use winnow::stream::{Compare, Stream, StreamIsPartial};
-use winnow::{PResult, Parser};
+use winnow::Parser;
 
-use super::Vec2;
+use super::{list, many, Vec2};
 
 #[derive(Clone)]
 pub struct Grid<T> {
@@ -28,18 +28,25 @@ impl<T: Default> Grid<T> {
 }
 
 impl<T> Grid<T> {
-    pub fn parse<I, E, P>(parser: P) -> GridParser<P, I, T, E>
+    pub fn parse<I, E, P>(parser: P) -> impl Parser<I, Grid<T>, E>
     where
         I: StreamIsPartial + Stream + Compare<&'static str>,
         P: Parser<I, T, E>,
         E: ParserError<I>,
     {
-        GridParser {
-            parser,
-            i: Default::default(),
-            o: Default::default(),
-            e: Default::default(),
-        }
+        list(many(parser), line_ending).map(|data| {
+            let height = data.len();
+            let width = data.first().map_or(0, |row| row.len());
+            for row in &data {
+                assert_eq!(row.len(), width);
+            }
+            let data = data.into_iter().flatten().collect();
+            Grid {
+                width,
+                height,
+                data,
+            }
+        })
     }
 }
 
@@ -194,86 +201,5 @@ impl<T: Debug> Debug for Grid<T> {
             writeln!(f)?;
         }
         Ok(())
-    }
-}
-
-pub struct GridParser<P, I, O, E>
-where
-    I: StreamIsPartial + Stream + Compare<&'static str>,
-    P: Parser<I, O, E>,
-    E: ParserError<I>,
-{
-    parser: P,
-    i: core::marker::PhantomData<I>,
-    o: core::marker::PhantomData<O>,
-    e: core::marker::PhantomData<E>,
-}
-
-impl<P, I, O, E> Parser<I, Grid<O>, E> for GridParser<P, I, O, E>
-where
-    I: StreamIsPartial + Stream + Compare<&'static str>,
-    P: Parser<I, O, E>,
-    E: ParserError<I>,
-{
-    fn parse_next(&mut self, input: &mut I) -> PResult<Grid<O>, E> {
-        let mut data = Vec::new();
-        let mut height = 0;
-        let mut width = 0;
-        loop {
-            let mut w = 0;
-            loop {
-                let start = input.checkpoint();
-                let len = input.eof_offset();
-                match self.parser.parse_next(input) {
-                    Err(ErrMode::Backtrack(_)) => {
-                        input.reset(&start);
-                        break;
-                    },
-                    Err(e) => return Err(e),
-                    Ok(o) => {
-                        if input.eof_offset() == len {
-                            return Err(ErrMode::assert(input, "Parsers must always consume"));
-                        }
-                        data.push(o);
-                        w += 1;
-                    },
-                }
-            }
-            if width == 0 {
-                width = w;
-            }
-            if w != width {
-                if w == 0 {
-                    return Ok(Grid {
-                        width,
-                        height,
-                        data,
-                    });
-                }
-                return Err(ErrMode::assert(input, "All rows must have the same width"));
-            }
-            height += 1;
-
-            let start = input.checkpoint();
-            let len = input.eof_offset();
-            match line_ending::<I, E>.parse_next(input) {
-                Err(ErrMode::Backtrack(_)) => {
-                    input.reset(&start);
-                    break;
-                },
-                Err(e) => return Err(e),
-                Ok(_) => {
-                    if input.eof_offset() == len {
-                        return Err(ErrMode::assert(input, "Parsers must always consume"));
-                    }
-                },
-            }
-        }
-
-        Ok(Grid {
-            width,
-            height,
-            data,
-        })
     }
 }
