@@ -11,15 +11,19 @@ struct Day04 {
 impl Problem<u32, u32> for Day04 {
     fn parse(input: &mut &str) -> PResult<Self> {
         separated_pair(
-            separated(0.., dec_uint::<_, u32, _>, ','),
+            list(dec_u32, ','),
             (line_ending, line_ending),
-            separated(0.., Grid::parse(preceded(space0, dec_uint)), line_ending),
+            list(
+                Grid::parse(preceded(space0, dec_uint)),
+                (line_ending, line_ending),
+            ),
         )
         .map(|(numbers, cards)| Day04 { numbers, cards })
         .parse_next(input)
     }
 
     fn part1(self) -> Result<u32> {
+        println!("{:?}", self.cards);
         let mut cards = iter::repeat(Grid::<bool>::new(5, 5))
             .take(self.cards.len())
             .collect::<Vec<_>>();
@@ -82,7 +86,7 @@ impl Problem<u32, u32> for Day04 {
                 }
             }
         }
-        Err(AoCError::Message("No solution found".to_string()))
+        Err(AoCError::NoSolution)
     }
 }
 
