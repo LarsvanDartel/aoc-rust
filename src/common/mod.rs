@@ -13,3 +13,4 @@ pub use vec::{Vec2, Vec3};
 pub use hashbrown::{HashMap, HashSet};
 pub use itertools::Itertools;
 pub use pathfinding::prelude::*;
+pub use std::collections::VecDeque;
