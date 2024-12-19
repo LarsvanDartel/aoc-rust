@@ -69,16 +69,20 @@ aoc_main!(Day09);
 mod tests {
     use super::*;
 
-    const EXAMPLE: &str = r#"
+    const EXAMPLE: &str = r#"2199943210
+3987894921
+9856789892
+8767896789
+9899965678
 "#;
 
     #[test]
     fn test_part1() {
-        assert_task!(Day09, 1, EXAMPLE, ());
+        assert_task!(Day09, 1, EXAMPLE, 15);
     }
 
     #[test]
     fn test_part2() {
-        assert_task!(Day09, 2, EXAMPLE, ());
+        assert_task!(Day09, 2, EXAMPLE, 1134);
     }
 }
