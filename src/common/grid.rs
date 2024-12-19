@@ -8,11 +8,13 @@ use winnow::Parser;
 
 use super::{list, many, Vec2};
 
-#[derive(Clone)]
+type DisplayFn<T> = Box<dyn Fn(Vec2<isize>, &T) -> String>;
+
 pub struct Grid<T> {
     pub width: usize,
     pub height: usize,
     data: Vec<T>,
+    display_fn: Option<DisplayFn<T>>,
 }
 
 struct Coordinate(Vec2<usize>);
@@ -23,6 +25,7 @@ impl<T: Default> Grid<T> {
             width,
             height,
             data: (0..width * height).map(|_| Default::default()).collect(),
+            display_fn: None,
         }
     }
 }
@@ -45,6 +48,7 @@ impl<T> Grid<T> {
                 width,
                 height,
                 data,
+                display_fn: None,
             }
         })
     }
@@ -95,14 +99,19 @@ impl<T> Grid<T> {
             width,
             height: self.height,
             data,
+            display_fn: None,
         }
     }
 
-    pub fn map<U, F: FnMut(T) -> U>(self, f: F) -> Grid<U> {
+    pub fn map<U, F: FnMut(Vec2<isize>, &T) -> U>(self, mut f: F) -> Grid<U> {
         Grid {
             width: self.width,
             height: self.height,
-            data: self.data.into_iter().map(f).collect(),
+            data: self
+                .coordinates()
+                .map(|c| f(c, &self[c]))
+                .collect::<Vec<U>>(),
+            display_fn: None,
         }
     }
 
@@ -132,14 +141,27 @@ impl<T> Grid<T> {
             None
         }
     }
+
+    pub fn with_display_fn<F: Fn(Vec2<isize>, &T) -> String + 'static>(self, f: F) -> Self {
+        Self {
+            display_fn: Some(Box::new(f)),
+            ..self
+        }
+    }
 }
 
-impl<T> Grid<Vec<T>> {
+impl<T, U> Grid<U>
+where
+    U: IntoIterator<Item = T>,
+{
     pub fn flatten(self) -> Grid<T> {
+        let data = self.data.into_iter().flatten().collect::<Vec<_>>();
+        let width = data.len() / self.height;
         Grid {
-            width: self.width,
+            width,
             height: self.height,
-            data: self.data.into_iter().flatten().collect(),
+            data,
+            display_fn: None,
         }
     }
 }
@@ -184,7 +206,18 @@ impl<T: Display> Display for Grid<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for y in 0..self.height {
             for x in 0..self.width {
-                write!(f, "{}", self[Coordinate(Vec2::new(x, y))])?;
+                if let Some(display_fn) = &self.display_fn {
+                    write!(
+                        f,
+                        "{}",
+                        display_fn(
+                            Vec2::new(x as isize, y as isize),
+                            &self[Coordinate(Vec2::new(x, y))]
+                        )
+                    )?;
+                } else {
+                    write!(f, "{}", self[Coordinate(Vec2::new(x, y))])?;
+                }
             }
             writeln!(f)?;
         }
@@ -201,5 +234,16 @@ impl<T: Debug> Debug for Grid<T> {
             writeln!(f)?;
         }
         Ok(())
+    }
+}
+
+impl<T: Clone> Clone for Grid<T> {
+    fn clone(&self) -> Self {
+        Self {
+            width: self.width,
+            height: self.height,
+            data: self.data.clone(),
+            display_fn: None,
+        }
     }
 }
