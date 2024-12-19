@@ -51,23 +51,68 @@ impl Problem<usize, String> for Day18 {
         let size = 71;
         #[cfg(test)]
         let size = 7;
-        let mut g = Grid::new(size, size);
+        let mut parent = Grid::<()>::new(size + 2, size + 2).map(|pos, _| {
+            if pos.x == 0 || pos.y == size as isize + 1 && pos.x != size as isize + 1 {
+                Vec2::new(0, 0)
+            } else if pos.x == size as isize + 1 || pos.y == 0 {
+                Vec2::new(size as isize + 1, size as isize + 1)
+            } else {
+                Vec2::new(-1, -1)
+            }
+        });
 
-        for pos in self.bytes {
-            g.set(pos, true);
-            let grid = g.clone();
-            let s = move |&pos: &Vec2<isize>| {
-                Direction::cardinal()
-                    .map(|dir| pos + dir)
-                    .filter(|&p| grid.contains(p) && !grid[p])
-                    .collect::<Vec<_>>()
-            };
+        fn find_parent(parent: &mut Grid<Vec2<isize>>, pos: Vec2<isize>) -> Vec2<isize> {
+            if pos == Vec2::new(-1, -1) {
+                return pos;
+            }
+            if parent[pos] == pos {
+                pos
+            } else {
+                let p = find_parent(parent, parent[pos]);
+                parent[pos] = p;
+                p
+            }
+        }
 
-            let start = Vec2::new(0, 0);
-            let end = Vec2::new(size as isize - 1, size as isize - 1);
+        fn connect(parent: &mut Grid<Vec2<isize>>, a: Vec2<isize>, b: Vec2<isize>) -> bool {
+            let pa = find_parent(parent, a);
+            let pb = find_parent(parent, b);
 
-            if bfs(&start, s, |&p| p == end).is_none() {
-                return Ok(format!("{},{}", pos.x, pos.y));
+            if pa == pb {
+                return true;
+            }
+
+            if pb == Vec2::new(-1, -1) {
+                return true;
+            }
+
+            // If at least one of the sets is not the border, we can connect them
+            if pb.x != 0
+                && pb.x != parent.width as isize - 1
+                && pb.y != 0
+                && pb.y != parent.height as isize - 1
+            {
+                parent[pb] = pa;
+                return true;
+            } else if pa.x != 0
+                && pa.x != parent.width as isize - 1
+                && pa.y != 0
+                && pa.y != parent.height as isize - 1
+            {
+                parent[pa] = pb;
+                return true;
+            }
+
+            false
+        }
+
+        for &pos in self.bytes.iter() {
+            let pos = pos + Vec2::new(1, 1);
+            parent[pos] = pos;
+            for dir in Direction::all() {
+                if !connect(&mut parent, pos, pos + dir) {
+                    return Ok(format!("{},{}", pos.x - 1, pos.y - 1));
+                }
             }
         }
 
