@@ -30,6 +30,17 @@ impl<T: Default> Grid<T> {
     }
 }
 
+impl<T: Clone> Grid<T> {
+    pub fn new_default(width: usize, height: usize, default: T) -> Self {
+        Self {
+            width,
+            height,
+            data: (0..width * height).map(|_| default.clone()).collect(),
+            display_fn: None,
+        }
+    }
+}
+
 impl<T> Grid<T> {
     pub fn parse<I, E, P>(parser: P) -> impl Parser<I, Grid<T>, E>
     where
