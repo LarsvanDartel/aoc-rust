@@ -49,8 +49,8 @@ impl Problem<usize, usize> for Day16 {
     }
 
     fn part1(self) -> Result<usize> {
-        let start = self.maze.find(Cell::Start).ok_or("Could not find start")?;
-        let end = self.maze.find(Cell::End).ok_or("Could not find end")?;
+        let start = self.maze.find(&Cell::Start).ok_or("Could not find start")?;
+        let end = self.maze.find(&Cell::End).ok_or("Could not find end")?;
 
         let s = move |&(pos, dir): &(Vec2<isize>, Direction)| {
             let mut successors = vec![((pos, dir.right()), 1000), ((pos, dir.left()), 1000)];
@@ -67,8 +67,8 @@ impl Problem<usize, usize> for Day16 {
     }
 
     fn part2(self) -> Result<usize> {
-        let start = self.maze.find(Cell::Start).ok_or("Could not find start")?;
-        let end = self.maze.find(Cell::End).ok_or("Could not find end")?;
+        let start = self.maze.find(&Cell::Start).ok_or("Could not find start")?;
+        let end = self.maze.find(&Cell::End).ok_or("Could not find end")?;
 
         let s = move |&(pos, dir): &(Vec2<isize>, Direction)| {
             let mut successors = vec![((pos, dir.right()), 1000), ((pos, dir.left()), 1000)];

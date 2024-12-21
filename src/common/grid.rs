@@ -120,11 +120,23 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn find(&self, value: T) -> Option<Vec2<isize>>
+    pub fn flat_map<U, F: FnMut(&T) -> [U; 2]>(self, mut f: F) -> Grid<U> {
+        Grid {
+            width: self.width * 2,
+            height: self.height,
+            data: self
+                .coordinates()
+                .flat_map(|c| f(&self[c]).into_iter())
+                .collect(),
+            display_fn: None,
+        }
+    }
+
+    pub fn find(&self, value: &T) -> Option<Vec2<isize>>
     where
         T: PartialEq,
     {
-        self.coordinates().find(|&c| self[c] == value)
+        self.coordinates().find(|&c| &self[c] == value)
     }
 
     pub fn get_row(&self, row: usize) -> Option<&[T]> {

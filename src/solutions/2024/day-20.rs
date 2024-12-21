@@ -47,9 +47,12 @@ impl Day20 {
             Grid::new_default(self.racetrack.width, self.racetrack.height, usize::MAX);
         let start = self
             .racetrack
-            .find(Cell::Start)
+            .find(&Cell::Start)
             .ok_or("Could not find start")?;
-        let end = self.racetrack.find(Cell::End).ok_or("Could not find end")?;
+        let end = self
+            .racetrack
+            .find(&Cell::End)
+            .ok_or("Could not find end")?;
 
         start_dst[start] = 0;
         end_dst[end] = 0;

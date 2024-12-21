@@ -46,7 +46,7 @@ struct Day15 {
 
 impl Day15 {
     fn apply_moves(&mut self) {
-        let mut robot = self.grid.find(Cell::Robot).unwrap();
+        let mut robot = self.grid.find(&Cell::Robot).unwrap();
         for &m in &self.moves {
             let mut to_move = vec![HashSet::<Vec2<isize>>::from([robot])];
             let mut found_wall = false;
