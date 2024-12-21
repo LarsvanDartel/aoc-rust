@@ -13,7 +13,7 @@ type DisplayFn<T> = Box<dyn Fn(Vec2<isize>, &T) -> String>;
 pub struct Grid<T> {
     pub width: usize,
     pub height: usize,
-    data: Vec<T>,
+    data: Box<[T]>,
     display_fn: Option<DisplayFn<T>>,
 }
 
@@ -24,7 +24,7 @@ impl<T: Default> Grid<T> {
         Self {
             width,
             height,
-            data: (0..width * height).map(|_| Default::default()).collect(),
+            data: (0..width * height).map(|_| T::default()).collect(),
             display_fn: None,
         }
     }
@@ -36,6 +36,14 @@ impl<T: Clone> Grid<T> {
             width,
             height,
             data: (0..width * height).map(|_| default.clone()).collect(),
+            display_fn: None,
+        }
+    }
+    pub const fn from_data(width: usize, height: usize, data: Box<[T]>) -> Self {
+        Self {
+            width,
+            height,
+            data,
             display_fn: None,
         }
     }
@@ -100,20 +108,6 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn flat_map<U, I, F: FnMut(T) -> I>(self, f: F) -> Grid<U>
-    where
-        I: IntoIterator<Item = U>,
-    {
-        let data = self.data.into_iter().flat_map(f).collect::<Vec<U>>();
-        let width = data.len() / self.height;
-        Grid {
-            width,
-            height: self.height,
-            data,
-            display_fn: None,
-        }
-    }
-
     pub fn map<U, F: FnMut(Vec2<isize>, &T) -> U>(&self, mut f: F) -> Grid<U> {
         Grid {
             width: self.width,
@@ -121,7 +115,7 @@ impl<T> Grid<T> {
             data: self
                 .coordinates()
                 .map(|c| f(c, &self[c]))
-                .collect::<Vec<U>>(),
+                .collect::<Box<[U]>>(),
             display_fn: None,
         }
     }
@@ -157,22 +151,6 @@ impl<T> Grid<T> {
         Self {
             display_fn: Some(Box::new(f)),
             ..self
-        }
-    }
-}
-
-impl<T, U> Grid<U>
-where
-    U: IntoIterator<Item = T>,
-{
-    pub fn flatten(self) -> Grid<T> {
-        let data = self.data.into_iter().flatten().collect::<Vec<_>>();
-        let width = data.len() / self.height;
-        Grid {
-            width,
-            height: self.height,
-            data,
-            display_fn: None,
         }
     }
 }
