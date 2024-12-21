@@ -114,7 +114,7 @@ impl<T> Grid<T> {
         }
     }
 
-    pub fn map<U, F: FnMut(Vec2<isize>, &T) -> U>(self, mut f: F) -> Grid<U> {
+    pub fn map<U, F: FnMut(Vec2<isize>, &T) -> U>(&self, mut f: F) -> Grid<U> {
         Grid {
             width: self.width,
             height: self.height,
