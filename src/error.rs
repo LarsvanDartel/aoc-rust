@@ -5,7 +5,6 @@ pub enum AoCError {
     Io(::std::io::Error),
     Parse(::winnow::error::ErrMode<::winnow::error::ContextError>),
     ParseInt(::std::num::ParseIntError),
-    Graph(::petgraph::algo::Cycle<::petgraph::graph::NodeIndex>),
 
     NoSolution,
     Message(String),
@@ -27,12 +26,6 @@ impl From<::winnow::error::ErrMode<::winnow::error::ContextError>> for AoCError 
 impl From<::std::num::ParseIntError> for AoCError {
     fn from(e: ::std::num::ParseIntError) -> Self {
         AoCError::ParseInt(e)
-    }
-}
-
-impl From<::petgraph::algo::Cycle<::petgraph::graph::NodeIndex>> for AoCError {
-    fn from(e: ::petgraph::algo::Cycle<::petgraph::graph::NodeIndex>) -> Self {
-        AoCError::Graph(e)
     }
 }
 

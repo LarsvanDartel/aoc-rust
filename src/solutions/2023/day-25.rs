@@ -1,7 +1,6 @@
 use aoc_rust::*;
 use common::*;
 
-use petgraph::prelude::*;
 use rustworkx_core::connectivity::stoer_wagner_min_cut;
 
 struct Day25 {
