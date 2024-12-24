@@ -246,31 +246,34 @@ impl Problem<u64, String> for Day24 {
                 let yi = format!("y{:02}", i);
                 let zi = format!("z{:02}", i);
 
-                let (xi_xor_yi, _) = self
+                let xi_xor_yi = self
                     .values
                     .iter()
                     .find(|&(_, v)| {
                         v == &Value::Gate(Gate::Xor(xi.clone(), yi.clone(), zi.clone()))
                     })
+                    .map(|(k, _)| k.clone())
                     .unwrap();
 
                 let gate_zi = if let Value::Gate(g) = &self.values[&zi] {
                     g
                 } else {
                     return Err(format!("{} is not a gate", zi))?;
-                };
+                }
+                .clone();
 
                 if let Gate::Xor(a, b, _) = gate_zi {
                     if a == xi_xor_yi || b == xi_xor_yi {
                         return Err("not implemented")?;
                     } else {
-                        let incorrect = if let Value::Gate(Gate::Or(..)) = &self.values[a] {
+                        let incorrect = if let Value::Gate(Gate::Or(..)) = &self.values[&a] {
                             b
-                        } else if let Value::Gate(Gate::Or(..)) = &self.values[b] {
+                        } else if let Value::Gate(Gate::Or(..)) = &self.values[&b] {
                             a
                         } else {
                             return Err("Could not solve")?;
                         };
+                        self.swap(&xi_xor_yi, &incorrect);
                         swaps.push((xi_xor_yi.clone(), incorrect.clone()));
                     };
                 } else {
@@ -279,7 +282,7 @@ impl Problem<u64, String> for Day24 {
                         .iter()
                         .find(|&(_, v)| {
                             if let Value::Gate(Gate::Xor(a, b, _)) = v {
-                                if a == xi_xor_yi || b == xi_xor_yi {
+                                if a == &xi_xor_yi || b == &xi_xor_yi {
                                     return true;
                                 }
                             }
