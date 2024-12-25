@@ -402,6 +402,10 @@ path = "src/solutions/2024/day-23.rs"
 name = "2024-24"
 path = "src/solutions/2024/day-24.rs"
 
+[[bin]]
+name = "2024-25"
+path = "src/solutions/2024/day-25.rs"
+
 [dependencies]
 chrono = "0.4.38"
 hashbrown = "0.15.2"
