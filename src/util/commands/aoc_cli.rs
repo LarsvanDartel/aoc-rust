@@ -1,7 +1,4 @@
-use std::{
-    path::PathBuf,
-    process::{Command, Output},
-};
+use std::process::{Command, Output};
 
 use crate::{AocDate, Result, CARGO_ROOT};
 
@@ -45,9 +42,6 @@ pub fn download_input(date: &AocDate) -> Result<()> {
         return Ok(());
     }
 
-    let mut session_path = PathBuf::from(CARGO_ROOT);
-    session_path.push(".session");
-
     let output = Command::new("aoc")
         .arg("download")
         .arg("--input-only")
@@ -57,8 +51,6 @@ pub fn download_input(date: &AocDate) -> Result<()> {
         .arg(date.year.to_string())
         .arg("--day")
         .arg(date.day.to_string())
-        .arg("--session-file")
-        .arg(session_path)
         .output()
         .map_err(|_| AocClientError::CommandNotFound)?;
 

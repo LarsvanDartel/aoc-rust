@@ -429,4 +429,5 @@ version = "0.16.0"
 [package]
 edition = "2021"
 name = "aoc-rust"
+rust-version = "1.91.1"
 version = "0.1.0"
