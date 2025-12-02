@@ -1,6 +1,7 @@
 mod dir;
 mod graph;
 mod grid;
+mod math;
 mod md5;
 mod parse;
 mod vec;
@@ -12,6 +13,7 @@ pub use graph::iter_cliques;
 pub use grid::Grid;
 pub use hashbrown::{HashMap, HashSet};
 pub use itertools::Itertools;
+pub use math::*;
 pub use md5::MD5;
 pub use parse::*;
 pub use pathfinding::prelude::*;
