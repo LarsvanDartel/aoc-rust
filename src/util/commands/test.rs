@@ -1,4 +1,5 @@
-use std::{process::Command, thread};
+use std::process::Command;
+use std::thread;
 
 use crate::{AocDate, Result};
 

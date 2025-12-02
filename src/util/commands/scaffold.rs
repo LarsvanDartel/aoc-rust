@@ -3,7 +3,8 @@ use std::io::Write;
 use std::path::PathBuf;
 use std::process::Command;
 
-use toml::{map::Map, Value};
+use toml::map::Map;
+use toml::Value;
 
 use super::aoc_cli::{check_aoc_cli, download_input};
 use crate::{AocDate, Result, CARGO_ROOT};

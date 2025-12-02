@@ -21,7 +21,7 @@ impl Problem<usize, usize> for Day21 {
                         'S' => {
                             start_pos = (x, y);
                             false
-                        },
+                        }
                         _ => panic!("Invalid character"),
                     })
                     .collect()
@@ -105,9 +105,10 @@ impl Problem<usize, usize> for Day21 {
             reachable = new_reachable;
         }
 
-        // use newton's forward difference formula to create a polynomial of degree 2 through the points
-        // (65, cnt[0]), (131 + 65, cnt[1]), (131 + 131 + 65, cnt[2])
-        // then evaluate the polynomial at the s such that s * 131  + 65 = steps
+        // use newton's forward difference formula to create a polynomial of degree 2
+        // through the points (65, cnt[0]), (131 + 65, cnt[1]), (131 + 131 + 65,
+        // cnt[2]) then evaluate the polynomial at the s such that s * 131  + 65
+        // = steps
 
         let [y1, y2, y3] = cnt;
 

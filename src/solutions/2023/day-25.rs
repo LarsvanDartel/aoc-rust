@@ -1,6 +1,5 @@
 use aoc_rust::*;
 use common::*;
-
 use rustworkx_core::connectivity::stoer_wagner_min_cut;
 
 struct Day25 {

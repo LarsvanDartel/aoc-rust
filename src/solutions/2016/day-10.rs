@@ -106,7 +106,7 @@ fn build_robots(instructions: Vec<Instruction>) -> Result<HashMap<Destination, R
                 } else {
                     Err("Cannot transfer from output")?;
                 }
-            },
+            }
             Instruction::Value { value, to } => {
                 if let Destination::Bot(_) = to {
                     let r = robots.entry(to).or_insert(Robot::new(to));
@@ -114,7 +114,7 @@ fn build_robots(instructions: Vec<Instruction>) -> Result<HashMap<Destination, R
                 } else {
                     Err("Cannont transfer to output in initialization")?;
                 }
-            },
+            }
         }
     }
 

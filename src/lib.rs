@@ -2,9 +2,7 @@ pub mod common;
 mod error;
 
 use clap::Parser;
-
-pub use error::AoCError;
-pub use error::Result;
+pub use error::{AoCError, Result};
 use winnow::PResult;
 
 #[derive(Parser, Debug)]

@@ -32,7 +32,7 @@ impl Card {
                 } else {
                     11
                 }
-            },
+            }
             Card::Queen => 12,
             Card::King => 13,
             Card::Ace => 14,
@@ -85,14 +85,14 @@ impl Hand {
                 } else {
                     3
                 }
-            },
+            }
             2 => {
                 if counts[1] == 2 {
                     2
                 } else {
                     1
                 }
-            },
+            }
             1 => 0,
             _ => panic!("invalid hand"),
         };

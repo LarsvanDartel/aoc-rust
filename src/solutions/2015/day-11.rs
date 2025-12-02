@@ -39,7 +39,7 @@ impl Day11 {
                 Some(c) => {
                     next.push((c as u8 + 1) as char);
                     carry = false;
-                },
+                }
                 None => next.push('a'),
             }
         }

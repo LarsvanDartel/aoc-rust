@@ -114,7 +114,7 @@ impl RangePart {
                     };
                     return r1.apply_workflow(workflows, workflow)
                         + r2.apply_workflow(workflows, workflow);
-                },
+                }
             }
         }
         unreachable!()
@@ -198,7 +198,7 @@ impl Rule {
                 } else {
                     None
                 }
-            },
+            }
             Rule::Workflow(_) => Some(self.clone()),
             Rule::Result(_) => Some(self.clone()),
         }
@@ -239,7 +239,7 @@ impl Rule {
                     }
                     Err((*attribute, a.split(*value, false)))
                 }
-            },
+            }
             Rule::Workflow(_) => Ok(Some(self.clone())),
             Rule::Result(_) => Ok(Some(self.clone())),
         }

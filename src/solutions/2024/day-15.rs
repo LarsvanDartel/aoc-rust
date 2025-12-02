@@ -60,7 +60,7 @@ impl Day15 {
                         Cell::Wall => {
                             found_wall = true;
                             break;
-                        },
+                        }
                         _ => next.insert(next_pos),
                     };
                     if self.grid[next_pos] == Cell::BoxLeft && m.is_vertical() {

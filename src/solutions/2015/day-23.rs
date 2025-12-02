@@ -66,15 +66,15 @@ impl Instruction {
             Self::Increment(r) => registers[usize::from(*r)] += 1,
             Self::Jump(n) => *instruction_pointer = (*instruction_pointer as isize + n) as usize,
             Self::JumpIfEven(r, n) => {
-                if registers[usize::from(*r)] % 2 == 0 {
+                if registers[usize::from(*r)].is_multiple_of(2) {
                     *instruction_pointer = (*instruction_pointer as isize + n) as usize;
                 }
-            },
+            }
             Self::JumpIfOne(r, n) => {
                 if registers[usize::from(*r)] == 1 {
                     *instruction_pointer = (*instruction_pointer as isize + n) as usize;
                 }
-            },
+            }
         }
     }
 }

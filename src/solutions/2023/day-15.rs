@@ -67,13 +67,13 @@ impl Problem<u32, u32> for Day15 {
                             } else {
                                 map[hash as usize].push((s.to_string(), *n));
                             }
-                        },
+                        }
                         Operation::Remove(s) => {
                             let hash = Self::hash(s.to_string());
                             if let Some(i) = map[hash as usize].iter().position(|(k, _)| k == s) {
                                 map[hash as usize].remove(i);
                             }
-                        },
+                        }
                     }
                     map
                 },

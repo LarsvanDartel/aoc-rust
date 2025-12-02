@@ -54,7 +54,7 @@ impl Problem<i32, i32> for Day03 {
                     if d {
                         sum += a * b
                     }
-                },
+                }
                 Instruction::Do => d = true,
                 Instruction::Dont => d = false,
             }

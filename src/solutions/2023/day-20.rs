@@ -61,7 +61,7 @@ impl Module {
                         .map(|connection| (connection.clone(), *cur_state))
                         .collect()
                 }
-            },
+            }
             ModuleType::Conjunction(counts) => {
                 let (cur_state, count) = counts.get_mut(from).unwrap();
                 if *cur_state != value {
@@ -74,7 +74,7 @@ impl Module {
                     .iter()
                     .map(|connection| (connection.clone(), signal))
                     .collect()
-            },
+            }
             ModuleType::None => vec![],
         }
     }
@@ -110,7 +110,8 @@ impl Problem<usize, usize> for Day20 {
             );
         }
 
-        // Add all connection to conjunctions (for all modules that have a connection to a conjunction, add their name to the conjunction)
+        // Add all connection to conjunctions (for all modules that have a connection to
+        // a conjunction, add their name to the conjunction)
         let mut inverse = HashMap::new();
         let mut missing = vec![];
         for module in modules.values() {

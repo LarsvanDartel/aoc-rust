@@ -1,6 +1,5 @@
 use aoc_rust::*;
 use common::*;
-
 use ndarray::prelude::*;
 use ndarray_linalg::Solve;
 

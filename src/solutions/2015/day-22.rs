@@ -63,14 +63,14 @@ impl Player {
                     if *turns == 1 {
                         self.armor = 0;
                     }
-                },
+                }
                 Spell::Poison => {
                     boss.hp -= 3;
-                },
+                }
                 Spell::Recharge => {
                     self.mana += 101;
-                },
-                _ => {},
+                }
+                _ => {}
             }
             *turns -= 1;
         }
@@ -88,21 +88,21 @@ impl Player {
         match spell {
             Spell::MagicMissile => {
                 boss.hp -= 4;
-            },
+            }
             Spell::Drain => {
                 boss.hp -= 2;
                 self.hp += 2;
-            },
+            }
             Spell::Shield => {
                 self.armor = 7;
                 self.effects.push((Spell::Shield, 6));
-            },
+            }
             Spell::Poison => {
                 self.effects.push((Spell::Poison, 6));
-            },
+            }
             Spell::Recharge => {
                 self.effects.push((Spell::Recharge, 5));
-            },
+            }
         }
         true
     }

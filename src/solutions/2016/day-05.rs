@@ -27,7 +27,7 @@ impl Problem<String, String> for Day05 {
     fn part2(self) -> Result<String> {
         let mut md5 = MD5::init(self.door_id);
         let mut password = vec!['_'; 8];
-        while password.iter().any(|&c| c == '_') {
+        while password.contains(&'_') {
             md5.next_key_zeroes(5);
             let position = MD5::get_hex_digit(md5.hash(), 6) as usize;
             if position < 8 && password[position] == '_' {

@@ -42,7 +42,7 @@
           overlays = [(import inputs.rust-overlay)];
         };
 
-        devShells.default = self'.devShells.msrv;
+        devShells.default = self'.devShells.nightly;
 
         devShells.nightly =
           mkDevShell (pkgs.rust-bin.selectLatestNightlyWith

@@ -120,7 +120,7 @@ impl Record {
                 } else {
                     0
                 }
-            },
+            }
             Spring::Damaged => self._num_ways(s_idx + 1, c_idx, count + 1),
             Spring::Unknown => {
                 let mut sum = 0;
@@ -130,7 +130,7 @@ impl Record {
                 sum += self._num_ways(s_idx, c_idx, count);
                 self.springs[s_idx] = Spring::Unknown;
                 sum
-            },
+            }
         }
     }
 }

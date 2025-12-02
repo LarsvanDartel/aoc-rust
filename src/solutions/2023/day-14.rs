@@ -175,7 +175,6 @@ impl Problem<usize, usize> for Day14 {
                 for _ in 0..remaining {
                     for dir in Direction::all().iter() {
                         self.move_rocks(*dir);
-                        i += 1;
                     }
                 }
                 break;

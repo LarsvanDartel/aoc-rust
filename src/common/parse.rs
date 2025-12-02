@@ -1,9 +1,25 @@
 pub use winnow::ascii::{
-    alpha1, alphanumeric1, dec_int, dec_uint, hex_digit1, hex_uint, line_ending, multispace1,
-    space0, space1, till_line_ending,
+    alpha1,
+    alphanumeric1,
+    dec_int,
+    dec_uint,
+    hex_digit1,
+    hex_uint,
+    line_ending,
+    multispace1,
+    space0,
+    space1,
+    till_line_ending,
 };
 pub use winnow::combinator::{
-    alt, delimited, preceded, repeat, repeat_till, separated, separated_pair, terminated,
+    alt,
+    delimited,
+    preceded,
+    repeat,
+    repeat_till,
+    separated,
+    separated_pair,
+    terminated,
 };
 use winnow::error::ParserError;
 pub use winnow::prelude::*;

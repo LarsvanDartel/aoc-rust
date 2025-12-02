@@ -1,5 +1,3 @@
-use std::iter;
-
 use aoc_rust::*;
 use common::*;
 
@@ -24,9 +22,8 @@ impl Problem<u32, u32> for Day04 {
 
     fn part1(self) -> Result<u32> {
         println!("{:?}", self.cards);
-        let mut cards = iter::repeat(Grid::<bool>::new(5, 5))
-            .take(self.cards.len())
-            .collect::<Vec<_>>();
+        let mut cards =
+            std::iter::repeat_n(Grid::<bool>::new(5, 5), self.cards.len()).collect::<Vec<_>>();
         for number in &self.numbers {
             for (i, card) in self.cards.iter().enumerate() {
                 if let Some(pos) = card
@@ -55,9 +52,8 @@ impl Problem<u32, u32> for Day04 {
     }
 
     fn part2(self) -> Result<u32> {
-        let mut cards = iter::repeat(Grid::<bool>::new(5, 5))
-            .take(self.cards.len())
-            .collect::<Vec<_>>();
+        let mut cards =
+            std::iter::repeat_n(Grid::<bool>::new(5, 5), self.cards.len()).collect::<Vec<_>>();
         let mut unsolved = (0..self.cards.len()).collect::<HashSet<_>>();
         for number in &self.numbers {
             for i in unsolved.clone() {

@@ -1,4 +1,5 @@
-use std::{collections::VecDeque, iter};
+use std::collections::VecDeque;
+use std::iter;
 
 use hashbrown::HashMap;
 use rustworkx_core::petgraph::graphmap::NodeTrait;

@@ -1,4 +1,6 @@
-use std::{path::PathBuf, process::Command, thread};
+use std::path::PathBuf;
+use std::process::Command;
+use std::thread;
 
 use crate::{AocDate, Result};
 

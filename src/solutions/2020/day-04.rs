@@ -34,15 +34,15 @@ impl Passport {
                 "byr" => {
                     let year = v.parse::<u32>().unwrap();
                     (1920..=2002).contains(&year)
-                },
+                }
                 "iyr" => {
                     let year = v.parse::<u32>().unwrap();
                     (2010..=2020).contains(&year)
-                },
+                }
                 "eyr" => {
                     let year = v.parse::<u32>().unwrap();
                     (2020..=2030).contains(&year)
-                },
+                }
                 "hgt" => {
                     let unit = &v[v.len() - 2..];
                     let value = v[..v.len() - 2].parse::<u32>().unwrap();
@@ -51,12 +51,12 @@ impl Passport {
                         "in" => (59..=76).contains(&value),
                         _ => false,
                     }
-                },
+                }
                 "hcl" => {
                     v.len() == 7
                         && v.starts_with('#')
                         && v.chars().skip(1).all(|c| c.is_ascii_hexdigit())
-                },
+                }
                 "ecl" => ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(&v.as_str()),
                 "pid" => v.len() == 9 && v.chars().all(char::is_numeric),
                 _ => true,

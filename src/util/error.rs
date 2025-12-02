@@ -1,4 +1,5 @@
-use crate::{commands::aoc_cli::AocClientError, AocDate};
+use crate::commands::aoc_cli::AocClientError;
+use crate::AocDate;
 
 pub type Result<T> = std::result::Result<T, Error>;
 

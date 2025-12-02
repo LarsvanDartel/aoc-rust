@@ -48,7 +48,7 @@ impl std::fmt::Debug for Json {
                     write!(f, "{:?}", v)?;
                 }
                 write!(f, "]")
-            },
+            }
             Json::Object(o) => {
                 write!(f, "{{")?;
                 for (i, (k, v)) in o.iter().enumerate() {
@@ -58,7 +58,7 @@ impl std::fmt::Debug for Json {
                     write!(f, "\"{}\": {:?}", k, v)?;
                 }
                 write!(f, "}}")
-            },
+            }
         }
     }
 }
@@ -79,7 +79,7 @@ impl Json {
                     }
                 }
                 o.values().map(|v| v.sum(ignore)).sum()
-            },
+            }
         }
     }
 }

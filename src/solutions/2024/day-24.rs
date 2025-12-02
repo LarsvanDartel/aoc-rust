@@ -13,7 +13,7 @@ impl Value {
     #[allow(dead_code)]
     fn print(&self, value_map: &HashMap<String, Value>, depth: usize) {
         match self {
-            Value::Value(_v) => {}, //print!("{}", if *v { 1 } else { 0 }),
+            Value::Value(_v) => {} //print!("{}", if *v { 1 } else { 0 }),
             Value::Gate(g) => match g {
                 Gate::And(a, b, _) => {
                     print!("({}", a);
@@ -25,7 +25,7 @@ impl Value {
                         value_map[b].print(value_map, depth + 1);
                     }
                     print!(")");
-                },
+                }
                 Gate::Or(a, b, _) => {
                     print!("({}", a);
                     if depth < 3 {
@@ -36,7 +36,7 @@ impl Value {
                         value_map[b].print(value_map, depth + 1);
                     }
                     print!(")");
-                },
+                }
                 Gate::Xor(a, b, _) => {
                     print!("({}", a);
                     if depth < 3 {
@@ -47,7 +47,7 @@ impl Value {
                         value_map[b].print(value_map, depth + 1);
                     }
                     print!(")");
-                },
+                }
             },
         }
     }
@@ -60,17 +60,17 @@ impl Value {
                     let a = value_map[a].eval(value_map);
                     let b = value_map[b].eval(value_map);
                     a & b
-                },
+                }
                 Gate::Or(a, b, _) => {
                     let a = value_map[a].eval(value_map);
                     let b = value_map[b].eval(value_map);
                     a | b
-                },
+                }
                 Gate::Xor(a, b, _) => {
                     let a = value_map[a].eval(value_map);
                     let b = value_map[b].eval(value_map);
                     a ^ b
-                },
+                }
             },
         }
     }
@@ -119,13 +119,13 @@ impl std::cmp::PartialEq for Gate {
         match (self, other) {
             (Gate::And(a1, b1, _), Gate::And(a2, b2, _)) => {
                 a1 == a2 && b1 == b2 || a1 == b2 && a2 == b1
-            },
+            }
             (Gate::Or(a1, b1, _), Gate::Or(a2, b2, _)) => {
                 a1 == a2 && b1 == b2 || a1 == b2 && a2 == b1
-            },
+            }
             (Gate::Xor(a1, b1, _), Gate::Xor(a2, b2, _)) => {
                 a1 == a2 && b1 == b2 || a1 == b2 && a2 == b1
-            },
+            }
             _ => false,
         }
     }

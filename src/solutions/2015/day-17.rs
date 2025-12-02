@@ -45,11 +45,11 @@ impl Problem<u32, u32> for Day17 {
                     std::cmp::Ordering::Less => {
                         min_containers = containers;
                         combinations = 1;
-                    },
+                    }
                     std::cmp::Ordering::Equal => {
                         combinations += 1;
-                    },
-                    _ => {},
+                    }
+                    _ => {}
                 }
             }
         }

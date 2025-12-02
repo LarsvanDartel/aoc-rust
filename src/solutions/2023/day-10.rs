@@ -51,31 +51,31 @@ impl Pipe {
         let mut grid = [[Pipe::Empty; 3]; 3];
         grid[1][1] = *self;
         match self {
-            Pipe::Empty => {},
+            Pipe::Empty => {}
             Pipe::Horizontal => {
                 grid[1][0] = Pipe::Horizontal;
                 grid[1][2] = Pipe::Horizontal;
-            },
+            }
             Pipe::Vertical => {
                 grid[0][1] = Pipe::Vertical;
                 grid[2][1] = Pipe::Vertical;
-            },
+            }
             Pipe::NorthEast => {
                 grid[0][1] = Pipe::Vertical;
                 grid[1][2] = Pipe::Horizontal;
-            },
+            }
             Pipe::NorthWest => {
                 grid[0][1] = Pipe::Vertical;
                 grid[1][0] = Pipe::Horizontal;
-            },
+            }
             Pipe::SouthEast => {
                 grid[2][1] = Pipe::Vertical;
                 grid[1][2] = Pipe::Horizontal;
-            },
+            }
             Pipe::SouthWest => {
                 grid[2][1] = Pipe::Vertical;
                 grid[1][0] = Pipe::Horizontal;
-            },
+            }
             _ => unreachable!(),
         }
         grid
@@ -309,9 +309,9 @@ impl Problem<usize, usize> for Day10 {
         let mut queue = VecDeque::new();
         let mut outside = HashSet::new();
 
-        for i in 0..grid.len() {
-            for j in 0..grid[0].len() {
-                if grid[i][j] == Pipe::Source {
+        for (i, row) in grid.iter().enumerate() {
+            for (j, p) in row.iter().enumerate() {
+                if *p == Pipe::Source {
                     queue.push_back((j as isize, i as isize));
                 }
             }

@@ -32,7 +32,7 @@ impl Day17 {
                 if self.a != 0 {
                     self.pc = value as usize
                 }
-            },
+            }
             4 => self.b ^= self.c,
             5 => return Some((combo & 0b111) as u8),
             6 => self.b = self.a >> combo,

@@ -64,40 +64,40 @@ impl Sue {
     }
 
     fn matches(&self, mfcam: &Sue, retroencabulator: bool) -> bool {
-        self.children.map_or(true, |v| v == mfcam.children.unwrap())
-            && self.cats.map_or(true, |v| {
+        self.children.is_none_or(|v| v == mfcam.children.unwrap())
+            && self.cats.is_none_or(|v| {
                 if retroencabulator {
                     v > mfcam.cats.unwrap()
                 } else {
                     v == mfcam.cats.unwrap()
                 }
             })
-            && self.samoyeds.map_or(true, |v| v == mfcam.samoyeds.unwrap())
-            && self.pomeranians.map_or(true, |v| {
+            && self.samoyeds.is_none_or(|v| v == mfcam.samoyeds.unwrap())
+            && self.pomeranians.is_none_or(|v| {
                 if retroencabulator {
                     v < mfcam.pomeranians.unwrap()
                 } else {
                     v == mfcam.pomeranians.unwrap()
                 }
             })
-            && self.akitas.map_or(true, |v| v == mfcam.akitas.unwrap())
-            && self.vizslas.map_or(true, |v| v == mfcam.vizslas.unwrap())
-            && self.goldfish.map_or(true, |v| {
+            && self.akitas.is_none_or(|v| v == mfcam.akitas.unwrap())
+            && self.vizslas.is_none_or(|v| v == mfcam.vizslas.unwrap())
+            && self.goldfish.is_none_or(|v| {
                 if retroencabulator {
                     v < mfcam.goldfish.unwrap()
                 } else {
                     v == mfcam.goldfish.unwrap()
                 }
             })
-            && self.trees.map_or(true, |v| {
+            && self.trees.is_none_or(|v| {
                 if retroencabulator {
                     v > mfcam.trees.unwrap()
                 } else {
                     v == mfcam.trees.unwrap()
                 }
             })
-            && self.cars.map_or(true, |v| v == mfcam.cars.unwrap())
-            && self.perfumes.map_or(true, |v| v == mfcam.perfumes.unwrap())
+            && self.cars.is_none_or(|v| v == mfcam.cars.unwrap())
+            && self.perfumes.is_none_or(|v| v == mfcam.perfumes.unwrap())
     }
 }
 

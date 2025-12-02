@@ -14,7 +14,7 @@ impl Problem<usize, usize> for Day07 {
 
     fn part1(mut self) -> Result<usize> {
         self.crabs.sort_unstable();
-        let median = if self.crabs.len() % 2 == 0 {
+        let median = if self.crabs.len().is_multiple_of(2) {
             let mid = self.crabs.len() / 2;
             (self.crabs[mid - 1] + self.crabs[mid]) / 2
         } else {

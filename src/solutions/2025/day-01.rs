@@ -30,14 +30,15 @@ impl Day01 {
 impl Problem<usize, usize> for Day01 {
     fn parse(input: &mut &str) -> PResult<Self> {
         Ok(Day01 {
-            rotations:
-                list((one_of(['L', 'R']), dec_u32).map(|(dir, len)| {
-                    match dir {
-                        'L' => -(len as i32),
-                        'R' => len as i32,
-                        _ => unreachable!(),
-                    }
-                }), line_ending).parse_next(input)?,
+            rotations: list(
+                (one_of(['L', 'R']), dec_u32).map(|(dir, len)| match dir {
+                    'L' => -(len as i32),
+                    'R' => len as i32,
+                    _ => unreachable!(),
+                }),
+                line_ending,
+            )
+            .parse_next(input)?,
         })
     }
 

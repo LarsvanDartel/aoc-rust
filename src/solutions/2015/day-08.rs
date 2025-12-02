@@ -25,9 +25,9 @@ impl Problem<usize, usize> for Day08 {
                             Some('x') => {
                                 chars.next();
                                 chars.next();
-                            },
-                            Some('\\') => {},
-                            Some('"') => {},
+                            }
+                            Some('\\') => {}
+                            Some('"') => {}
                             None => break,
                             _ => unreachable!(),
                         }

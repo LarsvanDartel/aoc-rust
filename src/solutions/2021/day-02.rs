@@ -52,7 +52,7 @@ impl Problem<i32, i32> for Day02 {
                 Command::Forward(distance) => {
                     horizontal += distance;
                     depth += aim * distance;
-                },
+                }
                 Command::Up(distance) => aim -= distance,
                 Command::Down(distance) => aim += distance,
             }

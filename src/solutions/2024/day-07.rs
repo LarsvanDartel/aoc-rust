@@ -17,12 +17,12 @@ impl Operation {
         match self {
             Self::Add => result.checked_sub(operand),
             Self::Multiply => {
-                if result % operand == 0 {
+                if result.is_multiple_of(operand) {
                     Some(result / operand)
                 } else {
                     None
                 }
-            },
+            }
             Self::Concatenate => {
                 let mut p10 = 1;
                 while p10 <= operand {
@@ -33,7 +33,7 @@ impl Operation {
                 } else {
                     None
                 }
-            },
+            }
         }
     }
 }
