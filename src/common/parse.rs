@@ -124,3 +124,15 @@ where
 {
     dec_uint(input)
 }
+
+pub fn digit<I, E>(input: &mut I) -> PResult<u8, E>
+where
+    I: StreamIsPartial + Stream<Token = char>,
+    <I as Stream>::Slice: AsBStr,
+    <I as Stream>::Token: AsChar + Clone,
+    E: ParserError<I>,
+{
+    one_of('0'..='9')
+        .map(|c| (c as u8) - b'0')
+        .parse_next(input)
+}
