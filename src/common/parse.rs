@@ -19,6 +19,7 @@ pub use winnow::combinator::{
     repeat_till,
     separated,
     separated_pair,
+    seq,
     terminated,
 };
 use winnow::error::ParserError;
