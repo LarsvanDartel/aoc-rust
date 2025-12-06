@@ -59,7 +59,6 @@ macro_rules! aoc_main {
             println!();
             println!("🎄 Running part 2...");
 
-
             let mut input_2 = input.as_str();
             let start = std::time::Instant::now();
             let task2 = <$problem>::parse_2(&mut input_2)?;
@@ -85,7 +84,7 @@ macro_rules! aoc_main {
 #[macro_export]
 macro_rules! assert_task {
     ($problem:ty, $task:expr, $input:expr, $expected:expr) => {{
-        let mut input = $input.trim();
+        let mut input = $input;
 
         let task = match $task {
             1 => <$problem>::parse_1(&mut input),

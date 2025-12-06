@@ -68,8 +68,7 @@ aoc_main!(Day02);
 mod tests {
     use super::*;
 
-    const EXAMPLE: &str = r#"
-forward 5
+    const EXAMPLE: &str = r#"forward 5
 down 5
 forward 8
 up 3
