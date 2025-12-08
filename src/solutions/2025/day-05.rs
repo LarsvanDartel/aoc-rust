@@ -32,16 +32,13 @@ impl Problem<usize, usize> for Day05 {
     fn part2(self) -> Result<usize> {
         let mut ranges = self.ranges.into_iter().sorted_by_key(|r| *r.start());
         let r = ranges.next().unwrap();
-        let (sum, range) = ranges.fold(
-            (0, r),
-            |(acc, curr), next| {
-                if *next.start() <= *curr.end() {
-                    (acc, *curr.start()..=*next.end().max(curr.end()))
-                } else {
-                    (acc + curr.count(), next)
-                }
-            },
-        );
+        let (sum, range) = ranges.fold((0, r), |(acc, curr), next| {
+            if *next.start() <= *curr.end() {
+                (acc, *curr.start()..=*next.end().max(curr.end()))
+            } else {
+                (acc + curr.count(), next)
+            }
+        });
         Ok(sum + range.count())
     }
 }

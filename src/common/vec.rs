@@ -21,6 +21,15 @@ impl<T> Vec2<T> {
     {
         self.x + self.y
     }
+
+    pub fn len2(&self) -> T
+    where
+        T: std::ops::Add<Output = T>,
+        T: std::ops::Mul<Output = T>,
+        T: Clone,
+    {
+        self.x.clone() * self.x.clone() + self.y.clone() * self.y.clone()
+    }
 }
 
 impl Vec2<bool> {
@@ -234,6 +243,18 @@ impl<T> Vec3<T> {
         T: std::ops::Add<Output = T>,
     {
         self.x + self.y + self.z
+    }
+
+    pub fn len2(&self) -> T
+    where
+        T: std::ops::Add<Output = T>,
+        T: std::ops::Mul<Output = T>,
+        T: Clone,
+        T: std::fmt::Display,
+    {
+        self.x.clone() * self.x.clone()
+            + self.y.clone() * self.y.clone()
+            + self.z.clone() * self.z.clone()
     }
 }
 

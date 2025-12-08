@@ -112,7 +112,9 @@ impl Problem<u64, u64> for Day06 {
             .sum())
     }
 
-    fn part2(self) -> Result<u64> { self.part1() }
+    fn part2(self) -> Result<u64> {
+        self.part1()
+    }
 }
 
 aoc_main!(Day06);

@@ -108,7 +108,8 @@ impl Problem<usize, usize> for Day07 {
                 }
                 new_head
             })
-            .into_iter().sum())
+            .into_iter()
+            .sum())
     }
 }
 
